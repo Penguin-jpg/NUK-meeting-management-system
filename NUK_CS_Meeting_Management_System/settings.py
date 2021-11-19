@@ -39,6 +39,10 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     # 自己新增的app
+    "meetings",
+    "participants",
+    "pages",
+    "user_settings",
     # third-party
 ]
 
