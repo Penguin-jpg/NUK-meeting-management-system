@@ -10,10 +10,12 @@ from phonenumber_field.formfields import PhoneNumberField
 from crispy_forms.helper import FormHelper, Layout
 from crispy_forms.layout import Submit, Div, Row, Column, Field
 
-SEX = ((0, "女性"), (1, "男性"))
+SEX = ((0, "男性"), (1, "女性"))
+IDENTITY = ((0, "業界專家"), (1, "學生代表"), (2, "校外老師"), (3, "系助理"), (4, "系上老師"))
 
 # 申請帳號的表格
 class SignUpForm(UserCreationForm):
+    username = forms.CharField(max_length=150, required=True)
     first_name = (
         forms.CharField(
             max_length=10,
@@ -24,13 +26,10 @@ class SignUpForm(UserCreationForm):
             max_length=10,
         ),
     )
-    sex = forms.ChoiceField(choices=SEX)
-    identity = forms.CharField(
-        max_length=50,
-        label="身分",
-    )
-    email = email = forms.EmailField()
-    phone = PhoneNumberField(region="TW")
+    sex = forms.ChoiceField(choices=SEX, required=False)
+    identity = forms.ChoiceField(choices=IDENTITY, required=False)
+    email = email = forms.EmailField(required=False)
+    phone = PhoneNumberField(region="TW", required=False)
 
     class Meta:
         model = User
@@ -57,22 +56,23 @@ class SignUpForm(UserCreationForm):
         self.fields["password1"].label = "密碼"
         self.fields["password2"].label = "請重新輸入密碼"
         self.helper = FormHelper()
-        self.helper.form_method = "POST"
+        self.helper.form_method = "post"
         self.helper.form_class = "blueForms"
+        self.helper.form_class = "form-horizontal"
+        self.helper.label_class = "col-lg-2"
+        self.helper.field_class = "col-lg-8"
         self.helper.form_id = "register-form"
         self.helper.layout = Layout(
-            Row(
-                Column("username", css_class="col-6"),
-                Column("email", css_class="col-6"),
-            ),
-            Row(
-                Column("first_name", css_class="col-6"),
-                Column("last_name", css_class="col-6"),
-            ),
-            Row(
-                Column("password1", css_class="col-6"),
-                Column("password2", css_class="col-6"),
-            ),
+            Field("username"),
+            Field("email"),
+            Field("password1"),
+            Field("password2"),
+            Field("first_name"),
+            Field("last_name"),
+            Field("sex"),
+            Field("identity"),
+            Field("phone"),
         )
-        # self.helper.add_input(Submit("submit", "註冊", css_class="btn-primary"))
-        self.helper.add_input(Submit("submit", "Submit"))
+        self.helper.add_input(
+            Submit("submit", "註冊", css_class="btn-secondary float: right")
+        )

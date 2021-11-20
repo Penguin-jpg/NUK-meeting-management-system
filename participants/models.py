@@ -7,12 +7,13 @@ from phonenumber_field.modelfields import PhoneNumberField
 
 # 把與會人員當作使用者的簡介的概念，所以用一對一的關係連結
 
-SEX = ((0, "女性"), (1, "男性"))
+SEX = ((0, "男性"), (1, "女性"))
+IDENTITY = ((0, "業界專家"), (1, "學生代表"), (2, "校外老師"), (3, "系助理"), (4, "系上老師"))
 
 
 class Participant(models.Model):
     sex = models.IntegerField(choices=SEX)  # 性別
-    identity = models.CharField(max_length=50)  # 身分
+    identity = models.IntegerField(choices=IDENTITY)  # 身分
     email = models.EmailField()  # email
     phone = PhoneNumberField(region="TW")  # 連絡電話
     user = models.OneToOneField(User, null=True, on_delete=models.CASCADE)  # 對應的使用者

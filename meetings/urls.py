@@ -1,7 +1,7 @@
 from django.urls import path, include
-from .views import meeting_list_view, meeting_detail_view
+from .views import MeetingListView, MeetingDetailView
 
 urlpatterns = [
-    path("", meeting_list_view, name="meeting-list"),
-    path("<int:id>/", meeting_detail_view, name="meeting-detail"),
+    path("", MeetingListView.as_view(), name="meeting-list"),
+    path("<int:id>/", MeetingDetailView.as_view(), name="meeting-detail"),
 ]

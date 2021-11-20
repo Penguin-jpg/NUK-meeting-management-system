@@ -12,6 +12,7 @@
 - 2021/11/20
     1. 新增帳號申請表單
     2. 新增註冊、登入、登出
+    3. 將function based view改為class based view
 
 ### Model
 1. 會議
