@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+
+{% block title %}註冊{% endblock %}
+
+{% block content %}
+{% for user in users %}
+<p>{{ user.username }}</p>
+{% endfor %}
+{% endblock %}

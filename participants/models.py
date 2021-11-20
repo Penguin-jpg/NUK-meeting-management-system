@@ -1,5 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.urls import reverse
+from django.dispatch import receiver
+from django.db.models.signals import post_save
 from phonenumber_field.modelfields import PhoneNumberField
 
 # 把與會人員當作使用者的簡介的概念，所以用一對一的關係連結
@@ -8,12 +11,22 @@ SEX = ((0, "女性"), (1, "男性"))
 
 
 class Participant(models.Model):
-    name = models.CharField(max_length=20)  # 名稱
     sex = models.IntegerField(choices=SEX)  # 性別
     identity = models.CharField(max_length=50)  # 身分
     email = models.EmailField()  # email
     phone = PhoneNumberField(region="TW")  # 連絡電話
     user = models.OneToOneField(User, null=True, on_delete=models.CASCADE)  # 對應的使用者
+
+    # 建立使用者的同時新增簡介(待研究)
+    # @receiver(post_save, sender=User)
+    # def create_user_profile(sender, instance, created, **kwargs):
+    #     if created:
+    #         Participant.objects.create(user=instance)
+
+    # 儲存使用者的簡介
+    # @receiver(post_save, sender=User)
+    # def save_user_profile(sender, instance, **kwargs):
+    #     instance.profile.save()
 
 
 # 業界專家

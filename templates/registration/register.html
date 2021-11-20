@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %}註冊{% endblock %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+<br>
+<h1>註冊帳號</h1>
+{% csrf_token %}
+{% crispy form %}
+{% comment %} <form method="POST" class="register-form">
+    {% csrf_token %}
+    <div class="row">
+        <div class="col-6">
+            {{ form.username|as_crispy_field }}
+        </div>
+        <div class="col-6">
+            {{ form.email|as_crispy_field }}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-6">
+            {{ form.first_name|as_crispy_field }}
+        </div>
+        <div class="col-6">
+            {{ form.last_name|as_crispy_field }}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-6">
+            {{ form.password1|as_crispy_field }}
+        </div>
+        <div class="col-6">
+            {{ form.password2|as_crispy_field }}
+        </div>
+    </div>
+    {{ form.sex|as_crispy_field }}
+    {{ form.phone|as_crispy_field }}
+    <button type="submit" class="btn btn-success">註冊</button>
+</form> {% endcomment %}
+{% endblock %}

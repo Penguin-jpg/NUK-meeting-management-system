@@ -3,6 +3,29 @@
 {% block title %} 首頁 {% endblock %}
 
 {% block content%}
-<h1>首頁</h1>
-<p>測試</p>
+
+<h1>會議列表</h1>
+
+{% for meeting in meetings %}
+<div class="col-md-8 card mb-4  mt-3 left  top">
+    <div class="card-body">
+        <h1><a href="{% url 'meeting-detail' meeting.id %}">{{ meeting.name }}</a></h1>
+        <p class="text-muted">
+            {% comment %} <small>
+                <a href="{% url 'user-profile' meeting.author.pk %}">{{ meeting.author }}</a>
+            </small> {% endcomment %}
+            <small style="margin-left: 2cm">{{ meeting.date }}</small>
+        </p>
+        <p class="card-text">
+            Test content
+        </p>
+        <p style="text-align: right;">
+            <a href="{% url 'meeting-detail' meeting.id %}">查看議程</a>
+        </p>
+    </div>
+</div>
+{% endfor %}
+
+
+
 {% endblock %}
