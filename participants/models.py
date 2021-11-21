@@ -8,12 +8,12 @@ from phonenumber_field.modelfields import PhoneNumberField
 # 把與會人員當作使用者的簡介的概念，所以用一對一的關係連結
 
 SEX = ((0, "男性"), (1, "女性"))
-IDENTITY = ((0, "業界專家"), (1, "學生代表"), (2, "校外老師"), (3, "系助理"), (4, "系上老師"))
+IDENTITY = ((-1, "無"), (0, "業界專家"), (1, "學生代表"), (2, "校外老師"), (3, "系助理"), (4, "系上老師"))
 
 
 class Participant(models.Model):
     sex = models.IntegerField(choices=SEX)  # 性別
-    identity = models.IntegerField(choices=IDENTITY)  # 身分
+    identity = models.IntegerField(choices=IDENTITY, default=-1)  # 身分
     email = models.EmailField()  # email
     phone = PhoneNumberField(region="TW")  # 連絡電話
     user = models.OneToOneField(User, null=True, on_delete=models.CASCADE)  # 對應的使用者
@@ -38,6 +38,9 @@ class Expert(Participant):
     address = models.CharField(max_length=100)  # 聯絡地址
     bank_account = models.CharField(max_length=14)  # 銀行帳號
 
+    def get_absolute_url(self):
+        return reverse("participants:expert-profile", kwargs={"id": self.id})
+
 
 # 學生代表
 class StudentRepresentative(Participant):
@@ -54,6 +57,9 @@ class Teacher(Participant):
     telephone = PhoneNumberField(region="TW")  # 辦公室電話
     address = models.CharField(max_length=100)  # 聯絡地址
     bank_account = models.CharField(max_length=14)  # 銀行帳號
+
+    def get_absolute_url(self):
+        return reverse("participants:teacher-profile", kwargs={"id": self.id})
 
 
 # 系助理
