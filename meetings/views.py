@@ -14,7 +14,7 @@ class MeetingListView(ListView):
 # 會議細節(議程)
 class MeetingDetailView(DetailView):
     model = Meeting
-    template_name = "meeting/meeting_detail.html"
+    template_name = "meetings/meeting_detail.html"
 
 
 # 建立會議

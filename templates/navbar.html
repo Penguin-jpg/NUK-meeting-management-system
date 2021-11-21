@@ -12,16 +12,30 @@
             </li>
         </ul>
         <ul class="navbar-nav ml-auto">
+            {% if user.is_authenticated %}
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle active" href="#" id="navbarDropdown" role="button"
+                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    {{ user.last_name }}{{ user.first_name }}
+                </a>
+                <div class="dropdown-menu dropdown-menu-lg-right dropdown-menu-md-right"
+                    aria-labelledby="navbarDropdown">
+                    <a class="dropdown-item" href="#"><b>帳號設定</b></a>
+                    {% comment %} <a class="dropdown-item" href="#">編輯個人資料</a>
+                    <a class="dropdown-item" href="#">查看個人資料</a> {% endcomment %}
+                </div>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="{% url 'logout' %}">登出</a>
+            </li>
+            {% else %}
             <li class="nav-item">
                 <a class="nav-link active" aria-current="page" href="{% url 'login' %}">登入</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link active" aria-current="page" href="{% url 'register' %}">註冊</a>
             </li>
-
-            <li class="nav-item">
-                <a class="nav-link active" aria-current="page" href="{% url 'logout' %}">登出</a>
-            </li>
+            {% endif %}
         </ul>
     </div>
 </nav>

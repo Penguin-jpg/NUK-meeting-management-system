@@ -2,13 +2,12 @@
 
 {% block title %}登入{% endblock %}
 
+{% load crispy_forms_tags %}
+
 {% block content %}
 <br>
 <h1>登入</h1>
-<form method="POST">
-    {% csrf_token %}
-    <!-- display as <p> -->
-    {{ form.as_p }}
-    <button type="submit" class="btn btn-secondary">登入</button>
-</form>
+<br>
+{% csrf_token %}
+{% crispy form %}
 {% endblock %}

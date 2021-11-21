@@ -2,14 +2,23 @@ body{
 	background-color: #1e1e1e !important;
 }
 
-h1, h2, h3, h4, h5, h6, p, span, small, label{
-	color: #ddd;
-}
-
-li{
-	color: #ddd;
+h1, h2, h3, h4, h5, h6, p, li, span, small, label{
+	color: #ddd
 }
 
 .asteriskField {
     color: red;
+}
+
+#login-form .asteriskField {
+	display: none;
+}
+
+.dropdown-menu {
+	background-color: #8e8e8e;
+}
+
+.dropdown-item {
+	color: white;
+	text-align: center;
 }

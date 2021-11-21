@@ -11,10 +11,16 @@ from .forms import SignUpForm
 class UserRegisterView(CreateView):
     form_class = SignUpForm
     template_name = "registration/register.html"
-    success_url = reverse_lazy("home")
+    success_url = reverse_lazy("login")
 
 
 # 使用者列表
 class UserListView(ListView):
     model = User
-    template_name = "user/user_list.html"
+    template_name = "users/user_list.html"
+
+
+# 個人簡介(資料)
+class UserProfileDetailView(DetailView):
+    model = Participant
+    template = "users/user_profile.html"
