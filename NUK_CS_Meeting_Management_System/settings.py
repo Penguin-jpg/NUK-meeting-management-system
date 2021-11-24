@@ -40,11 +40,12 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     # 自己新增的app
     "meetings",
-    "participants",
-    "user_settings",
-    "crispy_forms"
+    "accounts",
     # third-party
+    "crispy_forms",
 ]
+
+AUTH_USER_MODEL = "accounts.Participant"  # custom user model
 
 CRISPY_TEMPLATE_PACK = "bootstrap4"
 

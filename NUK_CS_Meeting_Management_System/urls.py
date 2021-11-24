@@ -23,5 +23,5 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("meetings/", include("meetings.urls")),
     path("", MeetingListView.as_view(), name="home"),
-    path("users/", include("participants.urls")),
+    path("accounts/", include("accounts.urls")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

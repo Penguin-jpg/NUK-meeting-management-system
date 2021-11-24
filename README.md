@@ -17,6 +17,13 @@
     1. 修改登入後的導覽列顯示
     2. 新增自訂的登入表單及登出重新導向
     3. 人員的個人資料(完成度30%)
+- 2021/11/24
+    1. 重新調整架構
+    2. 加入自定義的User：Participant
+    3. 原本的Participant改為Profile
+
+### 英文用語參考
+1. https://sweetrans.pixnet.net/blog/post/289207848-%E3%80%88%E8%AB%87%E6%96%87%E8%AB%96%E8%AD%AF%E3%80%89%E6%9C%83%E8%AD%B0%E7%9A%84%E8%8B%B1%E6%96%87-english-for-meetings-%E8%98%87
 
 ### Model
 1. 會議
