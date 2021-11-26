@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import Participant
+from .models import Participant, Profile
 from .forms import SignUpForm, ParticipantChangeForm
 
 
@@ -13,6 +13,7 @@ class ParticipantAdmin(UserAdmin):
         "last_name",
         "first_name",
         "email",
+        "type",
     ]
 
     fieldsets = (
@@ -26,19 +27,30 @@ class ParticipantAdmin(UserAdmin):
                     "first_name",
                     "email",
                     "phone",
-                    "sex",
+                    "type",
+                ),
+            },
+        ),
+    )
+
+    add_fieldsets = (
+        (
+            None,
+            {
+                "classes": ("wide",),
+                "fields": (
+                    "username",
+                    "last_name",
+                    "first_name",
+                    "password1",
+                    "password2",
+                    "email",
                     "identity",
                 ),
             },
         ),
-        # (
-        #     "Advanced options",
-        #     {
-        #         "classes": ("collapse",),
-        #         "fields": (""),
-        #     },
-        # ),
     )
 
 
 admin.site.register(Participant, ParticipantAdmin)
+admin.site.register(Profile)

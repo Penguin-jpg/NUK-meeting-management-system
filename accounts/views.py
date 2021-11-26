@@ -1,16 +1,18 @@
-from typing import List
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import CreateView, ListView, DetailView, UpdateView
-from django.urls import reverse_lazy
-from .models import (
-    Participant,
-    AssistantProfile,
-    ExpertProfile,
-    ProfessorProfile,
-    StudentRepresentativeProfile,
-    ExternalTeacherProfile,
+from django.urls import reverse_lazy, reverse
+from django.contrib.auth.decorators import login_required
+from django.views.generic.edit import DeleteView
+from .models import Participant, Profile
+from .forms import (
+    SignUpForm,
+    # ExpertEditForm,
+    # StudentEditForm,
+    # TeacherEditForm,
+    # AssistantEditForm,
+    # ProfessorEditForm,
+    ProfileEditForm,
 )
-from .forms import SignUpForm
 
 # 使用者註冊
 class UserRegisterView(CreateView):
@@ -19,38 +21,63 @@ class UserRegisterView(CreateView):
     success_url = reverse_lazy("login")
 
 
-# 使用者列表
+# 使用者列表(可以更精緻，但暫時算完成)
 class UserListView(ListView):
     model = Participant
     template_name = "accounts/user_list.html"
 
 
-# 使用者個人簡介 (未完成)
-def user_profile_view(request, id):
-    type = request.user.type
-    user = Participant.objects.get(id=id)
+# 刪除使用者(可以更精緻，但暫時算完成)
+class UserDeleteView(DeleteView):
+    model = Participant
+    template_name = "accounts/user_delete.html"
+    success_url = reverse_lazy("login")
 
-    if type == -1 or user == None:
-        return render(request, "accounts/no_identity.html", {})  # 這部分沒作用，不知道為啥
+    def get_object(self):
+        id = self.kwargs["id"]
+        return get_object_or_404(Participant, id=id)
+
+
+# 使用者個人資料
+@login_required(login_url="login")
+def user_profile_view(request):
+    try:
+        profile = Profile.objects.get(id=request.user.profile.id)
+    except Profile.DoesNotExist:
+        return render(request, "accounts/no_identity.html", {})
+
+    # type = ((0, "業界專家"), (1, "學生代表"), (2, "校外老師"), (3, "系助理"), (4, "系上老師"))
+    if profile.is_expert():
+        identity = "業界專家"
+    elif profile.is_student():
+        identity = "學生代表"
+    elif profile.is_teacher():
+        identity = "校外老師"
+    elif profile.is_assistant():
+        identity = "系助理"
+    elif profile.is_professor():
+        identity = "系上老師"
+
+    context = {"identity": identity, "profile": profile}
+
+    return render(request, "accounts/user_profile.html", context)
+
+
+# 編輯個人資料
+@login_required(login_url="login")
+def edit_profile_view(request):
+    try:
+        profile = Profile.objects.get(id=request.user.profile.id)
+    except Profile.DoesNotExist:
+        return render(request, "accounts/no_identity.html", {})
+
+    form = ProfileEditForm(request.POST or None, instance=profile)
+    if form.is_valid():
+        form.save()
+        return redirect("user-profile")
     else:
-        # type = ((-1, "無"), (0, "業界專家"), (1, "學生代表"), (2, "校外老師"), (3, "系助理"), (4, "系上老師"))
-        p_id = user.participant.id
-        if type == 0:
-            participant = get_object_or_404(ExpertProfile, id=p_id)
-            identity = "expert"
-        elif type == 1:
-            participant = get_object_or_404(StudentRepresentativeProfile, id=p_id)
-            identity = "student_representtative"
-        elif type == 2:
-            participant = get_object_or_404(ExternalTeacherProfile, id=p_id)
-            identity = "external_teacher"
-        elif type == 3:
-            participant = get_object_or_404(AssistantProfile, id=p_id)
-            identity = "assistant"
-        elif type == 4:
-            participant = get_object_or_404(ProfessorProfile, id=p_id)
-            identity = "professor"
+        form = ProfileEditForm(instance=profile)
 
-        context = {"participant": participant}
+    context = {"form": form, "profile": profile}
 
-        return render(request, f"accounts/{identity}_profile.html", context)
+    return render(request, "accounts/edit_profile.html", context)

@@ -3,7 +3,9 @@ from django.contrib.auth import views
 from .views import (
     UserRegisterView,
     UserListView,
+    UserDeleteView,
     user_profile_view,
+    edit_profile_view,
 )
 from .forms import LoginForm
 
@@ -22,9 +24,11 @@ urlpatterns = [
         name="logout",
     ),
     path("", UserListView.as_view(), name="user-list"),
+    path("delete/<int:id>/", UserDeleteView.as_view(), name="user-delete"),
     path(
-        "profile/<int:id>/",
+        "profile/",
         user_profile_view,
         name="user-profile",
     ),
+    path("profile/edit/", edit_profile_view, name="edit-profile"),
 ]

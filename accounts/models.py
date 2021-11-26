@@ -6,13 +6,12 @@ from django.db.models.signals import post_save
 from phonenumber_field.modelfields import PhoneNumberField
 
 
-SEX = ((-1, ""), (0, "女性"), (1, "男性"))
-TYPE = ((-1, "無"), (0, "業界專家"), (1, "學生代表"), (2, "校外老師"), (3, "系助理"), (4, "系上老師"))
+SEX = ((0, "女性"), (1, "男性"))
+TYPE = ((0, "業界專家"), (1, "學生代表"), (2, "校外老師"), (3, "系助理"), (4, "系上老師"))
 
 
 class Participant(AbstractUser):
-    sex = models.IntegerField(choices=SEX, default=-1)  # 性別
-    type = models.IntegerField(choices=TYPE, default=-1)  # 與會人員的種類
+    type = models.IntegerField(choices=TYPE, default=0)  # 與會人員的種類
 
     class Meta:
         permissions = [
@@ -28,74 +27,70 @@ class Participant(AbstractUser):
     def __str__(self):
         return self.last_name + self.first_name
 
+    def get_absolute_url(self):
+        return reverse("accounts:user-detail", kwargs={"id": self.id})
 
+
+# TODO: 照著這篇的建議做 https://stackoverflow.com/questions/11335422/django-multiple-profiles
 # 使用者的簡介，所以用一對一的關係連結
+# 會使用一個包含所有欄位的Profile，再透過type來分類
 class Profile(models.Model):
-    email = models.EmailField()  # email
+    # 共通的屬性
+    user = models.OneToOneField(
+        Participant, null=True, on_delete=models.CASCADE
+    )  # 對應的使用者
+    sex = models.IntegerField(choices=SEX, default=0)  # 性別
+    email = models.EmailField()  # 電子信箱
     phone = PhoneNumberField(region="TW")  # 連絡電話
-    user = models.OneToOneField(Participant, on_delete=models.CASCADE)  # 對應的使用者
 
-    # 建立使用者的同時新增簡介(待研究)
-    # @receiver(post_save, sender=User)
-    # def create_user_profile(sender, instance, created, **kwargs):
-    #     if created:
-    #         Participant.objects.create(user=instance)
-
-    # 儲存使用者的簡介
-    # @receiver(post_save, sender=User)
-    # def save_user_profile(sender, instance, **kwargs):
-    #     instance.profile.save()
-
-
-# 業界專家
-class ExpertProfile(Profile):
-    company = models.CharField(max_length=50)  # 任職公司
-    title = models.CharField(max_length=20)  # 職稱
+    # 業界專家、校外老師、系助理、系上老師共通的屬性
     telephone = PhoneNumberField(region="TW")  # 辦公室電話
+
+    # 業界專家、校外老師、系上老師共通的屬性
+    title = models.CharField(max_length=20)  # 職稱
+
+    # 業界專家、校外老師共通的屬性
     address = models.CharField(max_length=100)  # 聯絡地址
     bank_account = models.CharField(max_length=14)  # 銀行帳號
 
-    def get_absolute_url(self):
-        return reverse("accounts:expert-profile", kwargs={"id": self.id})
+    # 業界專家的屬性
+    company = models.CharField(max_length=50)  # 任職公司
 
+    # 校外老師的屬性
+    school = models.CharField(max_length=50)  # 任職學校
+    department = models.CharField(max_length=20)  # 系所
 
-# 學生代表
-class StudentRepresentativeProfile(Profile):
-    student_id = models.CharField(max_length=15, primary_key=True)  # 學號
+    # 學生代表的屬性
+    student_id = models.CharField(max_length=15)  # 學號
     school_system = models.CharField(max_length=10)  # 學制
     grade = models.CharField(max_length=10)  # 年級
 
-    def get_absolute_url(self):
-        return reverse(
-            "accounts:student-representative-profile", kwargs={"id": self.id}
-        )
+    # 建立使用者的同時新增簡介
+    @receiver(post_save, sender=Participant)
+    def create_user_profile(sender, instance, created, **kwargs):
+        if created:
+            Profile.objects.create(user=instance)
 
+    # # 儲存使用者的簡介
+    @receiver(post_save, sender=Participant)
+    def save_user_profile(sender, instance, **kwargs):
+        instance.profile.save()
 
-# 校外老師
-class ExternalTeacherProfile(Profile):
-    school = models.CharField(max_length=50)  # 任職學校
-    department = models.CharField(max_length=20)  # 系所
-    title = models.CharField(max_length=20)
-    telephone = PhoneNumberField(region="TW")
-    address = models.CharField(max_length=100)
-    bank_account = models.CharField(max_length=14)
+    # 檢查類別
+    def is_expert(self):
+        return self.user.type == 0
 
-    def get_absolute_url(self):
-        return reverse("accounts:external-teacher-profile", kwargs={"id": self.id})
+    def is_student(self):
+        return self.user.type == 1
 
+    def is_teacher(self):
+        return self.user.type == 2
 
-# 系助理
-class AssistantProfile(Profile):
-    telephone = PhoneNumberField(region="TW")
+    def is_assistant(self):
+        return self.user.type == 3
 
-    def get_absolute_url(self):
-        return reverse("accounts:assistant-profile", kwargs={"id": self.id})
-
-
-# 系上老師
-class ProfessorProfile(Profile):
-    title = models.CharField(max_length=20)
-    telephone = PhoneNumberField(region="TW")
+    def is_professor(self):
+        return self.user.type == 4
 
     def get_absolute_url(self):
-        return reverse("profiles:professor-profile", kwargs={"id": self.id})
+        return reverse("accounts:user-profile", kwargs={"id": self.id})

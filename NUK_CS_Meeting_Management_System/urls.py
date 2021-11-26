@@ -17,11 +17,16 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
-from meetings.views import MeetingListView
+from django.shortcuts import render, get_object_or_404
+
+
+def home_view(request):
+    return render(request, "index.html", {})
+
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+    path("", home_view, name="home"),
     path("meetings/", include("meetings.urls")),
-    path("", MeetingListView.as_view(), name="home"),
     path("accounts/", include("accounts.urls")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
