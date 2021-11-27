@@ -17,7 +17,7 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render
 
 
 def home_view(request):

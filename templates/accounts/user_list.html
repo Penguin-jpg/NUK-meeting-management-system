@@ -3,7 +3,40 @@
 {% block title %}人員列表{% endblock %}
 
 {% block content %}
-{% for user in users %}
-<p>{{ user.username }}</p>
-{% endfor %}
+<br>
+<h1>人員列表</h1>
+<br>
+<div class="table-responsive">
+    <table class="table table-dark">
+        <thead>
+            <tr>
+                <th scope="col">姓名</th>
+                <th scope="col">電子信箱</th>
+                <td scope="col">身分</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for participant in participant_list %}
+            <tr>
+                <th scope="row">
+                    <a
+                        href="{% url 'user-profile' participant.profile.id %}">{{ participant.last_name }}{{ participant.first_name }}</a>
+                </th>
+                <td>{{ participant.email }}</td>
+                {% if participant.type == 0 %}
+                <td>業界專家</td>
+                {% elif participant.type == 1 %}
+                <td>學生代表</td>
+                {% elif participant.type == 2 %}
+                <td>校外老師</td>
+                {% elif participant.type == 3 %}
+                <td>系助理</td>
+                {% elif participant.type == 4 %}
+                <td>系上老師</td>
+                {% endif %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
 {% endblock %}

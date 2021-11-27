@@ -1,8 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import (
-    PasswordChangeForm,
     UserCreationForm,
-    UserChangeForm,
     UsernameField,
     AuthenticationForm,
 )
@@ -19,11 +17,6 @@ IDENTITY = (
     (3, "系助理"),
     (4, "系上老師"),
 )
-
-
-def password1_help_text():
-    pass
-
 
 # 申請帳號的表單
 class SignUpForm(UserCreationForm):
@@ -50,7 +43,8 @@ class SignUpForm(UserCreationForm):
     )
     type = forms.ChoiceField(label="身分", choices=IDENTITY, required=True)
     email = forms.EmailField(label="電子信箱", required=True)
-    phone = PhoneNumberField(label="連絡電話", region="TW", required=False)
+    # phone = PhoneNumberField(label="連絡電話", region="TW", required=False) # 暫時先不用PhoneNumberField
+    phone = forms.CharField(label="連絡電話", max_length=20)
 
     class Meta:
         model = Participant
@@ -120,38 +114,13 @@ class LoginForm(AuthenticationForm):
         self.helper.add_input(Submit("submit", "登入", css_class="btn-secondary"))
 
 
-# admin後台修改使用者的表單
-class ParticipantChangeForm(UserChangeForm):
-    username = forms.CharField(label="使用者名稱", max_length=150, required=False)
-    first_name = forms.CharField(label="名稱", max_length=10, required=False)
-    last_name = forms.CharField(label="姓氏", max_length=10, required=False)
-    type = forms.ChoiceField(label="身分", choices=IDENTITY, required=False)
-    email = forms.EmailField(label="電子信箱", required=False)
-    phone = PhoneNumberField(label="連絡電話", region="TW", required=False)
-
-    class Meta:
-        model = Participant
-        fields = [
-            "username",
-            "last_name",
-            "first_name",
-            "password",
-            "email",
-            "type",
-            "phone",
-        ]
-
-    def __init__(self, *args, **kwargs):
-        super(ParticipantChangeForm, self).__init__(*args, **kwargs)
-        self.fields["password"].label = "密碼"
-
-
 # 個人資料的編輯表格
 class ProfileEditForm(forms.ModelForm):
-    email = forms.EmailField(label="電子信箱", required=False)
     sex = forms.ChoiceField(label="性別", choices=SEX, initial=0, required=False)
-    phone = PhoneNumberField(label="連絡電話", region="TW", required=False)
-    telephone = PhoneNumberField(label="辦公室電話", region="TW", required=False)
+    # phone = PhoneNumberField(label="連絡電話", region="TW", required=False)
+    # telephone = PhoneNumberField(label="辦公室電話", region="TW", required=False)
+    phone = forms.CharField(label="連絡電話", max_length=20, required=False)
+    telephone = forms.CharField(label="辦公室電話", max_length=20, required=False)
     company = forms.CharField(label="任職公司", max_length=50, required=False)
     address = forms.CharField(label="聯絡地址", max_length=100, required=False)
     title = forms.CharField(label="職稱", max_length=20, required=False)
@@ -171,7 +140,6 @@ class ProfileEditForm(forms.ModelForm):
         model = Profile
         fields = [
             "sex",
-            "email",
             "phone",
             "telephone",
             "company",
@@ -193,7 +161,6 @@ class ProfileEditForm(forms.ModelForm):
         data = {
             "user": instance.user,
             "sex": instance.sex,
-            "email": instance.email,
             "phone": instance.phone,
             "telephone": instance.telephone,
             "title": instance.title,
@@ -218,7 +185,6 @@ class ProfileEditForm(forms.ModelForm):
         self.helper.form_id = "edit-profile-form"
         # 共通欄位
         self.helper.layout = Layout(
-            Field("email"),
             Field("sex"),
             Field("phone"),
         )

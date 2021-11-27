@@ -1,8 +1,8 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser
-from django.urls import reverse
+from django.contrib.auth.models import AbstractUser, Group
 from django.dispatch import receiver
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, pre_save
+from django.urls import reverse
 from phonenumber_field.modelfields import PhoneNumberField
 
 
@@ -15,11 +15,7 @@ class Participant(AbstractUser):
 
     class Meta:
         permissions = [
-            ("look_up_meeting_minutes", "查詢會議紀錄"),
-            ("view_meeting_minutes", "觀看會議紀錄"),
             ("request_for_modifying_meeting_minutes", "發出會議紀錄修改請求"),
-            ("create_meeting", "產生新的會議資料"),
-            ("edit_meeting", "編輯會議資料"),
             ("create_extempore_motion", "新增臨時動議"),
             ("mail_result", "寄出開會結果"),
         ]
@@ -31,7 +27,6 @@ class Participant(AbstractUser):
         return reverse("accounts:user-detail", kwargs={"id": self.id})
 
 
-# TODO: 照著這篇的建議做 https://stackoverflow.com/questions/11335422/django-multiple-profiles
 # 使用者的簡介，所以用一對一的關係連結
 # 會使用一個包含所有欄位的Profile，再透過type來分類
 class Profile(models.Model):
@@ -40,11 +35,12 @@ class Profile(models.Model):
         Participant, null=True, on_delete=models.CASCADE
     )  # 對應的使用者
     sex = models.IntegerField(choices=SEX, default=0)  # 性別
-    email = models.EmailField()  # 電子信箱
-    phone = PhoneNumberField(region="TW")  # 連絡電話
+    # phone = PhoneNumberField(region="TW")  # 連絡電話(暫時先不用PhoneNumberField)
+    phone = models.CharField(max_length=20)  # 連絡電話
 
     # 業界專家、校外老師、系助理、系上老師共通的屬性
-    telephone = PhoneNumberField(region="TW")  # 辦公室電話
+    # telephone = PhoneNumberField(region="TW")  # 辦公室電話(暫時先不用PhoneNumberField)
+    telephone = models.CharField(max_length=20)  # 辦公室電話
 
     # 業界專家、校外老師、系上老師共通的屬性
     title = models.CharField(max_length=20)  # 職稱
@@ -65,17 +61,6 @@ class Profile(models.Model):
     school_system = models.CharField(max_length=10)  # 學制
     grade = models.CharField(max_length=10)  # 年級
 
-    # 建立使用者的同時新增簡介
-    @receiver(post_save, sender=Participant)
-    def create_user_profile(sender, instance, created, **kwargs):
-        if created:
-            Profile.objects.create(user=instance)
-
-    # # 儲存使用者的簡介
-    @receiver(post_save, sender=Participant)
-    def save_user_profile(sender, instance, **kwargs):
-        instance.profile.save()
-
     # 檢查類別
     def is_expert(self):
         return self.user.type == 0
@@ -94,3 +79,23 @@ class Profile(models.Model):
 
     def get_absolute_url(self):
         return reverse("accounts:user-profile", kwargs={"id": self.id})
+
+
+# 建立使用者後加入群組(待研究，目前沒成功)
+# @receiver(post_save, sender=Participant)
+# def add_user_to_group(sender, instance, created, **kwargs):
+#     if created:
+#         if instance.type == 3:
+#             group = Group.objects.get(name="operators")
+#         else:
+#             group = Group.objects.get(name="others")
+
+#         instance.groups.add(group)
+#         instance.save()
+
+
+# 建立使用者後新增簡介
+@receiver(post_save, sender=Participant)
+def create_user_profile(sender, instance, created, **kwargs):
+    if created:
+        Profile.objects.create(user=instance).save()

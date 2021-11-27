@@ -20,9 +20,11 @@
                 </a>
                 <div class="dropdown-menu dropdown-menu-lg-right dropdown-menu-md-right"
                     aria-labelledby="navbarDropdown">
-                    <a class="dropdown-item" href="{% url 'user-profile' %}">查看個人資料</a>
-                    <a class="dropdown-item" href="{% url 'edit-profile' %}"><b>編輯個人資料</b></a>
+                    <a class="dropdown-item" href="{% url 'user-profile' user.profile.id %}">查看個人資料</a>
+                    <a class="dropdown-item" href="{% url 'edit-profile' user.profile.id %}"><b>編輯個人資料</b></a>
                     <a class="dropdown-item" href="{% url 'logout' %}"><b>登出</b></a>
+                    {% comment %} <a class="dropdown-item" href="/user_settings/?theme=dark"><b>黑暗模式</b></a>
+                    <a class="dropdown-item" href="/user_settings/?theme=light"><b>淺色模式</b></a> {% endcomment %}
                 </div>
             </li>
             {% else %}

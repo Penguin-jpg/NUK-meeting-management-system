@@ -26,9 +26,9 @@ urlpatterns = [
     path("", UserListView.as_view(), name="user-list"),
     path("delete/<int:id>/", UserDeleteView.as_view(), name="user-delete"),
     path(
-        "profile/",
+        "profile/<int:id>",
         user_profile_view,
         name="user-profile",
     ),
-    path("profile/edit/", edit_profile_view, name="edit-profile"),
+    path("profile/edit/<int:id>", edit_profile_view, name="edit-profile"),
 ]
