@@ -66,9 +66,14 @@ a {
 }
 
 /* alert */
-.alert {
-  background-color: blue;
-  color: #ddd;
+/* 未處理，只是測試用 */
+.alert-custom {
+  background-color: #6089d5;
+  color: #fff;
+}
+
+.close {
+  color: black;
 }
 
 /* 簡介字體 */

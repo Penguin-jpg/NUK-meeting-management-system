@@ -94,7 +94,7 @@ WSGI_APPLICATION = "NUK_CS_Meeting_Management_System.wsgi.application"
 MESSAGE_TAGS = {
     messages.DEBUG: "alert-info",
     messages.INFO: "alert-info",
-    messages.SUCCESS: "alert-success",
+    messages.SUCCESS: "alert-custom",
     messages.WARNING: "alert-warning",
     messages.ERROR: "alert-danger",
 }

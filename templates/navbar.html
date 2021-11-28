@@ -37,7 +37,7 @@
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle active" href="#" id="navbarDropdown" role="button"
                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    {{ user.last_name }}{{ user.first_name }}
+                    {{ request.user.last_name }}{{ request.user.first_name }}
                 </a>
                 <div class="dropdown-menu dropdown-menu-lg-right dropdown-menu-md-right"
                     aria-labelledby="navbarDropdown">

@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %} {{profile.user.last_name}}{{profile.user.first_name}} | 個人資料 {% endblock %}
+{% block title %} {{ profile.user.last_name}}{{ profile.user.first_name}} | 個人資料 {% endblock %}
 
 {% block content%}
 <br>
@@ -11,7 +11,7 @@
         <span class="profile-text">姓名</span>
     </div>
     <div class="col-md-6">
-        <p class="profile-text">{{ request.user.last_name }}{{ request.user.first_name }}</p>
+        <p class="profile-text">{{ profile.user.last_name }}{{ profile.user.first_name }}</p>
     </div>
 </div>
 <!-- 共通欄位 -->
@@ -40,7 +40,7 @@
         <span class="profile-text">電子信箱</span>
     </div>
     <div class="col-md-6">
-        <p class="profile-text">{{ request.user.email }}</p>
+        <p class="profile-text">{{ profile.user.email }}</p>
     </div>
 </div>
 <div class="row">
@@ -54,7 +54,7 @@
 
 <!-- 特有欄位 -->
 <!-- type = ((0, "業界專家"), (1, "學生代表"), (2, "校外老師"), (3, "系助理"), (4, "系上老師")) -->
-{% if request.user.type == 0 %}
+{% if profile.user.type == 0 %}
 <div class="row">
     <div class="col-md-6">
         <span class="profile-text">任職公司</span>
@@ -95,7 +95,7 @@
         <p class="profile-text">{{ profile.bank_account }}</p>
     </div>
 </div>
-{% elif request.user.type == 1 %}
+{% elif profile.user.type == 1 %}
 <div class="row">
     <div class="col-md-6">
         <span class="profile-text">學號</span>
@@ -120,7 +120,7 @@
         <p class="profile-text">{{ profile.grade }}</p>
     </div>
 </div>
-{% elif request.user.type == 2 %}
+{% elif profile.user.type == 2 %}
 <div class="row">
     <div class="col-md-6">
         <span class="profile-text">任職學校</span>
@@ -169,7 +169,7 @@
         <p class="profile-text">{{ profile.bank_account }}</p>
     </div>
 </div>
-{% elif request.user.type == 3 %}
+{% elif profile.user.type == 3 %}
 <div class="row">
     <div class="col-md-6">
         <span class="profile-text">辦公室電話</span>
@@ -178,7 +178,7 @@
         <p class="profile-text">{{ profile.telephone }}</p>
     </div>
 </div>
-{% elif request.user.type == 4 %}
+{% elif profile.user.type == 4 %}
 <div class="row">
     <div class="col-md-6">
         <span class="profile-text">職級</span>

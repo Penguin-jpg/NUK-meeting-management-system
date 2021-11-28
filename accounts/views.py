@@ -12,17 +12,18 @@ from .forms import (
 )
 
 # 使用者註冊
-class UserRegisterView(CreateView):
-    form_class = SignUpForm
-    template_name = "registration/register.html"
-    success_url = reverse_lazy("login")
-    success_message = "SUCCESS!!"
+def user_register_view(request):
+    form = SignUpForm(request.POST or None)
+    if form.is_valid():
+        form.save()
+        messages.success(request, "註冊成功!")
+        return redirect("login")
+    else:
+        form = SignUpForm()
 
-    def get_success_message(self, cleaned_data):
-        return self.success_message % dict(
-            cleaned_data,
-            calculated_field=self.object.calculated_field,
-        )
+    context = {"form": form}
+
+    return render(request, "registration/register.html", context)
 
 
 # 使用者列表(可以更精緻，但暫時算完成)
@@ -85,8 +86,10 @@ def edit_profile_view(request, id):
     form = ProfileEditForm(request.POST or None, instance=profile)
     if form.is_valid():
         form.save()
+        messages.success(request, "修改成功!")
         return redirect("user-profile", id)
     else:
+        # messages.error(request, "修改失敗")
         form = ProfileEditForm(instance=profile)
 
     context = {"form": form, "profile": profile}
