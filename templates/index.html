@@ -4,24 +4,10 @@
 
 {% block content%}
 <br>
-<h1>近期舉行的會議</h1>
-{% for meeting in meetings %}
-<div class="col-md-8 card mb-4  mt-3 left  top">
-    <div class="card-body">
-        <h1><a href="{% url 'meeting-detail' meeting.id %}">{{ meeting.name }}</a></h1>
-        <p class="text-muted">
-            {% comment %} <small>
-                <a href="{% url 'user-profile' meeting.author.pk %}">{{ meeting.author }}</a>
-            </small> {% endcomment %}
-            <small style="margin-left: 2cm">{{ meeting.date }}</small>
-        </p>
-        <p class="card-text">
-            Test content
-        </p>
-        <p style="text-align: right;">
-            <a href="{% url 'meeting-detail' meeting.id %}">查看議程</a>
-        </p>
-    </div>
+<h1>行事曆</h1>
+<div class="clearfix">
+    <a class="btn btn-info left calendar-btn" href="{% url 'home'%}?{{ previous_month }}">上個月</a>
+    <a class="btn btn-info right calendar-btn" href="{% url 'home'%}?{{ next_month }}">下個月</a>
 </div>
-{% endfor %}
+{{ calendar|safe }}
 {% endblock %}

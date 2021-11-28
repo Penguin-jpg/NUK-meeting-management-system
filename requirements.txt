@@ -1,3 +1,4 @@
 django-phonenumber-field[phonenumbers]
 django-crispy-forms
 djangorestframework
+django-filer

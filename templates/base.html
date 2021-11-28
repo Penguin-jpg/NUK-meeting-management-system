@@ -18,12 +18,15 @@
         <title>{% block title %} 要用的標題 {% endblock %}</title>
 
         {% load static %}
-        <link rel="stylesheet" href="{% static 'dark.css' %}" />
+        <link rel="stylesheet" href="{% static 'css/dark.css' %}" />
     </head>
 
     <body>
         <!-- navbar -->
         {% include "navbar.html" %}
+
+        <!-- messages -->
+        {% include "messages.html" %}
 
         <div class="container" style="text-align: center">{% block content %} 要放的內容 {% endblock %}</div>
 

@@ -18,10 +18,7 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from django.shortcuts import render
-
-
-def home_view(request):
-    return render(request, "index.html", {})
+from meetings.views import home_view
 
 
 urlpatterns = [
@@ -29,4 +26,5 @@ urlpatterns = [
     path("", home_view, name="home"),
     path("meetings/", include("meetings.urls")),
     path("accounts/", include("accounts.urls")),
+    path("filer/", include("filer.urls")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

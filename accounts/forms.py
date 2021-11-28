@@ -4,6 +4,12 @@ from django.contrib.auth.forms import (
     UsernameField,
     AuthenticationForm,
 )
+from django.contrib.auth import (
+    authenticate,
+    get_user_model,
+    password_validation,
+)
+from django.core.exceptions import ValidationError
 from .models import Participant, Profile
 from phonenumber_field.formfields import PhoneNumberField
 from crispy_forms.helper import FormHelper, Layout
@@ -83,13 +89,23 @@ class SignUpForm(UserCreationForm):
 
 # 登入的表單
 class LoginForm(AuthenticationForm):
-    username = UsernameField(label="使用者名稱", max_length=150, required=True)
+    username = UsernameField(
+        label="使用者名稱",
+        max_length=150,
+        required=True,
+        error_messages={"required": "使用者名稱或密碼錯誤"},
+    )
     password = forms.CharField(
         label="密碼",
         max_length=200,
         required=True,
         widget=forms.PasswordInput(attrs={"class": "form-control", "type": "password"}),
     )
+
+    error_messages = {
+        "invalid_login": "使用者名稱或密碼錯誤",
+        "inactive": "This account is inactive.",
+    }
 
     class Meta:
         model = Participant
@@ -108,10 +124,25 @@ class LoginForm(AuthenticationForm):
         self.helper.field_class = "col-sm-12 col-md-6 col-lg-8"
         self.helper.form_id = "login-form"
         self.helper.layout = Layout(
-            Field("username", placeholder="請輸入使用者名稱"),
+            Field("username", placeholder="請輸入使用者名稱", css_class="form-control"),
             Field("password", placeholder="請輸入密碼"),
         )
         self.helper.add_input(Submit("submit", "登入", css_class="btn-secondary"))
+
+    def clean(self):
+        username = self.cleaned_data.get("username")
+        password = self.cleaned_data.get("password")
+
+        if username is not None and password:
+            self.user_cache = authenticate(
+                self.request, username=username, password=password
+            )
+            if self.user_cache is None:
+                raise self.get_invalid_login_error()
+            else:
+                self.confirm_login_allowed(self.user_cache)
+
+        return self.cleaned_data
 
 
 # 個人資料的編輯表格
@@ -157,7 +188,6 @@ class ProfileEditForm(forms.ModelForm):
         super(ProfileEditForm, self).__init__(*args, **kwargs)
         # 取得目前的profile
         instance = kwargs["instance"]
-        print(instance)
         data = {
             "user": instance.user,
             "sex": instance.sex,
@@ -197,7 +227,7 @@ class ProfileEditForm(forms.ModelForm):
                     Field("company"),
                     Field("address"),
                     Field("title"),
-                    Field("banck_account"),
+                    Field("bank_account"),
                 ]
             )
         elif instance.is_student():
@@ -211,7 +241,7 @@ class ProfileEditForm(forms.ModelForm):
                     Field("address"),
                     Field("department"),
                     Field("title"),
-                    Field("banck_account"),
+                    Field("bank_account"),
                 ]
             )
         elif instance.is_assistant():
@@ -220,3 +250,9 @@ class ProfileEditForm(forms.ModelForm):
             self.helper.layout.extend([Field("telephone"), Field("title")])
 
         self.helper.add_input(Submit("submit", "修改", css_class="btn-secondary"))
+
+    def clean_bank_account(self):
+        bank_account = self.cleaned_data["bank_account"]
+        if bank_account == "123":
+            raise ValidationError("無效的銀行帳號")
+        return bank_account

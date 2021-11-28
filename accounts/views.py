@@ -4,6 +4,7 @@ from django.urls import reverse_lazy, reverse
 from django.contrib.auth.decorators import login_required, permission_required
 from django.utils.decorators import method_decorator
 from django.views.generic.edit import DeleteView
+from django.contrib import messages
 from .models import Participant, Profile
 from .forms import (
     SignUpForm,
@@ -15,6 +16,13 @@ class UserRegisterView(CreateView):
     form_class = SignUpForm
     template_name = "registration/register.html"
     success_url = reverse_lazy("login")
+    success_message = "SUCCESS!!"
+
+    def get_success_message(self, cleaned_data):
+        return self.success_message % dict(
+            cleaned_data,
+            calculated_field=self.object.calculated_field,
+        )
 
 
 # 使用者列表(可以更精緻，但暫時算完成)
@@ -25,6 +33,7 @@ class UserListView(ListView):
 
 
 # 刪除使用者(可以更精緻，但暫時算完成)
+@method_decorator(login_required(login_url="login"), name="dispatch")
 @method_decorator(
     permission_required("accounts.delete_participant", raise_exception=True),
     name="dispatch",
@@ -76,7 +85,7 @@ def edit_profile_view(request, id):
     form = ProfileEditForm(request.POST or None, instance=profile)
     if form.is_valid():
         form.save()
-        return redirect("user-profile")
+        return redirect("user-profile", id)
     else:
         form = ProfileEditForm(instance=profile)
 

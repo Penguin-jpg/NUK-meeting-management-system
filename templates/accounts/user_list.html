@@ -13,6 +13,7 @@
                 <th scope="col">姓名</th>
                 <th scope="col">電子信箱</th>
                 <td scope="col">身分</th>
+                <td scope="col">編輯</th>
             </tr>
         </thead>
         <tbody>
@@ -22,7 +23,9 @@
                     <a
                         href="{% url 'user-profile' participant.profile.id %}">{{ participant.last_name }}{{ participant.first_name }}</a>
                 </th>
+
                 <td>{{ participant.email }}</td>
+
                 {% if participant.type == 0 %}
                 <td>業界專家</td>
                 {% elif participant.type == 1 %}
@@ -34,6 +37,9 @@
                 {% elif participant.type == 4 %}
                 <td>系上老師</td>
                 {% endif %}
+                <td scope="col">
+                    <a class="btn btn-info" href="{% url 'edit-profile' participant.profile.id %}">編輯</a>
+                </td>
             </tr>
             {% endfor %}
         </tbody>

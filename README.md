@@ -33,9 +33,10 @@
 - 2021/11/27
     1. 完成人員所有的html(基本部分，外觀可以美化)
     2. 加入權限限制和群組
-
-### 英文用語參考
-1. https://sweetrans.pixnet.net/blog/post/289207848-%E3%80%88%E8%AB%87%E6%96%87%E8%AB%96%E8%AD%AF%E3%80%89%E6%9C%83%E8%AD%B0%E7%9A%84%E8%8B%B1%E6%96%87-english-for-meetings-%E8%98%87
+- 2021/11/28
+    1. 完成會議基本架構和限制
+    2. 新增日曆
+    3. 調整網頁外觀
 
 ### Model
 1. 會議
@@ -76,3 +77,7 @@
 - [ ] 附件功能(新增、刪除、更新)
 - [ ] 決議功能(新增、刪除、更新)
 - [ ] 美化網頁及小功能
+
+### 參考資料
+1. https://sweetrans.pixnet.net/blog/post/289207848-%E3%80%88%E8%AB%87%E6%96%87%E8%AB%96%E8%AD%AF%E3%80%89%E6%9C%83%E8%AD%B0%E7%9A%84%E8%8B%B1%E6%96%87-english-for-meetings-%E8%98%87
+2. https://www.huiwenteo.com/normal/2018/07/24/django-calendar.html
