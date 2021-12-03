@@ -20,23 +20,11 @@
             {% for participant in participant_list %}
             <tr>
                 <th scope="row">
-                    <a
-                        href="{% url 'user-profile' participant.profile.id %}">{{ participant.last_name }}{{ participant.first_name }}</a>
+                    <a href="{% url 'user-profile' participant.profile.id %}">{{ participant.get_full_name }}</a>
                 </th>
 
-                <td>{{ participant.email }}</td>
-
-                {% if participant.type == 0 %}
-                <td>業界專家</td>
-                {% elif participant.type == 1 %}
-                <td>學生代表</td>
-                {% elif participant.type == 2 %}
-                <td>校外老師</td>
-                {% elif participant.type == 3 %}
-                <td>系助理</td>
-                {% elif participant.type == 4 %}
-                <td>系上老師</td>
-                {% endif %}
+                <td>{{ participant.email|safe }}</td>
+                <td>{{ participant.get_identity|safe }}</td>
                 <td scope="col">
                     <a class="btn btn-info" href="{% url 'edit-profile' participant.profile.id %}">編輯</a>
                 </td>

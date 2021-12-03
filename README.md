@@ -40,6 +40,11 @@
     4. 新增message功能(未完成)
     5. 修正了管理員修改簡介後會出現姓名顯是錯誤的問題
     6. 將註冊帳號的view改為function based view
+- 2021/12/3
+    1. 將登入方式改為使用email和密碼(原本為使用者名稱和密碼)
+    2. 修改admin後台的表單
+    3. 調整app架構
+    4. 調整template邏輯(下次可能會將template改成jinja2來增加效能)
 
 ### Model
 1. 會議

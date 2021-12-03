@@ -6,7 +6,7 @@
 <form method="post" action="">
     {% csrf_token %}
     <br>
-    <h1>確認要刪除"{{user.last_name}}{{user.first_name}}"?</h1><br>
+    <h1>確認要刪除"{{ user.get_full_name|safe }}"?</h1><br>
     <input class="btn btn-danger" type="submit" value="確認" />
     <a href="#">
         <div class="btn btn-secondary">取消</div>

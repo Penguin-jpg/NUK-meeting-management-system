@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.utils.decorators import method_decorator
 from django.views.generic.edit import DeleteView
 from django.contrib import messages
+from django.contrib.auth import authenticate
 from .models import Participant, Profile
 from .forms import (
     SignUpForm,
@@ -57,19 +58,9 @@ def user_profile_view(request, id):
     except Profile.DoesNotExist:
         return render(request, "accounts/no_profile.html", {})
 
-    # type = ((0, "業界專家"), (1, "學生代表"), (2, "校外老師"), (3, "系助理"), (4, "系上老師"))
-    if profile.is_expert():
-        identity = "業界專家"
-    elif profile.is_student():
-        identity = "學生代表"
-    elif profile.is_teacher():
-        identity = "校外老師"
-    elif profile.is_assistant():
-        identity = "系助理"
-    elif profile.is_professor():
-        identity = "系上老師"
+    form = ProfileEditForm(instance=profile)
 
-    context = {"identity": identity, "profile": profile}
+    context = {"profile": profile, "form": form}
 
     return render(request, "accounts/user_profile.html", context)
 

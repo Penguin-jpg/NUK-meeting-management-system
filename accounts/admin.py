@@ -1,16 +1,19 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from .models import Participant, Profile
+from .forms import ParticipantChangeForm, SignUpForm, ProfileChangeForm
 
 
 class ParticipantAdmin(UserAdmin):
     model = Participant
+    form = ParticipantChangeForm
+    # add_form = SignUpForm
 
     list_display = ["username", "last_name", "first_name", "email", "type"]
 
     fieldsets = (
-        (None, {"fields": ("username", "password")}),
-        ("Personal info", {"fields": ("first_name", "last_name", "email", "type")}),
+        (None, {"fields": ("username", "email", "password")}),
+        ("Personal info", {"fields": ("last_name", "first_name", "type")}),
         (
             "Permissions",
             {
@@ -27,8 +30,8 @@ class ParticipantAdmin(UserAdmin):
     )
 
     add_fieldsets = (
-        (None, {"fields": ("username", "password1", "password2")}),
-        ("Personal info", {"fields": ("first_name", "last_name", "email", "type")}),
+        (None, {"fields": ("username", "email", "password1", "password2")}),
+        ("Personal info", {"fields": ("last_name", "first_name", "type")}),
         (
             "Permissions",
             {
@@ -46,6 +49,7 @@ class ParticipantAdmin(UserAdmin):
 
 class ProfileAdmin(admin.ModelAdmin):
     list_display = ["user", "sex", "phone"]
+    form = ProfileChangeForm
 
     fieldsets = (
         (

@@ -11,7 +11,7 @@
         <span class="profile-text">會議名稱</span>
     </div>
     <div class="col-md-6">
-        <p class="profile-text">{{ meeting.name }}</p>
+        <p class="profile-text">{{ meeting.name|safe }}</p>
     </div>
 </div>
 <div class="row">
@@ -19,7 +19,7 @@
         <span class="profile-text">種類</span>
     </div>
     <div class="col-md-6">
-        <p class="profile-text">{{ meeting.type }}</p>
+        <p class="profile-text">{{ meeting.type|safe }}</p>
     </div>
 </div>
 <div class="row">
@@ -27,7 +27,7 @@
         <span class="profile-text">時間</span>
     </div>
     <div class="col-md-6">
-        <p class="profile-text">{{ meeting.date }}</p>
+        <p class="profile-text">{{ meeting.date|safe }}</p>
     </div>
 </div>
 <div class="row">
@@ -35,7 +35,7 @@
         <span class="profile-text">地點</span>
     </div>
     <div class="col-md-6">
-        <p class="profile-text">{{ meeting.location }}</p>
+        <p class="profile-text">{{ meeting.location|safe }}</p>
     </div>
 </div>
 <div class="row">
@@ -43,7 +43,7 @@
         <span class="profile-text">主席</span>
     </div>
     <div class="col-md-6">
-        <p class="profile-text">{{ meeting.chairman }}</p>
+        <p class="profile-text">{{ meeting.chairman|safe }}</p>
     </div>
 </div>
 <div class="row">
@@ -51,7 +51,7 @@
         <span class="profile-text">記錄人員</span>
     </div>
     <div class="col-md-6">
-        <p class="profile-text">{{ meeting.minutes_taker }}</p>
+        <p class="profile-text">{{ meeting.minutes_taker|safe }}</p>
     </div>
 </div>
 {% endblock %}
