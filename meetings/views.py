@@ -14,7 +14,7 @@ def get_date(request_day):
     if request_day:
         year, month = (int(x) for x in request_day.split("-"))
         return datetime(year, month, day=1)
-    return datetime.today()
+    return datetime.now()
 
 
 # 上個月
@@ -111,7 +111,5 @@ def meeting_today_view(request, year, month, day):
     context = {
         "meetings": meetings,
     }
-
-    print(meetings)
 
     return render(request, "meetings/meeting_today.html", context)

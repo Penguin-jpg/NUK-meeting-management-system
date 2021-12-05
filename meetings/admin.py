@@ -16,6 +16,7 @@ class MeetingAdmin(admin.ModelAdmin):
                     "location",
                     "chairman",
                     "minutes_taker",
+                    "participants",
                 )
             },
         ),
@@ -31,9 +32,12 @@ class MeetingAdmin(admin.ModelAdmin):
                 "location",
                 "chairman",
                 "minutes_taker",
+                "participants",
             )
         },
     )
+
+    filter_horizontal = ("participants",)
 
 
 admin.site.register(Meeting, MeetingAdmin)

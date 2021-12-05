@@ -1,22 +1,36 @@
 from django import forms
 from .models import Meeting
+from accounts.models import Participant
 from crispy_forms.helper import FormHelper, Layout
 from crispy_forms.layout import Submit, Field
+from crispy_forms.bootstrap import InlineCheckboxes
+
+
+class CustomModelMultipleChoiceField(forms.ModelMultipleChoiceField):
+    def label_from_instance(self, member):
+        return member.last_name + member.first_name
+
+
+class CustomCheckboxSelectMultiple(forms.CheckboxSelectMultiple):
+    option_template_name = "django/forms/widgets/checkbox_option.html"
 
 
 class MeetingCreateForm(forms.ModelForm):
-    name = forms.CharField(label="會議名稱", max_length=100, required=False)
-    type = forms.CharField(label="種類", max_length=20, required=False)
-    date = forms.DateField(
+    name = forms.CharField(label="會議名稱", max_length=100, required=True)
+    type = forms.CharField(label="種類", max_length=20, required=True)
+    date = forms.DateTimeField(
         label="時間",
         widget=forms.DateInput(
             attrs={"type": "datetime-local"}, format="%Y-%m-%dT%H:%M"
         ),
-        required=False,
+        required=True,
     )
-    location = forms.CharField(label="地點", max_length=100, required=False)
-    chairman = forms.CharField(label="主席", max_length=20, required=False)
-    minutes_taker = forms.CharField(label="記錄人員", max_length=20, required=False)
+    location = forms.CharField(label="地點", max_length=100, required=True)
+    chairman = forms.CharField(label="主席", max_length=20, required=True)
+    minutes_taker = forms.CharField(label="記錄人員", max_length=20, required=True)
+    participants = CustomModelMultipleChoiceField(
+        queryset=Participant.objects.all(), widget=forms.CheckboxSelectMultiple
+    )
 
     class Meta:
         model = Meeting
@@ -27,6 +41,7 @@ class MeetingCreateForm(forms.ModelForm):
             "location",
             "chairman",
             "minutes_taker",
+            "participants",
         ]
 
     def __init__(self, *args, **kwargs):
@@ -48,6 +63,7 @@ class MeetingCreateForm(forms.ModelForm):
             Field("location"),
             Field("chairman"),
             Field("minutes_taker"),
+            InlineCheckboxes("participants"),
         )
         self.helper.add_input(Submit("submit", "建立", css_class="btn-secondary"))
 

@@ -18,7 +18,7 @@ class Calendar(HTMLCalendar):
 
         # 只需要一個超連結就好
         for meeting in meetings:
-            date += f'<span class="meeting-link">{meetings.first().get_url}</span>'
+            date += f'<span class="meeting-link">{meeting.get_url}</span>'
             break
 
         if day != 0:

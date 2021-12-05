@@ -3,7 +3,7 @@ from django.contrib.auth.models import AbstractUser, UserManager, Group
 from django.contrib.auth.hashers import make_password
 from django.apps import apps
 from django.dispatch import receiver
-from django.db.models.signals import post_save, pre_save
+from django.db.models.signals import post_save
 from django.urls import reverse
 from phonenumber_field.modelfields import PhoneNumberField
 

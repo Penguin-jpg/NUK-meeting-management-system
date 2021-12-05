@@ -25,7 +25,7 @@
                     <a href="{% url 'meeting-detail' meeting.id %}">{{ meeting.name|safe }}</a>
                 </th>
                 <td>{{ meeting.type|safe }}</td>
-                <td>{{ meeting.date|safe }}</td>
+                <td>{{ meeting.date }}</td>
                 <td>{{ meeting.location|safe }}</td>
                 <td>{{ meeting.chairman|safe }}</td>
                 <td>{{ meeting.minutes_taker|safe }}</td>
