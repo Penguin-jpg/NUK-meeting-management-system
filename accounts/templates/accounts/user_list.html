@@ -6,31 +6,37 @@
 <br>
 <h1>人員列表</h1>
 <br>
-<div class="table-responsive">
-    <table class="table">
-        <thead>
-            <tr>
-                <th scope="col">姓名</th>
-                <th scope="col">電子信箱</th>
-                <td scope="col">身分</th>
-                <td scope="col">編輯</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% comment %} {% comment %} {% for participant in participant_list %}
-            <tr>
-                <th scope="row">
-                    <a href="{% url 'user-info' participant.id %}">{{ participant.get_full_name }}</a>
-                </th>
-
-                <td>{{ participant.email|safe }}</td>
-                <td>{{ participant.get_identity|safe }}</td>
-                <td scope="col">
-                    <a class="btn btn-info" href="{% url 'edit-info' participant.id %}">編輯</a>
-                </td>
-            </tr>
-            {% endfor %} {% endcomment %} {% endcomment %}
-        </tbody>
-    </table>
-</div>
+<br>
+<table class="table-container">
+    <thead>
+        <tr>
+            <th>
+                <h1>姓名</h1>
+            </th>
+            <th>
+                <h1>電子信箱</h1>
+            </th>
+            <th>
+                <h1>身分</h1>
+            </th>
+            <th>
+                <h1>編輯</h1>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for participant in participant_list %}
+        <tr>
+            <td>
+                <a href="{% url 'user-info' participant.id %}">{{ participant.get_full_name }}</a>
+            </td>
+            <td>{{ participant.email|safe }}</td>
+            <td>{{ participant.get_identity|safe }}</td>
+            <td scope="col">
+                <a class="btn btn-info" href="{% url 'edit-info' participant.id %}">編輯</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
 {% endblock %}

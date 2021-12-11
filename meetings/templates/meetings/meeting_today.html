@@ -6,32 +6,43 @@
 <br>
 <h1>當日會議列表</h1>
 <br>
-<div class="table-responsive">
-    <table class="table table-dark">
-        <thead>
-            <tr>
-                <th scope="col">會議名稱</th>
-                <th scope="col">種類</th>
-                <td scope="col">時間</th>
-                <td scope="col">地點</th>
-                <td scope="col">主席</th>
-                <td scope="col">記錄人員</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for meeting in meetings %}
-            <tr>
-                <th scope="row">
-                    <a href="{% url 'meeting-detail' meeting.id %}">{{ meeting.name|safe }}</a>
-                </th>
-                <td>{{ meeting.type|safe }}</td>
-                <td>{{ meeting.date }}</td>
-                <td>{{ meeting.location|safe }}</td>
-                <td>{{ meeting.chairman |safe}}</td>
-                <td>{{ meeting.minutes_taker|safe }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</div>
+<br>
+<table class="table-container">
+    <thead>
+        <tr>
+            <th>
+                <h1>會議名稱</h1>
+            </th>
+            <th>
+                <h1>種類</h1>
+            </th>
+            <th>
+                <h1>時間</h1>
+            </th>
+            <th>
+                <h1>地點</h1>
+            </th>
+            <th>
+                <h1>主席</h1>
+            </th>
+            <th>
+                <h1>記錄人員</h1>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for meeting in meetings %}
+        <tr>
+            <td>
+                <a href="{% url 'meeting-detail' meeting.id %}">{{ meeting.name|safe }}</a>
+            </td>
+            <td>{{ meeting.type|safe }}</td>
+            <td>{{ meeting.date }}</td>
+            <td>{{ meeting.location|safe }}</td>
+            <td>{{ meeting.chairman |safe}}</td>
+            <td>{{ meeting.minutes_taker|safe }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
 {% endblock %}

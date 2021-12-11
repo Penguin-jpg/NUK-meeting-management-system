@@ -1,6 +1,12 @@
+/* 字體 */
+@import url(//fonts.googleapis.com/earlyaccess/notosanstc.css);
+
 /* 基本設定 */
+/* 基本配色參考：https://userstyles.org/styles/147272/hackmd-dark-theme */
 body {
   background-color: #1e1e1e;
+  /* Noto Sans TC 思源黑體 */
+  font-family: "Noto Sans TC", "微軟正黑體", sans-serif;
 }
 
 h1,
@@ -17,6 +23,24 @@ label,
 th,
 td {
   color: #ddd;
+}
+
+h1 {
+  font-size: 3em;
+  font-weight: 300;
+  line-height: 1em;
+  text-align: center;
+  font-weight: normal;
+}
+
+h2 {
+  font-size: 1em;
+  font-weight: 300;
+  text-align: center;
+  display: block;
+  line-height: 1em;
+  padding-bottom: 2em;
+  font-weight: normal;
 }
 
 a {
@@ -81,45 +105,8 @@ a {
   font-size: 30px;
 }
 
-/* 表格 */
-.table tr {
-  background-color: #1e1e1e;
-  border-color: #626262;
-}
-
-.table tr:last-child {
-  border-bottom: 1px solid #626262;
-}
-
-.table tr:nth-child(2n) {
-  background-color: #333;
-}
-
-.table tr th {
-  color: #ddd;
-}
-
-.table th,
-.table td {
-  /*     border: none; */
-  border-color: #626262;
-}
-
-.table tr td {
-  color: #ddd;
-}
-
-.table tr th:first-child,
-.table tr td:first-child {
-  border-left: 1px solid #626262;
-}
-
-.table tr th:last-child,
-.table tr td:last-child {
-  border-right: 1px solid #626262;
-}
-
 /* 日歷 */
+/* 修改自https://www.huiwenteo.com/normal/2018/07/24/django-calendar.html */
 .calendar {
   width: 98%;
   margin: auto;
@@ -168,7 +155,7 @@ a {
   float: right;
 }
 
-.btn.calendar-btn {
+.btn .calendar-btn {
   outline: none;
   background-color: #6a6a6a;
   color: #eee;
@@ -178,6 +165,79 @@ a {
 
 .clearfix {
   margin: 15px;
+}
+
+/* table */
+/* 修改自https://codepen.io/pablorgarcia/pen/qdIsm */
+.table-container th h1 {
+  font-weight: bold;
+  font-size: 1em;
+  text-align: center;
+}
+
+.table-container td {
+  font-weight: normal;
+  font-size: 1em;
+  -webkit-box-shadow: 0 2px 2px -2px #0e1119;
+  -moz-box-shadow: 0 2px 2px -2px #0e1119;
+  box-shadow: 0 2px 2px -2px #0e1119;
+}
+
+.table-container {
+  text-align: center;
+  overflow: hidden;
+  width: 100%;
+  margin: 0 auto;
+  display: table;
+  padding: 0 0 8em 0;
+}
+
+.table-container td,
+.table-container th {
+  padding-bottom: 2%;
+  padding-top: 2%;
+  padding-left: 2%;
+}
+
+/* Background-color of the odd rows */
+.table-container tr:nth-child(odd) {
+  background-color: #323c50;
+}
+
+/* Background-color of the even rows */
+.table-container tr:nth-child(even) {
+  background-color: #2c3446;
+}
+
+.table-container th {
+  background-color: #1f2739;
+}
+
+.table-container td:first-child {
+  color: #fb667a;
+}
+
+.table-container tr:hover {
+  background-color: #464a52;
+  -webkit-box-shadow: 0 6px 6px -6px #0e1119;
+  -moz-box-shadow: 0 6px 6px -6px #0e1119;
+  box-shadow: 0 6px 6px -6px #0e1119;
+}
+
+.table-container td:hover {
+  background-color: #fff842;
+  color: #403e10;
+  font-weight: bold;
+
+  box-shadow: #7f7c21 -1px 1px, #7f7c21 -2px 2px, #7f7c21 -3px 3px,
+    #7f7c21 -4px 4px, #7f7c21 -5px 5px, #7f7c21 -6px 6px;
+  /* 加了之後就不會顯示box-shadow，不知道為啥 */
+  /* transform: translate3d(6px, -6px, 0); */
+
+  transition-delay: 0s;
+  transition-duration: 0.4s;
+  transition-property: all;
+  transition-timing-function: line;
 }
 
 /* Three image containers (use 25% for four, and 50% for two, etc) */
@@ -195,6 +255,7 @@ a {
 }
 
 /* tooltips */
+/* 修改自https://www.w3schools.com/css/css_tooltip.asp */
 .tooltips {
   color: #ddd;
   position: relative;

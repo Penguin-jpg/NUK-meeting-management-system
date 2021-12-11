@@ -87,4 +87,4 @@ def edit_info_view(request, id):
 
     context = {"form": form}
 
-    return render(request, "accounts/info_create.html", context)
+    return render(request, "accounts/edit_info.html", context)
