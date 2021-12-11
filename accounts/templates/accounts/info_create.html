@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}登入{% endblock %}
+{% block title %}個人資料{% endblock %}
 
 <!-- messages -->
 {% include "messages.html" %}
@@ -9,11 +9,9 @@
 
 {% block content %}
 <br>
-<h1>登入</h1>
+<h1>個人資料</h1>
 <br>
-
+<p style="font-size: 18px">帶有<span style="color: red">*</span>的欄位為必填欄位</p>
 {% csrf_token %}
-<!-- 重新導向回要去的地方 -->
-<input type="hidden" name="next" value="{{ next_url }}" />
 {% crispy form %}
 {% endblock %}

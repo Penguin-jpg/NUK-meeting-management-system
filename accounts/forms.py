@@ -11,10 +11,10 @@ from django.contrib.auth import (
     password_validation,
 )
 from django.core.exceptions import ValidationError
-from .models import Participant, Profile
+from .models import *
 from phonenumber_field.formfields import PhoneNumberField
 from crispy_forms.helper import FormHelper, Layout
-from crispy_forms.layout import Submit, Div, Row, Column, Field, HTML
+from crispy_forms.layout import Submit, Field
 
 SEX = ((0, "女性"), (1, "男性"), (2, "其他"))
 IDENTITY = (
@@ -24,7 +24,6 @@ IDENTITY = (
     (3, "系助理"),
     (4, "系上老師"),
 )
-
 # 申請帳號的表單
 class SignUpForm(UserCreationForm):
     username = forms.CharField(label="使用者名稱", max_length=150, required=True)
@@ -48,7 +47,9 @@ class SignUpForm(UserCreationForm):
         required=True,
         widget=forms.PasswordInput(attrs={"class": "form-control", "type": "password"}),
     )
-    type = forms.ChoiceField(label="身分", choices=IDENTITY, required=True)
+    identity = forms.ChoiceField(
+        label="身分", choices=IDENTITY, required=True, disabled=True
+    )
     email = forms.EmailField(label="電子信箱", required=True)
     # phone = PhoneNumberField(label="連絡電話", region="TW", required=False) # 暫時先不用PhoneNumberField
     phone = forms.CharField(label="連絡電話", max_length=20, required=True)
@@ -60,7 +61,7 @@ class SignUpForm(UserCreationForm):
             "last_name",
             "first_name",
             "email",
-            "type",
+            "identity",
             "phone",
             "password1",
             "password2",
@@ -82,7 +83,7 @@ class SignUpForm(UserCreationForm):
             Field("password2", placeholder="請再次輸入密碼"),
             Field("last_name", placeholder="請輸入姓氏"),
             Field("first_name", placeholder="請輸入名稱"),
-            Field("type"),
+            Field("identity"),
             Field("phone", placeholder="請輸入連絡電話"),
         )
         self.helper.add_input(Submit("submit", "註冊", css_class="btn-secondary"))
@@ -90,7 +91,7 @@ class SignUpForm(UserCreationForm):
 
 # 登入的表單
 class LoginForm(AuthenticationForm):
-    # 登入時的username是使用電子信箱
+    # 登入時的username是電子信箱
     username = UsernameField(
         label="電子信箱",
         max_length=150,
@@ -147,15 +148,194 @@ class LoginForm(AuthenticationForm):
         return self.cleaned_data
 
 
+# 建立業界專家個人資料
+class ExpertInfoCreateForm(forms.ModelForm):
+    company = forms.CharField(label="任職公司", max_length=50, required=True)
+    title = forms.CharField(label="職稱", max_length=20, required=True)
+    telephone = forms.CharField(label="辦公室電話", max_length=20, required=True)
+    address = forms.CharField(label="聯絡地址", max_length=100, required=True)
+    bank_account = forms.CharField(label="銀行(郵局)帳號", max_length=14, required=False)
+
+    class Meta:
+        model = ExpertInfo
+        fields = [
+            "company",
+            "title",
+            "address",
+            "telephone",
+            "bank_account",
+        ]
+
+    def __init__(self, *args, **kwargs):
+        super(ExpertInfoCreateForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_method = "post"
+        self.helper.form_class = "blueForms"
+        self.helper.form_class = "form-horizontal"
+        self.helper.label_class = "col-sm-12 col-md-4 col-lg-2"
+        self.helper.field_class = "col-sm-12 col-md-6 col-lg-8"
+        self.helper.form_id = "expert-register-form"
+        self.helper.layout = Layout(
+            Field("company", placeholder="請輸入任職公司"),
+            Field("title", placeholder="請輸入職稱"),
+            Field("address", placeholder="請輸入聯絡地址"),
+            Field("telephone", placeholder="請輸入辦公室電話"),
+            Field("bank_account", placeholder="請輸入銀行(郵局)帳號"),
+        )
+        self.helper.add_input(Submit("submit", "保存", css_class="btn-secondary"))
+
+
+# 建立學生代表個人資料
+class StudentInfoCreateForm(forms.ModelForm):
+    student_id = forms.CharField(label="學號", max_length=15, required=True)
+    school_system = forms.CharField(
+        label="學制",
+        max_length=10,
+        help_text="""<ul style="list-style-type:none; text-align:left"><li><span class="help-text">例如：大學部、研究所</span></li></ul>""",
+        required=True,
+    )
+    grade = forms.CharField(label="年級", max_length=10, required=True)
+
+    class Meta:
+        model = StudentInfo
+        fields = [
+            "student_id",
+            "school_system",
+            "grade",
+        ]
+
+    def __init__(self, *args, **kwargs):
+        super(StudentInfoCreateForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_method = "post"
+        self.helper.form_class = "blueForms"
+        self.helper.form_class = "form-horizontal"
+        self.helper.label_class = "col-sm-12 col-md-4 col-lg-2"
+        self.helper.field_class = "col-sm-12 col-md-6 col-lg-8"
+        self.helper.form_id = "student-register-form"
+        self.helper.layout = Layout(
+            Field("student_id", placeholder="請輸入學號"),
+            Field("school_system", placeholder="請輸入學制"),
+            Field("grade", placeholder="請輸入年級"),
+        )
+        self.helper.add_input(Submit("submit", "保存", css_class="btn-secondary"))
+
+
+# 建立校外老師個人資料
+class TeacherInfoCreateForm(forms.ModelForm):
+    school = forms.CharField(label="任職學校", max_length=50, required=True)
+    department = forms.CharField(label="系所", max_length=20, required=False)
+    title = forms.CharField(label="職稱", max_length=20, required=True)
+    telephone = forms.CharField(label="辦公室電話", max_length=20, required=True)
+    address = forms.CharField(label="聯絡地址", max_length=100, required=True)
+    bank_account = forms.CharField(label="銀行(郵局)帳號", max_length=14, required=False)
+
+    class Meta:
+        model = TeacherInfo
+        fields = [
+            "school",
+            "department",
+            "title",
+            "telephone",
+            "address",
+            "bank_account",
+        ]
+
+    def __init__(self, *args, **kwargs):
+        super(TeacherInfoCreateForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_method = "post"
+        self.helper.form_class = "blueForms"
+        self.helper.form_class = "form-horizontal"
+        self.helper.label_class = "col-sm-12 col-md-4 col-lg-2"
+        self.helper.field_class = "col-sm-12 col-md-6 col-lg-8"
+        self.helper.form_id = "teacher-register-form"
+        self.helper.layout = Layout(
+            Field("school", placeholder="請輸入任職學校"),
+            Field("department", placeholder="請輸入系所"),
+            Field("title", placeholder="請輸入職稱"),
+            Field("telephone", placeholder="請輸入辦公室電話"),
+            Field("address", placeholder="請輸入聯絡地址"),
+            Field("bank_account", placeholder="請輸入銀行(郵局)帳號"),
+        )
+        self.helper.add_input(Submit("submit", "保存", css_class="btn-secondary"))
+
+
+# 建立系助理個人資料
+class AssistantInfoCreateForm(forms.ModelForm):
+    telephone = forms.CharField(label="辦公室電話", max_length=20, required=True)
+
+    class Meta:
+        model = AssistantInfo
+        fields = [
+            "telephone",
+        ]
+
+    def __init__(self, *args, **kwargs):
+        super(AssistantInfoCreateForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_method = "post"
+        self.helper.form_class = "blueForms"
+        self.helper.form_class = "form-horizontal"
+        self.helper.label_class = "col-sm-12 col-md-4 col-lg-2"
+        self.helper.field_class = "col-sm-12 col-md-6 col-lg-8"
+        self.helper.form_id = "assistant-register-form"
+        self.helper.layout = Layout(
+            Field("telephone", placeholder="請輸入辦公室電話"),
+        )
+        self.helper.add_input(Submit("submit", "保存", css_class="btn-secondary"))
+
+
+# 建立系上老師個人資料
+class ProfessorInfoCreateForm(forms.ModelForm):
+    title = forms.CharField(label="職級", max_length=20, required=True)
+    telephone = forms.CharField(label="辦公室電話", max_length=20, required=True)
+
+    class Meta:
+        model = ProfessorInfo
+        fields = [
+            "title",
+            "telephone",
+        ]
+
+    def __init__(self, *args, **kwargs):
+        super(ProfessorInfoCreateForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_method = "post"
+        self.helper.form_class = "blueForms"
+        self.helper.form_class = "form-horizontal"
+        self.helper.label_class = "col-sm-12 col-md-4 col-lg-2"
+        self.helper.field_class = "col-sm-12 col-md-6 col-lg-8"
+        self.helper.form_id = "professor-register-form"
+        self.helper.layout = Layout(
+            Field("title", placeholder="請輸入職級"),
+            Field("telephone", placeholder="請輸入辦公室電話"),
+        )
+        self.helper.add_input(Submit("submit", "保存", css_class="btn-secondary"))
+
+
+def get_info_create_form(method, user):
+    if user.identity == 0:
+        return ExpertInfoCreateForm(method, instance=user.expert_info)
+    elif user.identity == 1:
+        return StudentInfoCreateForm(method, instance=user.student_info)
+    elif user.identity == 2:
+        return TeacherInfoCreateForm(method, instance=user.teacher_info)
+    elif user.identity == 3:
+        return AssistantInfoCreateForm(method, instance=user.assistant_info)
+    else:
+        return ProfessorInfoCreateForm(method, instance=user.professor_info)
+
+
 # admin後台顯示的表單
 class ParticipantChangeForm(UserChangeForm):
-    username = forms.CharField(label="使用者名稱", max_length=150, required=True)
+    username = forms.CharField(label="使用者名稱", max_length=150, required=False)
     first_name = forms.CharField(label="名稱", max_length=10, required=False)
     last_name = forms.CharField(label="姓氏", max_length=10, required=False)
     password1 = forms.CharField(
         label="密碼",
         max_length=200,
-        required=True,
+        required=False,
         widget=forms.PasswordInput(attrs={"class": "form-control", "type": "password"}),
         help_text="""<ul style="list-style-type:none; text-align:left">
                 <li><span class="help-text">- 密碼不能和使用者名稱過度相似</span></li>
@@ -167,11 +347,11 @@ class ParticipantChangeForm(UserChangeForm):
     password2 = forms.CharField(
         label="確認密碼",
         max_length=200,
-        required=True,
+        required=False,
         widget=forms.PasswordInput(attrs={"class": "form-control", "type": "password"}),
     )
-    type = forms.ChoiceField(label="身分", choices=IDENTITY, required=True)
-    email = forms.EmailField(label="電子信箱", required=True)
+    identity = forms.ChoiceField(label="身分", choices=IDENTITY, required=False)
+    email = forms.EmailField(label="電子信箱", required=False)
     # phone = PhoneNumberField(label="連絡電話", region="TW", required=False) # 暫時先不用PhoneNumberField
     phone = forms.CharField(label="連絡電話", max_length=20, required=False)
 
@@ -182,7 +362,7 @@ class ParticipantChangeForm(UserChangeForm):
             "last_name",
             "first_name",
             "email",
-            "type",
+            "identity",
             "phone",
             "password1",
             "password2",
@@ -204,194 +384,7 @@ class ParticipantChangeForm(UserChangeForm):
             Field("password2"),
             Field("last_name"),
             Field("first_name"),
-            Field("type"),
+            Field("identity"),
             Field("phone"),
         )
         self.helper.add_input(Submit("submit", "保存", css_class="btn-secondary"))
-
-
-# admin後台顯示的表單
-class ProfileChangeForm(forms.ModelForm):
-    sex = forms.ChoiceField(label="性別", choices=SEX, initial=0, required=False)
-    # phone = PhoneNumberField(label="連絡電話", region="TW", required=False)
-    # telephone = PhoneNumberField(label="辦公室電話", region="TW", required=False)
-    phone = forms.CharField(label="連絡電話", max_length=20, required=False)
-    telephone = forms.CharField(label="辦公室電話", max_length=20, required=False)
-    company = forms.CharField(label="任職公司", max_length=50, required=False)
-    address = forms.CharField(label="聯絡地址", max_length=100, required=False)
-    title = forms.CharField(label="職稱", max_length=20, required=False)
-    bank_account = forms.CharField(label="銀行(郵局)帳號", max_length=14, required=False)
-    student_id = forms.CharField(label="學號", max_length=15, required=False)
-    school_system = forms.CharField(
-        label="學制",
-        max_length=10,
-        help_text="""<ul style="list-style-type:none; text-align:left"><li><span class="help-text">例如：大學部、研究所</span></li></ul>""",
-        required=False,
-    )
-    grade = forms.CharField(label="年級", max_length=10, required=False)
-    school = forms.CharField(label="任職學校", max_length=50, required=False)
-    department = forms.CharField(label="系所", max_length=20, required=False)
-
-    class Meta:
-        model = Profile
-        fields = [
-            "sex",
-            "phone",
-            "telephone",
-            "company",
-            "address",
-            "title",
-            "bank_account",
-            "school",
-            "student_id",
-            "department",
-            "school_system",
-            "grade",
-        ]
-
-    def __init__(self, *args, **kwargs):
-        super(ProfileChangeForm, self).__init__(*args, **kwargs)
-
-        self.helper = FormHelper()
-        self.helper.form_method = "post"
-        self.helper.form_class = "blueForms"
-        self.helper.form_class = "form-horizontal"
-        self.helper.label_class = "col-sm-12 col-md-4 col-lg-2"
-        self.helper.field_class = "col-sm-12 col-md-6 col-lg-8"
-        self.helper.form_id = "edit-profile-form"
-        # 共通欄位
-        self.helper.layout = Layout(
-            Field("sex"),
-            Field("phone"),
-            Field("telephone"),
-            Field("company"),
-            Field("address"),
-            Field("title"),
-            Field("bank_account"),
-            Field("student_id"),
-            Field("school_system"),
-            Field("grade"),
-        )
-
-        self.helper.add_input(Submit("submit", "保存", css_class="btn-secondary"))
-
-    # 測試用
-    def clean_bank_account(self):
-        bank_account = self.cleaned_data["bank_account"]
-        if bank_account == "123":
-            raise ValidationError("無效的銀行帳號")
-        return bank_account
-
-
-# 個人資料的編輯表格
-class ProfileEditForm(forms.ModelForm):
-    sex = forms.ChoiceField(label="性別", choices=SEX, initial=0, required=False)
-    # phone = PhoneNumberField(label="連絡電話", region="TW", required=False)
-    # telephone = PhoneNumberField(label="辦公室電話", region="TW", required=False)
-    phone = forms.CharField(label="連絡電話", max_length=20, required=False)
-    telephone = forms.CharField(label="辦公室電話", max_length=20, required=False)
-    company = forms.CharField(label="任職公司", max_length=50, required=False)
-    address = forms.CharField(label="聯絡地址", max_length=100, required=False)
-    title = forms.CharField(label="職稱", max_length=20, required=False)
-    bank_account = forms.CharField(label="銀行(郵局)帳號", max_length=14, required=False)
-    student_id = forms.CharField(label="學號", max_length=15, required=False)
-    school_system = forms.CharField(
-        label="學制",
-        max_length=10,
-        help_text="""<ul style="list-style-type:none; text-align:left"><li><span class="help-text">例如：大學部、研究所</span></li></ul>""",
-        required=False,
-    )
-    grade = forms.CharField(label="年級", max_length=10, required=False)
-    school = forms.CharField(label="任職學校", max_length=50, required=False)
-    department = forms.CharField(label="系所", max_length=20, required=False)
-
-    class Meta:
-        model = Profile
-        fields = [
-            "sex",
-            "phone",
-            "telephone",
-            "company",
-            "address",
-            "title",
-            "bank_account",
-            "school",
-            "student_id",
-            "department",
-            "school_system",
-            "grade",
-        ]
-
-    def __init__(self, *args, **kwargs):
-        super(ProfileEditForm, self).__init__(*args, **kwargs)
-        # 取得目前的profile
-        instance = kwargs["instance"]
-        data = {
-            "user": instance.user,
-            "sex": instance.sex,
-            "phone": instance.phone,
-            "telephone": instance.telephone,
-            "title": instance.title,
-            "address": instance.address,
-            "bank_account": instance.bank_account,
-            "company": instance.company,
-            "school": instance.school,
-            "department": instance.department,
-            "student_id": instance.student_id,
-            "school_system": instance.school_system,
-            "grade": instance.grade,
-        }
-        self.initial = data  # 初始值
-
-        # crispy form
-        self.helper = FormHelper()
-        self.helper.form_method = "post"
-        self.helper.form_class = "blueForms"
-        self.helper.form_class = "form-horizontal"
-        self.helper.label_class = "col-sm-12 col-md-4 col-lg-2"
-        self.helper.field_class = "col-sm-12 col-md-6 col-lg-8"
-        self.helper.form_id = "edit-profile-form"
-        # 共通欄位
-        self.helper.layout = Layout(
-            Field("sex"),
-            Field("phone"),
-        )
-
-        # 根據type不同決定新增的欄位
-        if instance.user.is_expert():
-            self.helper.layout.extend(
-                [
-                    Field("telephone"),
-                    Field("company"),
-                    Field("address"),
-                    Field("title"),
-                    Field("bank_account"),
-                ]
-            )
-        elif instance.user.is_student():
-            self.helper.layout.extend(
-                [Field("student_id"), Field("school_system"), Field("grade")]
-            )
-        elif instance.user.is_teacher():
-            self.helper.layout.extend(
-                [
-                    Field("school"),
-                    Field("address"),
-                    Field("department"),
-                    Field("title"),
-                    Field("bank_account"),
-                ]
-            )
-        elif instance.user.is_assistant():
-            self.helper.layout.extend([Field("telephone")])
-        elif instance.user.is_professor():
-            self.helper.layout.extend([Field("telephone"), Field("title")])
-
-        self.helper.add_input(Submit("submit", "修改", css_class="btn-secondary"))
-
-    # 測試用
-    def clean_bank_account(self):
-        bank_account = self.cleaned_data["bank_account"]
-        if bank_account == "123":
-            raise ValidationError("無效的銀行帳號")
-        return bank_account

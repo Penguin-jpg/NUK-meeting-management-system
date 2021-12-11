@@ -77,7 +77,7 @@ a {
 }
 
 /* 簡介字體 */
-.profile-text {
+.info-text {
   font-size: 30px;
 }
 
@@ -101,6 +101,7 @@ a {
 
 .table th,
 .table td {
+  /*     border: none; */
   border-color: #626262;
 }
 
@@ -177,4 +178,59 @@ a {
 
 .clearfix {
   margin: 15px;
+}
+
+/* Three image containers (use 25% for four, and 50% for two, etc) */
+.image .column {
+  float: left;
+  width: 33.33%;
+  padding: 5px;
+}
+
+/* Clear floats after image containers */
+.image .row::after {
+  content: "";
+  clear: both;
+  display: table;
+}
+
+/* tooltips */
+.tooltips {
+  color: #ddd;
+  position: relative;
+  display: inline-block;
+  /* border-bottom: 1px dotted #ddd; */
+}
+
+.tooltips .tooltiptext {
+  visibility: hidden;
+  font-size: 20px;
+  width: 120px;
+  top: 100%;
+  left: 50%;
+  margin-left: -60px; /* Use half of the width (120/2 = 60), to center the tooltip */
+  background-color: #626262;
+  color: white;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+
+  /* Position the tooltip */
+  position: absolute;
+  z-index: 1;
+}
+
+.tooltips .tooltiptext::after {
+  content: " ";
+  position: absolute;
+  bottom: 100%; /* At the top of the tooltip */
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent transparent #626262 transparent;
+}
+
+.tooltips:hover .tooltiptext {
+  visibility: visible;
 }

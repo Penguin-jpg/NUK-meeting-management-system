@@ -1,11 +1,7 @@
 from django.db import models
 from django.urls import reverse
-from django.dispatch import receiver
-from django.db.models.signals import post_save
-from django.conf import settings
 from accounts.models import Participant
 import datetime
-import pytz
 
 # 會議模型
 class Meeting(models.Model):

@@ -9,7 +9,7 @@ from phonenumber_field.modelfields import PhoneNumberField
 
 
 SEX = ((0, "女性"), (1, "男性"), (2, "其他"))
-TYPE = ((0, "業界專家"), (1, "學生代表"), (2, "校外老師"), (3, "系助理"), (4, "系上老師"))
+IDENTITY = ((0, "業界專家"), (1, "學生代表"), (2, "校外老師"), (3, "系助理"), (4, "系上老師"))
 
 
 class ParticipantManager(UserManager):
@@ -38,10 +38,14 @@ class ParticipantManager(UserManager):
         return self._create_user(username, email, password, **extra_fields)
 
 
+# 與會人員(使用者)
 class Participant(AbstractUser):
     objects = ParticipantManager()  # User Manager
-    email = models.EmailField(blank=False, unique=True)  # 電子信箱
-    type = models.IntegerField(choices=TYPE, default=0)  # 與會人員的種類
+    email = models.EmailField(blank=False, unique=True, verbose_name="電子信箱")
+    identity = models.IntegerField(choices=IDENTITY, default=0, verbose_name="身分")
+    sex = models.IntegerField(choices=SEX, default=2, verbose_name="性別")
+    # phone = PhoneNumberField(region="TW")  # 連絡電話(暫時先不用PhoneNumberField)
+    phone = models.CharField(max_length=20, verbose_name="連絡電話")
 
     USERNAME_FIELD = "email"  # 使用email登入
     REQUIRED_FIELDS = ["username"]
@@ -59,75 +63,24 @@ class Participant(AbstractUser):
     def get_absolute_url(self):
         return reverse("accounts:user-detail", kwargs={"id": self.id})
 
+    # 取得全名
     def get_full_name(self):
         return self.last_name + self.first_name
 
-    # 檢查類別
-    def is_expert(self):
-        return self.type == 0
-
-    def is_student(self):
-        return self.type == 1
-
-    def is_teacher(self):
-        return self.type == 2
-
-    def is_assistant(self):
-        return self.type == 3
-
-    def is_professor(self):
-        return self.type == 4
-
+    # 取得身分
     def get_identity(self):
-        if self.type == 0:
+        if self.identity == 0:
             return "業界專家"
-        elif self.type == 1:
+        elif self.identity == 1:
             return "學生代表"
-        elif self.type == 2:
+        elif self.identity == 2:
             return "校外老師"
-        elif self.type == 3:
+        elif self.identity == 3:
             return "系助理"
         else:
             return "系上老師"
 
-
-# 使用者的簡介，所以用一對一的關係連結
-# 會使用一個包含所有欄位的Profile，再透過type來分類
-class Profile(models.Model):
-    # 共通的屬性
-    user = models.OneToOneField(
-        Participant, null=True, on_delete=models.CASCADE
-    )  # 對應的使用者
-    sex = models.IntegerField(choices=SEX, default=2)  # 性別
-    # phone = PhoneNumberField(region="TW")  # 連絡電話(暫時先不用PhoneNumberField)
-    phone = models.CharField(max_length=20)  # 連絡電話
-
-    # 業界專家、校外老師、系助理、系上老師共通的屬性
-    # telephone = PhoneNumberField(region="TW")  # 辦公室電話(暫時先不用PhoneNumberField)
-    telephone = models.CharField(max_length=20)  # 辦公室電話
-
-    # 業界專家、校外老師、系上老師共通的屬性
-    title = models.CharField(max_length=20)  # 職稱
-
-    # 業界專家、校外老師共通的屬性
-    address = models.CharField(max_length=100)  # 聯絡地址
-    bank_account = models.CharField(max_length=14)  # 銀行帳號
-
-    # 業界專家的屬性
-    company = models.CharField(max_length=50)  # 任職公司
-
-    # 校外老師的屬性
-    school = models.CharField(max_length=50)  # 任職學校
-    department = models.CharField(max_length=20)  # 系所
-
-    # 學生代表的屬性
-    student_id = models.CharField(max_length=15)  # 學號
-    school_system = models.CharField(max_length=10)  # 學制
-    grade = models.CharField(max_length=10)  # 年級
-
-    def get_absolute_url(self):
-        return reverse("accounts:user-profile", kwargs={"id": self.id})
-
+    # 取得性別
     def get_sex(self):
         if self.sex == 0:
             return "女性"
@@ -136,67 +89,247 @@ class Profile(models.Model):
         else:
             return "其他"
 
-    def get_all_field(self):
-        if self.user.is_expert():
-            field_map = {
-                "性別": self.get_sex,
-                "連絡電話": self.phone,
-                "任職公司": self.company,
-                "職稱": self.title,
-                "辦公室電話": self.telephone,
-                "聯絡地址": self.address,
-                "銀行(郵局)帳號": self.bank_account,
-            }
-        elif self.user.is_student():
-            field_map = {
-                "性別": self.get_sex,
-                "連絡電話": self.phone,
-                "學號": self.student_id,
-                "學制": self.school_system,
-                "年級": self.grade,
-            }
-        elif self.user.is_teacher():
-            field_map = {
-                "性別": self.get_sex,
-                "連絡電話": self.phone,
-                "任職學校": self.school,
-                "系所": self.department,
-                "職稱": self.title,
-                "辦公室電話": self.telephone,
-                "聯絡地址": self.address,
-                "銀行(郵局)帳號": self.bank_account,
-            }
-        elif self.user.is_assistant():
-            field_map = {
-                "性別": self.get_sex,
-                "連絡電話": self.phone,
-                "辦公室電話": self.telephone,
-            }
+    # 取得個人資料
+    def get_info(self):
+        if self.identity == 0:
+            return self.expert_info
+        elif self.identity == 1:
+            return self.student_info
+        elif self.identity == 2:
+            return self.teacher_info
+        elif self.identity == 3:
+            return self.assistant_info
         else:
-            field_map = {
-                "性別": self.get_sex,
-                "連絡電話": self.phone,
-                "職級": self.title,
-                "辦公室電話": self.telephone,
-            }
-
-        return field_map
+            return self.professor_info
 
 
-# 建立使用者後加入群組(待研究，目前沒成功)
-@receiver(post_save, sender=Participant)
-def add_user_to_group(sender, instance, created, **kwargs):
-    if created:
-        # if instance.type == 3:
-        # group = Group.objects.get(name="operators")
-        # else:
-        group = Group.objects.get(name="normal_participants")
-        instance.groups.add(group)
-        instance.save()
+# 將不同的身分當作額外的model對應到使用者，當作他的個人資料
+# 個人資料父類別
+class Info(models.Model):
+    # 取得所有欄位
+    def get_all_fields(self):
+        # 前三個欄位分別是id, info prt, user，不需要顯示
+        fields = {
+            field.verbose_name: field.value_from_object(self)
+            for field in self._meta.get_fields()[3:]
+        }
+        # print(fields)
+        return fields
+
+    def get_absolute_url(self):
+        return reverse("accounts:user-info", kwargs={"id": self.id})
+
+
+# 業界專家
+class ExpertInfo(Info):
+    user = models.OneToOneField(
+        Participant,
+        on_delete=models.CASCADE,
+        related_name="expert_info",
+        verbose_name="使用者",
+    )
+    # telephone = PhoneNumberField(region="TW")  # 辦公室電話(暫時先不用PhoneNumberField)
+    telephone = models.CharField(max_length=20, verbose_name="辦公室電話")
+    title = models.CharField(max_length=20, verbose_name="職稱")
+    address = models.CharField(max_length=100, verbose_name="聯絡地址")
+    bank_account = models.CharField(max_length=14, verbose_name="銀行(郵局)帳號")
+    company = models.CharField(max_length=50, verbose_name="任職公司")
+
+
+# 學生代表
+class StudentInfo(Info):
+    user = models.OneToOneField(
+        Participant,
+        on_delete=models.CASCADE,
+        related_name="student_info",
+        verbose_name="使用者",
+    )
+    student_id = models.CharField(max_length=15, verbose_name="學號")
+    school_system = models.CharField(max_length=10, verbose_name="學制")
+    grade = models.CharField(max_length=10, verbose_name="年級")
+
+
+# 校外老師
+class TeacherInfo(Info):
+    user = models.OneToOneField(
+        Participant,
+        on_delete=models.CASCADE,
+        related_name="teacher_info",
+        verbose_name="使用者",
+    )
+    # telephone = PhoneNumberField(region="TW")  # 辦公室電話(暫時先不用PhoneNumberField)
+    telephone = models.CharField(max_length=20, verbose_name="辦公室電話")
+    title = models.CharField(max_length=20, verbose_name="職稱")
+    address = models.CharField(max_length=100, verbose_name="聯絡地址")
+    bank_account = models.CharField(max_length=14, verbose_name="銀行(郵局)帳號")
+    school = models.CharField(max_length=50, verbose_name="任職學校")
+    department = models.CharField(max_length=20, verbose_name="系所")
+
+
+# 系助理
+class AssistantInfo(Info):
+    user = models.OneToOneField(
+        Participant,
+        on_delete=models.CASCADE,
+        related_name="assistant_info",
+        verbose_name="使用者",
+    )
+    # telephone = PhoneNumberField(region="TW")  # 辦公室電話(暫時先不用PhoneNumberField)
+    telephone = models.CharField(max_length=20, verbose_name="辦公室電話")
+
+
+# 系上老師
+class ProfessorInfo(Info):
+    user = models.OneToOneField(
+        Participant,
+        on_delete=models.CASCADE,
+        related_name="professor_info",
+        verbose_name="使用者",
+    )
+    # telephone = PhoneNumberField(region="TW")  # 辦公室電話(暫時先不用PhoneNumberField)
+    telephone = models.CharField(max_length=20, verbose_name="辦公室電話")
+    title = models.CharField(max_length=20, verbose_name="職級")
 
 
 # 建立使用者後新增簡介
 @receiver(post_save, sender=Participant)
 def create_user_profile(sender, instance, created, **kwargs):
     if created:
-        Profile.objects.create(user=instance).save()
+        identity = instance.identity
+
+        # 根據身分建立個人資料
+        if identity == 0:
+            info = ExpertInfo(user=instance)
+        elif identity == 1:
+            info = StudentInfo(user=instance)
+        elif identity == 2:
+            info = TeacherInfo(user=instance)
+        elif identity == 3:
+            info = AssistantInfo(user=instance)
+        else:
+            info = ProfessorInfo(user=instance)
+
+        info.save()
+
+
+# # 建立使用者後加入群組(待研究，目前沒成功)
+# @receiver(post_save, sender=Participant)
+# def add_user_to_group(sender, instance, created, **kwargs):
+#     if created:
+#         # if instance.type == 3:
+#         # group = Group.objects.get(name="operators")
+#         # else:
+#         group = Group.objects.get(name="normal_participants")
+#         instance.groups.add(group)
+#         instance.save()
+
+
+# 使用者的簡介，所以用一對一的關係連結
+# 會使用一個包含所有欄位的Profile，再透過type來分類
+# class Profile(models.Model):
+#     # 共通的屬性
+#     user = models.OneToOneField(
+#         Participant, null=True, on_delete=models.CASCADE
+#     )  # 對應的使用者
+#     sex = models.IntegerField(choices=SEX, default=2)  # 性別
+#     # phone = PhoneNumberField(region="TW")  # 連絡電話(暫時先不用PhoneNumberField)
+#     phone = models.CharField(max_length=20)  # 連絡電話
+
+#     # 業界專家、校外老師、系助理、系上老師共通的屬性
+#     # telephone = PhoneNumberField(region="TW")  # 辦公室電話(暫時先不用PhoneNumberField)
+#     telephone = models.CharField(max_length=20)  # 辦公室電話
+
+#     # 業界專家、校外老師、系上老師共通的屬性
+#     title = models.CharField(max_length=20)  # 職稱
+
+#     # 業界專家、校外老師共通的屬性
+#     address = models.CharField(max_length=100)  # 聯絡地址
+#     bank_account = models.CharField(max_length=14)  # 銀行帳號
+
+#     # 業界專家的屬性
+#     company = models.CharField(max_length=50)  # 任職公司
+
+#     # 校外老師的屬性
+#     school = models.CharField(max_length=50)  # 任職學校
+#     department = models.CharField(max_length=20)  # 系所
+
+#     # 學生代表的屬性
+#     student_id = models.CharField(max_length=15)  # 學號
+#     school_system = models.CharField(max_length=10)  # 學制
+#     grade = models.CharField(max_length=10)  # 年級
+
+#     def get_absolute_url(self):
+#         return reverse("accounts:user-profile", kwargs={"id": self.id})
+
+#     def get_sex(self):
+#         if self.sex == 0:
+#             return "女性"
+#         elif self.sex == 1:
+#             return "男性"
+#         else:
+#             return "其他"
+
+#     def get_all_field(self):
+#         if self.user.is_expert():
+#             field_map = {
+#                 "性別": self.get_sex,
+#                 "連絡電話": self.phone,
+#                 "任職公司": self.company,
+#                 "職稱": self.title,
+#                 "辦公室電話": self.telephone,
+#                 "聯絡地址": self.address,
+#                 "銀行(郵局)帳號": self.bank_account,
+#             }
+#         elif self.user.is_student():
+#             field_map = {
+#                 "性別": self.get_sex,
+#                 "連絡電話": self.phone,
+#                 "學號": self.student_id,
+#                 "學制": self.school_system,
+#                 "年級": self.grade,
+#             }
+#         elif self.user.is_teacher():
+#             field_map = {
+#                 "性別": self.get_sex,
+#                 "連絡電話": self.phone,
+#                 "任職學校": self.school,
+#                 "系所": self.department,
+#                 "職稱": self.title,
+#                 "辦公室電話": self.telephone,
+#                 "聯絡地址": self.address,
+#                 "銀行(郵局)帳號": self.bank_account,
+#             }
+#         elif self.user.is_assistant():
+#             field_map = {
+#                 "性別": self.get_sex,
+#                 "連絡電話": self.phone,
+#                 "辦公室電話": self.telephone,
+#             }
+#         else:
+#             field_map = {
+#                 "性別": self.get_sex,
+#                 "連絡電話": self.phone,
+#                 "職級": self.title,
+#                 "辦公室電話": self.telephone,
+#             }
+
+#         return field_map
+
+
+# # 建立使用者後加入群組(待研究，目前沒成功)
+# @receiver(post_save, sender=Participant)
+# def add_user_to_group(sender, instance, created, **kwargs):
+#     if created:
+#         # if instance.type == 3:
+#         # group = Group.objects.get(name="operators")
+#         # else:
+#         group = Group.objects.get(name="normal_participants")
+#         instance.groups.add(group)
+#         instance.save()
+
+
+# # 建立使用者後新增簡介
+# @receiver(post_save, sender=Participant)
+# def create_user_profile(sender, instance, created, **kwargs):
+#     if created:
+#         Profile.objects.create(user=instance).save()

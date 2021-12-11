@@ -29,7 +29,9 @@ class MeetingCreateForm(forms.ModelForm):
     chairman = forms.CharField(label="主席", max_length=20, required=True)
     minutes_taker = forms.CharField(label="記錄人員", max_length=20, required=True)
     participants = CustomModelMultipleChoiceField(
-        queryset=Participant.objects.all(), widget=forms.CheckboxSelectMultiple
+        label="與會人員",
+        queryset=Participant.objects.all(),
+        widget=forms.CheckboxSelectMultiple,
     )
 
     class Meta:

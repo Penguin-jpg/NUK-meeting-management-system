@@ -44,7 +44,7 @@ INSTALLED_APPS = [
     # third-party
     "crispy_forms",
     "easy_thumbnails",
-    "filer",
+    # "filer",
     "mptt",
 ]
 

@@ -1,34 +1,31 @@
 from django.urls import path
-from django.contrib.auth import views
 from .views import (
+    user_choose_identity_view,
     user_register_view,
+    UserLoginView,
+    UserLogoutView,
+    no_identity_view,
+    user_info_view,
+    edit_info_view,
     UserListView,
-    UserDeleteView,
-    user_profile_view,
-    edit_profile_view,
 )
 from .forms import LoginForm
 
 urlpatterns = [
+    path("select/", user_choose_identity_view, name="select-identity"),
     path("register/", user_register_view, name="register"),
+    path("idt_error/", no_identity_view, name="no-identity"),
     path(
         "login/",
-        views.LoginView.as_view(
-            template_name="registration/login.html", authentication_form=LoginForm
-        ),
+        UserLoginView.as_view(),
         name="login",
     ),
     path(
         "logout",
-        views.LogoutView.as_view(),
+        UserLogoutView.as_view(),
         name="logout",
     ),
     path("", UserListView.as_view(), name="user-list"),
-    path("delete/<int:id>/", UserDeleteView.as_view(), name="user-delete"),
-    path(
-        "profile/<int:id>",
-        user_profile_view,
-        name="user-profile",
-    ),
-    path("profile/edit/<int:id>", edit_profile_view, name="edit-profile"),
+    path("info/<int:id>/", user_info_view, name="user-info"),
+    path("info/edit/<int:id>/", edit_info_view, name="edit-info"),
 ]

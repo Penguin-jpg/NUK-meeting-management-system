@@ -8,50 +8,58 @@
 <br>
 <div class="row">
     <div class="col-md-6">
-        <span class="profile-text">會議名稱</span>
+        <span class="info-text">會議名稱</span>
     </div>
     <div class="col-md-6">
-        <p class="profile-text">{{ meeting.name|safe }}</p>
-    </div>
-</div>
-<div class="row">
-    <div class="col-md-6">
-        <span class="profile-text">種類</span>
-    </div>
-    <div class="col-md-6">
-        <p class="profile-text">{{ meeting.type|safe }}</p>
+        <p class="info-text">{{ meeting.name|safe }}</p>
     </div>
 </div>
 <div class="row">
     <div class="col-md-6">
-        <span class="profile-text">時間</span>
+        <span class="info-text">種類</span>
     </div>
     <div class="col-md-6">
-        <p class="profile-text">{{ meeting.date }}</p>
-    </div>
-</div>
-<div class="row">
-    <div class="col-md-6">
-        <span class="profile-text">地點</span>
-    </div>
-    <div class="col-md-6">
-        <p class="profile-text">{{ meeting.location|safe }}</p>
+        <p class="info-text">{{ meeting.type|safe }}</p>
     </div>
 </div>
 <div class="row">
     <div class="col-md-6">
-        <span class="profile-text">主席</span>
+        <span class="info-text">時間</span>
     </div>
     <div class="col-md-6">
-        <p class="profile-text">{{ meeting.chairman|safe }}</p>
+        <p class="info-text">{{ meeting.date }}</p>
     </div>
 </div>
 <div class="row">
     <div class="col-md-6">
-        <span class="profile-text">記錄人員</span>
+        <span class="info-text">地點</span>
     </div>
     <div class="col-md-6">
-        <p class="profile-text">{{ meeting.minutes_taker|safe }}</p>
+        <p class="info-text">{{ meeting.location|safe }}</p>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <span class="info-text">主席</span>
+    </div>
+    <div class="col-md-6">
+        <p class="info-text">{{ meeting.chairman|safe }}</p>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <span class="info-text">記錄人員</span>
+    </div>
+    <div class="col-md-6">
+        <p class="info-text">{{ meeting.minutes_taker|safe }}</p>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <span class="info-text">與會人員</span>
+    </div>
+    <div class="col-md-6">
+        <p class="info-text"><a href="{% url 'meeting-participants' meeting.id %}">人員名單</a></p>
     </div>
 </div>
 {% endblock %}

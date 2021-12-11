@@ -34,7 +34,12 @@ def next_month(date):
     return month
 
 
-# 首頁(會呈現近期的會議)
+# 當找不到某個會議時就顯示這個頁面
+def meeting_not_found_view(request):
+    return render(request, "meetings/no_meeting.html", {})
+
+
+# 首頁(會用日曆紀錄已建立的會議)
 def home_view(request):
     date = get_date(request.GET.get("date", None))
     calendar = Calendar(date.year, date.month).formatmonth(withyear=True)
@@ -84,7 +89,7 @@ def edit_meeting_view(request, id):
     try:
         meeting = Meeting.objects.get(id=id)
     except Meeting.DoesNotExist:
-        return render(request, "meetings/no_meeting.html", {})
+        return redirect("meeting-not-found")
 
     form = MeetingEditForm(request.POST or None, instance=meeting)
     if form.is_valid():
@@ -106,10 +111,25 @@ def meeting_today_view(request, year, month, day):
             date__year=year, date__month=month, date__day=day
         )
     except Meeting.DoesNotExist:
-        return render(request, "meetings/no_meeting.html", {})
+        return redirect("meeting-not-found")
 
     context = {
         "meetings": meetings,
     }
 
     return render(request, "meetings/meeting_today.html", context)
+
+
+# 顯示某個會議的所有與會人員
+@login_required(login_url="login")
+def meeting_participants_view(request, id):
+    try:
+        meeting = Meeting.objects.get(id=id)
+    except Meeting.DoesNotExist:
+        return redirect("meeting-not-found")
+
+    context = {
+        "participants": meeting.participants.all(),
+    }
+
+    return render(request, "meetings/meeting_participants.html", context)

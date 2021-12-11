@@ -1,19 +1,19 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import Participant, Profile
-from .forms import ParticipantChangeForm, SignUpForm, ProfileChangeForm
+from .models import *
+from .forms import ParticipantChangeForm, SignUpForm
 
 
 class ParticipantAdmin(UserAdmin):
     model = Participant
     form = ParticipantChangeForm
-    # add_form = SignUpForm
+    add_form = SignUpForm
 
-    list_display = ["username", "last_name", "first_name", "email", "type"]
+    list_display = ["username", "last_name", "first_name", "email", "identity"]
 
     fieldsets = (
         (None, {"fields": ("username", "email", "password")}),
-        ("Personal info", {"fields": ("last_name", "first_name", "type")}),
+        ("Personal info", {"fields": ("last_name", "first_name", "identity")}),
         (
             "Permissions",
             {
@@ -31,7 +31,7 @@ class ParticipantAdmin(UserAdmin):
 
     add_fieldsets = (
         (None, {"fields": ("username", "email", "password1", "password2")}),
-        ("Personal info", {"fields": ("last_name", "first_name", "type")}),
+        ("Personal info", {"fields": ("last_name", "first_name", "identity")}),
         (
             "Permissions",
             {
@@ -47,54 +47,9 @@ class ParticipantAdmin(UserAdmin):
     )
 
 
-class ProfileAdmin(admin.ModelAdmin):
-    list_display = ["user", "sex", "phone"]
-    form = ProfileChangeForm
-
-    fieldsets = (
-        (
-            None,
-            {
-                "fields": (
-                    "user",
-                    "sex",
-                    "phone",
-                    "telephone",
-                    "title",
-                    "address",
-                    "bank_account",
-                    "company",
-                    "school",
-                    "department",
-                    "student_id",
-                    "school_system",
-                    "grade",
-                )
-            },
-        ),
-    )
-
-    add_fieldsets = (
-        None,
-        {
-            "fields": (
-                "user",
-                "sex",
-                "phone",
-                "telephone",
-                "title",
-                "address",
-                "bank_account",
-                "company",
-                "school",
-                "department",
-                "student_id",
-                "school_system",
-                "grade",
-            )
-        },
-    )
-
-
 admin.site.register(Participant, ParticipantAdmin)
-admin.site.register(Profile, ProfileAdmin)
+admin.site.register(ExpertInfo)
+admin.site.register(StudentInfo)
+admin.site.register(TeacherInfo)
+admin.site.register(AssistantInfo)
+admin.site.register(ProfessorInfo)
