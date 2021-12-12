@@ -2,6 +2,12 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from .models import *
 from .forms import ParticipantChangeForm, SignUpForm
+from meetings.models import Meeting
+
+# 出席過的會議
+class MeetingRecordInline(admin.TabularInline):
+    model = Meeting.attendance_record.through
+    extra = 1
 
 
 class ParticipantAdmin(UserAdmin):
@@ -46,10 +52,47 @@ class ParticipantAdmin(UserAdmin):
         ),
     )
 
+    inlines = [
+        MeetingRecordInline,
+    ]
+
+
+class ExpertInfoAdmin(admin.ModelAdmin):
+    model = ExpertInfo
+    list_display = ["user", "company", "title", "telephone", "address", "bank_account"]
+
+
+class StudentInfoAdmin(admin.ModelAdmin):
+    model = StudentInfo
+    list_display = ["user", "student_id", "school_system", "grade"]
+
+
+class TeacherInfoAdmin(admin.ModelAdmin):
+    model = TeacherInfo
+    list_display = [
+        "user",
+        "school",
+        "department",
+        "title",
+        "telephone",
+        "address",
+        "bank_account",
+    ]
+
+
+class AssistantInfoAdmin(admin.ModelAdmin):
+    model = AssistantInfo
+    list_display = ["user", "telephone"]
+
+
+class ProfessorInfoAdmin(admin.ModelAdmin):
+    model = ProfessorInfo
+    list_display = ["user", "title", "telephone"]
+
 
 admin.site.register(Participant, ParticipantAdmin)
-admin.site.register(ExpertInfo)
-admin.site.register(StudentInfo)
-admin.site.register(TeacherInfo)
-admin.site.register(AssistantInfo)
-admin.site.register(ProfessorInfo)
+admin.site.register(ExpertInfo, ExpertInfoAdmin)
+admin.site.register(StudentInfo, StudentInfoAdmin)
+admin.site.register(TeacherInfo, TeacherInfoAdmin)
+admin.site.register(AssistantInfo, AssistantInfoAdmin)
+admin.site.register(ProfessorInfo, ProfessorInfoAdmin)

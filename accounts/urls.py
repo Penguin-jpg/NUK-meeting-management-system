@@ -5,6 +5,7 @@ from .views import (
     UserLoginView,
     UserLogoutView,
     no_identity_view,
+    user_not_found_view,
     user_info_view,
     edit_info_view,
     UserListView,
@@ -14,7 +15,8 @@ from .forms import LoginForm
 urlpatterns = [
     path("select/", user_choose_identity_view, name="select-identity"),
     path("register/", user_register_view, name="register"),
-    path("idt_error/", no_identity_view, name="no-identity"),
+    path("identity_error/", no_identity_view, name="no-identity"),
+    path("user_error/", user_not_found_view, name="user-not-found"),
     path(
         "login/",
         UserLoginView.as_view(),
@@ -26,6 +28,6 @@ urlpatterns = [
         name="logout",
     ),
     path("", UserListView.as_view(), name="user-list"),
-    path("info/<int:id>/", user_info_view, name="user-info"),
-    path("info/edit/<int:id>/", edit_info_view, name="edit-info"),
+    path("<int:id>/info/", user_info_view, name="user-info"),
+    path("<int:id>/info/edit/", edit_info_view, name="edit-info"),
 ]

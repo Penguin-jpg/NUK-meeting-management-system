@@ -3,11 +3,18 @@ from django.views.generic import ListView, DetailView, CreateView
 from django.urls import reverse_lazy
 from django.contrib.auth.decorators import login_required, permission_required
 from django.utils.decorators import method_decorator
-from .models import Meeting
-from .forms import MeetingCreateForm, MeetingEditForm
+from .models import *
+from .forms import (
+    MeetingCreateForm,
+    MeetingEditForm,
+    AttendanceFormSet,
+    BaseFormSetHelper,
+)
 from .utils import Calendar
 from datetime import datetime, timedelta
 import calendar
+from crispy_forms.layout import Layout, Field, Submit
+from crispy_forms.bootstrap import UneditableField
 
 # 取得日期
 def get_date(request_day):
@@ -36,7 +43,7 @@ def next_month(date):
 
 # 當找不到某個會議時就顯示這個頁面
 def meeting_not_found_view(request):
-    return render(request, "meetings/no_meeting.html", {})
+    return render(request, "meetings/meeting_not_found.html", {})
 
 
 # 首頁(會用日曆紀錄已建立的會議)
@@ -54,14 +61,19 @@ def home_view(request):
 
 
 # 建立會議
-@method_decorator(login_required(login_url="login"), name="dispatch")
-@method_decorator(
-    permission_required("meetings.add_meeting", raise_exception=True), name="dispatch"
-)
-class MeetingCreateView(CreateView):
-    template_name = "meetings/meeting_create.html"
-    form_class = MeetingCreateForm
-    success_url = reverse_lazy("home")
+@login_required(login_url="login")
+@permission_required("meetings.add_meeting", raise_exception=True)
+def meeting_create_view(request):
+    form = MeetingCreateForm(request.POST or None)
+    if form.is_valid():
+        form.save()
+        return redirect("meeting-list")
+    else:
+        form = MeetingCreateForm()
+
+    context = {"form": form}
+
+    return render(request, "meetings/meeting_create.html", context)
 
 
 # 會議列表
@@ -133,3 +145,33 @@ def meeting_participants_view(request, id):
     }
 
     return render(request, "meetings/meeting_participants.html", context)
+
+
+# 編輯人員出席紀錄
+# https://punchagan.muse-amuse.in/blog/django-modelformset-multiple-saves/
+@login_required(login_url="login")
+@permission_required("meetings.change_meeting", raise_exception=True)
+def edit_attendance_view(request, id):
+    try:
+        meeting = Meeting.objects.get(id=id)
+    except Meeting.DoesNotExist:
+        return redirect("meeting-not-found")
+
+    formset = AttendanceFormSet(request.POST or None, instance=meeting)
+    helper = BaseFormSetHelper()
+    helper.form_id = "edit-attendance-form"
+    helper.layout = Layout(
+        Field("participant"),
+        Field("attend"),
+    )
+
+    if formset.is_valid():
+        formset.save()
+        return redirect("meeting-detail", meeting.id)
+    else:
+        print(formset.errors)
+        formset = AttendanceFormSet(instance=meeting)
+
+    context = {"formset": formset, "helper": helper}
+
+    return render(request, "meetings/edit_attendance.html", context)

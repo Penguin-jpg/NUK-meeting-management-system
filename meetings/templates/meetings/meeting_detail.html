@@ -63,4 +63,20 @@
         <p class="info-text"><a href="{% url 'meeting-participants' meeting.id %}">人員名單</a></p>
     </div>
 </div>
+<div class="row">
+    <div class="col-md-6">
+        <span class="info-text">主席致詞</span>
+    </div>
+    <div class="col-md-6">
+        <p class="info-text">{{ meeting.speech }}</p>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <span class="info-text">出席名單</span>
+    </div>
+    <div class="col-md-6">
+        <p class="info-text"><a href="{% url 'edit-attendance' meeting.id %}">點此觀看名單</a></p>
+    </div>
+</div>
 {% endblock %}

@@ -28,6 +28,12 @@
             <th>
                 <h1>記錄人員</h1>
             </th>
+            <th>
+                <h1>編輯</h1>
+            </th>
+            <th>
+                <h1>出席名單</h1>
+            </th>
         </tr>
     </thead>
     <tbody>
@@ -41,6 +47,12 @@
             <td>{{ meeting.location|safe }}</td>
             <td>{{ meeting.chairman|safe }}</td>
             <td>{{ meeting.minutes_taker|safe }}</td>
+            <td>
+                <a class="btn btn-info" href="{% url 'edit-meeting' meeting.id %}">編輯</a>
+            </td>
+            <td>
+                <a class="btn btn-info" href="{% url 'edit-attendance' meeting.id %}">查看</a>
+            </td>
         </tr>
         {% endfor %}
     </tbody>

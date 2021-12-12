@@ -185,7 +185,7 @@ a {
 
 .table-container {
   text-align: center;
-  overflow: hidden;
+  overflow: auto;
   width: 100%;
   margin: 0 auto;
   display: table;
@@ -238,6 +238,7 @@ a {
   transition-duration: 0.4s;
   transition-property: all;
   transition-timing-function: line;
+  text-align: left;
 }
 
 /* Three image containers (use 25% for four, and 50% for two, etc) */
@@ -294,4 +295,13 @@ a {
 
 .tooltips:hover .tooltiptext {
   visibility: visible;
+}
+
+/* select */
+#edit-attendance-form .select {
+  text-align-last: center;
+  text-align: center;
+  -ms-text-align-last: center;
+  -moz-text-align-last: center;
+  width: 40%;
 }

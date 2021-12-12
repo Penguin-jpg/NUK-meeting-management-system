@@ -1,43 +1,33 @@
 from django.contrib import admin
-from .models import Meeting
+from .models import Meeting, Attendance
+
+# 人員出席紀錄
+class AttendanceInline(admin.TabularInline):
+    model = Attendance
+    extra = 1
 
 
 class MeetingAdmin(admin.ModelAdmin):
-    list_display = ["name", "type", "date"]
+    list_display = [
+        "name",
+        "type",
+        "date",
+        "location",
+        "chairman",
+        "minutes_taker",
+    ]
 
-    fieldsets = (
-        (
-            None,
-            {
-                "fields": (
-                    "name",
-                    "type",
-                    "date",
-                    "location",
-                    "chairman",
-                    "minutes_taker",
-                    "participants",
-                )
-            },
-        ),
-    )
+    inlines = [
+        AttendanceInline,
+    ]
 
-    add_fieldsets = (
-        None,
-        {
-            "fields": (
-                "name",
-                "type",
-                "date",
-                "location",
-                "chairman",
-                "minutes_taker",
-                "participants",
-            )
-        },
-    )
-
+    # 改成橫的顯示
     filter_horizontal = ("participants",)
 
 
+class AttendanceAdmin(admin.ModelAdmin):
+    list_display = ["meeting", "participant"]
+
+
 admin.site.register(Meeting, MeetingAdmin)
+admin.site.register(Attendance, AttendanceAdmin)

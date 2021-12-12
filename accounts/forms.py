@@ -5,11 +5,7 @@ from django.contrib.auth.forms import (
     UsernameField,
     AuthenticationForm,
 )
-from django.contrib.auth import (
-    authenticate,
-    get_user_model,
-    password_validation,
-)
+from django.contrib.auth import authenticate
 from django.core.exceptions import ValidationError
 from .models import *
 from phonenumber_field.formfields import PhoneNumberField
@@ -24,6 +20,18 @@ IDENTITY = (
     (3, "系助理"),
     (4, "系上老師"),
 )
+
+
+class BaseFormHelper(FormHelper):
+    def __init__(self, *args, **kwargs):
+        super(BaseFormHelper, self).__init__(*args, **kwargs)
+        self.form_method = "POST"
+        self.form_class = "blueForms"
+        self.form_class = "form-horizontal"
+        self.label_class = "col-sm-12 col-md-4 col-lg-2"
+        self.field_class = "col-sm-12 col-md-6 col-lg-8"
+
+
 # 申請帳號的表單
 class SignUpForm(UserCreationForm):
     username = forms.CharField(label="使用者名稱", max_length=150, required=True)
@@ -69,12 +77,7 @@ class SignUpForm(UserCreationForm):
 
     def __init__(self, *args, **kwargs):
         super(SignUpForm, self).__init__(*args, **kwargs)
-        self.helper = FormHelper()
-        self.helper.form_method = "post"
-        self.helper.form_class = "blueForms"
-        self.helper.form_class = "form-horizontal"
-        self.helper.label_class = "col-sm-12 col-md-4 col-lg-2"
-        self.helper.field_class = "col-sm-12 col-md-6 col-lg-8"
+        self.helper = BaseFormHelper()
         self.helper.form_id = "register-form"
         self.helper.layout = Layout(
             Field("username", placeholder="請輸入使用者名稱"),
@@ -119,12 +122,7 @@ class LoginForm(AuthenticationForm):
 
     def __init__(self, *args, **kwargs):
         super(LoginForm, self).__init__(*args, **kwargs)
-        self.helper = FormHelper()
-        self.helper.form_method = "post"
-        self.helper.form_class = "blueForms"
-        self.helper.form_class = "form-horizontal"
-        self.helper.label_class = "col-sm-12 col-md-4 col-lg-2"
-        self.helper.field_class = "col-sm-12 col-md-6 col-lg-8"
+        self.helper = BaseFormHelper()
         self.helper.form_id = "login-form"
         self.helper.layout = Layout(
             Field("username", placeholder="請輸入電子信箱", css_class="form-control"),
@@ -168,12 +166,7 @@ class ExpertInfoCreateForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(ExpertInfoCreateForm, self).__init__(*args, **kwargs)
-        self.helper = FormHelper()
-        self.helper.form_method = "post"
-        self.helper.form_class = "blueForms"
-        self.helper.form_class = "form-horizontal"
-        self.helper.label_class = "col-sm-12 col-md-4 col-lg-2"
-        self.helper.field_class = "col-sm-12 col-md-6 col-lg-8"
+        self.helper = BaseFormHelper()
         self.helper.form_id = "expert-register-form"
         self.helper.layout = Layout(
             Field("company", placeholder="請輸入任職公司"),
@@ -206,13 +199,7 @@ class StudentInfoCreateForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(StudentInfoCreateForm, self).__init__(*args, **kwargs)
-        self.helper = FormHelper()
-        self.helper.form_method = "post"
-        self.helper.form_class = "blueForms"
-        self.helper.form_class = "form-horizontal"
-        self.helper.label_class = "col-sm-12 col-md-4 col-lg-2"
-        self.helper.field_class = "col-sm-12 col-md-6 col-lg-8"
-        self.helper.form_id = "student-register-form"
+        self.helper = BaseFormHelper()
         self.helper.layout = Layout(
             Field("student_id", placeholder="請輸入學號"),
             Field("school_system", placeholder="請輸入學制"),
@@ -224,7 +211,7 @@ class StudentInfoCreateForm(forms.ModelForm):
 # 建立校外老師個人資料
 class TeacherInfoCreateForm(forms.ModelForm):
     school = forms.CharField(label="任職學校", max_length=50, required=True)
-    department = forms.CharField(label="系所", max_length=20, required=False)
+    department = forms.CharField(label="系所", max_length=20, required=True)
     title = forms.CharField(label="職稱", max_length=20, required=True)
     telephone = forms.CharField(label="辦公室電話", max_length=20, required=True)
     address = forms.CharField(label="聯絡地址", max_length=100, required=True)
@@ -243,12 +230,7 @@ class TeacherInfoCreateForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(TeacherInfoCreateForm, self).__init__(*args, **kwargs)
-        self.helper = FormHelper()
-        self.helper.form_method = "post"
-        self.helper.form_class = "blueForms"
-        self.helper.form_class = "form-horizontal"
-        self.helper.label_class = "col-sm-12 col-md-4 col-lg-2"
-        self.helper.field_class = "col-sm-12 col-md-6 col-lg-8"
+        self.helper = BaseFormHelper()
         self.helper.form_id = "teacher-register-form"
         self.helper.layout = Layout(
             Field("school", placeholder="請輸入任職學校"),
@@ -273,12 +255,7 @@ class AssistantInfoCreateForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(AssistantInfoCreateForm, self).__init__(*args, **kwargs)
-        self.helper = FormHelper()
-        self.helper.form_method = "post"
-        self.helper.form_class = "blueForms"
-        self.helper.form_class = "form-horizontal"
-        self.helper.label_class = "col-sm-12 col-md-4 col-lg-2"
-        self.helper.field_class = "col-sm-12 col-md-6 col-lg-8"
+        self.helper = BaseFormHelper()
         self.helper.form_id = "assistant-register-form"
         self.helper.layout = Layout(
             Field("telephone", placeholder="請輸入辦公室電話"),
@@ -300,12 +277,7 @@ class ProfessorInfoCreateForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(ProfessorInfoCreateForm, self).__init__(*args, **kwargs)
-        self.helper = FormHelper()
-        self.helper.form_method = "post"
-        self.helper.form_class = "blueForms"
-        self.helper.form_class = "form-horizontal"
-        self.helper.label_class = "col-sm-12 col-md-4 col-lg-2"
-        self.helper.field_class = "col-sm-12 col-md-6 col-lg-8"
+        self.helper = BaseFormHelper()
         self.helper.form_id = "professor-register-form"
         self.helper.layout = Layout(
             Field("title", placeholder="請輸入職級"),
@@ -370,13 +342,8 @@ class ParticipantChangeForm(UserChangeForm):
 
     def __init__(self, *args, **kwargs):
         super(ParticipantChangeForm, self).__init__(*args, **kwargs)
-        self.helper = FormHelper()
-        self.helper.form_method = "post"
-        self.helper.form_class = "blueForms"
-        self.helper.form_class = "form-horizontal"
-        self.helper.label_class = "col-sm-12 col-md-4 col-lg-2"
-        self.helper.field_class = "col-sm-12 col-md-6 col-lg-8"
-        self.helper.form_id = "register-form"
+        self.helper = BaseFormHelper()
+        self.helper.form_id = "user-change-form"
         self.helper.layout = Layout(
             Field("username"),
             Field("email"),

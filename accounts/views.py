@@ -17,9 +17,14 @@ def user_choose_identity_view(request):
     return render(request, "registration/select_identity.html", {})
 
 
-# 若沒有選擇身分直接到註冊頁面時就顯示這個頁面
+# 若沒有選擇身分就直接到註冊頁面時就顯示這個頁面
 def no_identity_view(request):
     return render(request, "registration/no_identity.html", {})
+
+
+# 若找不到使用者就顯示這個頁面
+def user_not_found_view(request):
+    return render(request, "accounts/user_not_found.html", {})
 
 
 # 使用者註冊
@@ -67,16 +72,22 @@ class UserListView(ListView):
 # 使用者個人資料
 @login_required(login_url="login")
 def user_info_view(request, id):
-    user = get_object_or_404(Participant, id=id)
+    try:
+        user = Participant.objects.get(id=id)
+    except Participant.DoesNotExist:
+        return redirect("user-not-found")
     context = {"info": user.get_info()}
     return render(request, "accounts/user_info.html", context)
 
 
-# 建立使用者個人資料
+# 編輯使用者個人資料
 @login_required(login_url="login")
-@permission_required("accounts.change_info", raise_exception=True)
+# @permission_required("accounts.change_info", raise_exception=True)
 def edit_info_view(request, id):
-    user = get_object_or_404(Participant, id=id)
+    try:
+        user = Participant.objects.get(id=id)
+    except Participant.DoesNotExist:
+        return redirect("user-not-found")
     form = get_info_create_form(request.POST or None, user)
 
     if form.is_valid():

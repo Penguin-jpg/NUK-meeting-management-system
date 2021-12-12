@@ -32,7 +32,7 @@
             </td>
             <td>{{ participant.email|safe }}</td>
             <td>{{ participant.get_identity|safe }}</td>
-            <td scope="col">
+            <td>
                 <a class="btn btn-info" href="{% url 'edit-info' participant.id %}">編輯</a>
             </td>
         </tr>
