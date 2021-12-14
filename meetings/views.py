@@ -66,8 +66,8 @@ def home_view(request):
 def meeting_create_view(request):
     form = MeetingCreateForm(request.POST or None)
     if form.is_valid():
-        form.save()
-        return redirect("meeting-list")
+        meeting = form.save()
+        return redirect("meeting-detail", meeting.id)
     else:
         form = MeetingCreateForm()
 
@@ -169,9 +169,14 @@ def edit_attendance_view(request, id):
         formset.save()
         return redirect("meeting-detail", meeting.id)
     else:
-        print(formset.errors)
+        # print(formset.errors)
         formset = AttendanceFormSet(instance=meeting)
 
     context = {"formset": formset, "helper": helper}
 
     return render(request, "meetings/edit_attendance.html", context)
+
+
+# 若在會議尚未開始時點擊出席名單就顯示這個頁面
+def meeting_not_begin_view(request):
+    return render(request, "meetings/meeting_not_begin.html", {})

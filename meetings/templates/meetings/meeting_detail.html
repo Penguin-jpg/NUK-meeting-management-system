@@ -76,7 +76,11 @@
         <span class="info-text">出席名單</span>
     </div>
     <div class="col-md-6">
+        {% if meeting.meeting_begins %}
         <p class="info-text"><a href="{% url 'edit-attendance' meeting.id %}">點此觀看名單</a></p>
+        {% else %}
+        <p class="info-text"><a href="{% url 'meeting-not-begin' %}">點此觀看名單</a></p>
+        {% endif %}
     </div>
 </div>
 {% endblock %}

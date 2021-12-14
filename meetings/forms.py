@@ -89,7 +89,7 @@ class MeetingCreateForm(forms.ModelForm):
 class MeetingEditForm(forms.ModelForm):
     name = forms.CharField(label="會議名稱", max_length=100, required=False)
     type = forms.CharField(label="種類", max_length=20, required=False)
-    date = forms.DateField(
+    date = forms.DateTimeField(
         label="時間",
         widget=forms.DateInput(
             attrs={"type": "datetime-local"}, format="%Y-%m-%dT%H:%M"
@@ -141,15 +141,20 @@ class MeetingEditForm(forms.ModelForm):
 
 # 編輯出席紀錄的表單
 class AttendanceEditForm(forms.ModelForm):
-    # participant是modelchoicefield -> 可以修正了
+    participant = forms.ModelChoiceField(
+        Participant.objects.all(),
+        label="與會人員",
+        disabled=True,
+        required=False,
+    )
+    attend = forms.BooleanField(label="出席", required=False)
+
     class Meta:
         model = Attendance
-        fields = "__all__"
-
-    def __init__(self, *args, **kwargs):
-        super(AttendanceEditForm, self).__init__(*args, **kwargs)
-        # 將participant變成唯讀
-        self.fields["participant"].widget.attrs["disabled"] = "disabled"
+        fields = [
+            "participant",
+            "attend",
+        ]
 
 
 # 將AttendatnceEditForm轉換成InlineFormset

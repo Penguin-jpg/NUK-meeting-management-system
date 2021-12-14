@@ -51,7 +51,11 @@
                 <a class="btn btn-info" href="{% url 'edit-meeting' meeting.id %}">編輯</a>
             </td>
             <td>
+                {% if meeting.meeting_begins %}
                 <a class="btn btn-info" href="{% url 'edit-attendance' meeting.id %}">查看</a>
+                {% else %}
+                <a class="btn btn-info" href="{% url 'meeting-not-begin' %}">查看</a>
+                {% endif %}
             </td>
         </tr>
         {% endfor %}

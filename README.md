@@ -66,6 +66,9 @@
     2. 調整model admin
     3. 新增BaseFormHelper
     4. formset無法儲存(待修正)
+- 2021/12/14
+    1. 修正formset無法儲存的問題(field的required沒有改成False)
+    2. 新增會議尚未開始時的頁面
 
 ### Model
 1. 會議

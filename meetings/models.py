@@ -1,5 +1,7 @@
 from django.db import models
 from django.urls import reverse
+from django.utils import timezone
+from django.conf import settings
 from accounts.models import Participant
 import datetime
 
@@ -31,8 +33,8 @@ class Meeting(models.Model):
         return reverse("meetings:meeting-detail", kwargs={"id": self.id})
 
     def meeting_begins(self):
-        print(self.date)
-        return datetime.datetime.now() > self.date
+        # 需要用timezone aware的時間進行比較
+        return timezone.now() > self.date
 
     # 取得url給日曆用
     @property

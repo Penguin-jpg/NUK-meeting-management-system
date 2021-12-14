@@ -8,6 +8,7 @@ from .views import (
     meeting_not_found_view,
     meeting_participants_view,
     edit_attendance_view,
+    meeting_not_begin_view,
 )
 
 urlpatterns = [
@@ -21,4 +22,5 @@ urlpatterns = [
         "<int:id>/participants/", meeting_participants_view, name="meeting-participants"
     ),
     path("<int:id>/edit/attendance/", edit_attendance_view, name="edit-attendance"),
+    path("meeting_not_begin/", meeting_not_begin_view, name="meeting-not-begin"),
 ]
