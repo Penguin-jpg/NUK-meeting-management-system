@@ -10,7 +10,7 @@ from django.core.exceptions import ValidationError
 from .models import *
 from phonenumber_field.formfields import PhoneNumberField
 from crispy_forms.helper import FormHelper, Layout
-from crispy_forms.layout import Submit, Field
+from crispy_forms.layout import HTML, Hidden, Submit, Field, Div
 
 SEX = ((0, "女性"), (1, "男性"), (2, "其他"))
 IDENTITY = (
@@ -27,9 +27,9 @@ class BaseFormHelper(FormHelper):
         super(BaseFormHelper, self).__init__(*args, **kwargs)
         self.form_method = "POST"
         self.form_class = "blueForms"
-        self.form_class = "form-horizontal"
-        self.label_class = "col-sm-12 col-md-4 col-lg-2"
-        self.field_class = "col-sm-12 col-md-6 col-lg-8"
+        self.form_class = "form-vertical"
+        self.label_class = "col-sm-12 col-md-12 col-lg-12"
+        self.field_class = "col-sm-12 offset-md-2 col-md-8 offset-lg-2 col-lg-8"
 
 
 # 申請帳號的表單
@@ -42,12 +42,12 @@ class SignUpForm(UserCreationForm):
         max_length=200,
         required=True,
         widget=forms.PasswordInput(attrs={"class": "form-control", "type": "password"}),
-        help_text="""<ul style="list-style-type:none; text-align:left">
-                <li><span class="help-text">- 密碼不能和使用者名稱過度相似</span></li>
-                <li><span class="help-text">- 密碼長度至少要 8 個字元</span></li>
-                <li><span class="help-text">- 不能使用極為常見的密碼</span></li>
-                <li><span class="help-text">- 密碼不能只包含數字</span><li>
-            </ul>""",
+        # help_text="""<ul style="list-style-type:none; text-align:left">
+        #         <li><span class="help-text">- 密碼不能和使用者名稱過度相似</span></li>
+        #         <li><span class="help-text">- 密碼長度至少要 8 個字元</span></li>
+        #         <li><span class="help-text">- 不能使用極為常見的密碼</span></li>
+        #         <li><span class="help-text">- 密碼不能只包含數字</span><li>
+        #     </ul>""",
     )
     password2 = forms.CharField(
         label="確認密碼",
@@ -80,14 +80,20 @@ class SignUpForm(UserCreationForm):
         self.helper = BaseFormHelper()
         self.helper.form_id = "register-form"
         self.helper.layout = Layout(
-            Field("username", placeholder="請輸入使用者名稱"),
-            Field("email", placeholder="請輸入電子信箱"),
-            Field("password1", placeholder="請輸入密碼"),
-            Field("password2", placeholder="請再次輸入密碼"),
-            Field("last_name", placeholder="請輸入姓氏"),
-            Field("first_name", placeholder="請輸入名稱"),
-            Field("identity"),
-            Field("phone", placeholder="請輸入連絡電話"),
+            Field("username", placeholder="請輸入使用者名稱", css_class="center-field"),
+            Field("email", placeholder="請輸入電子信箱", css_class="center-field"),
+            Div(
+                Field("password1", placeholder="請輸入密碼", css_class="center-field"),
+                HTML(
+                    "<span class='tooltiptext'><ul><li>test</li><li>test2</li></ul></span>"
+                ),
+                css_class="tooltips",
+            ),
+            Field("password2", placeholder="請再次輸入密碼", css_class="center-field"),
+            Field("last_name", placeholder="請輸入姓氏", css_class="center-field"),
+            Field("first_name", placeholder="請輸入名稱", css_class="center-field"),
+            Field("identity", css_class="center-field"),
+            Field("phone", placeholder="請輸入連絡電話", css_class="center-field"),
         )
         self.helper.add_input(Submit("submit", "註冊", css_class="btn-secondary"))
 
@@ -125,8 +131,12 @@ class LoginForm(AuthenticationForm):
         self.helper = BaseFormHelper()
         self.helper.form_id = "login-form"
         self.helper.layout = Layout(
-            Field("username", placeholder="請輸入電子信箱", css_class="form-control"),
-            Field("password", placeholder="請輸入密碼"),
+            Field(
+                "username",
+                placeholder="請輸入電子信箱",
+                css_class="center-field",
+            ),
+            Field("password", placeholder="請輸入密碼", css_class="center-field"),
         )
         self.helper.add_input(Submit("submit", "登入", css_class="btn-secondary"))
 
@@ -169,11 +179,11 @@ class ExpertInfoCreateForm(forms.ModelForm):
         self.helper = BaseFormHelper()
         self.helper.form_id = "expert-register-form"
         self.helper.layout = Layout(
-            Field("company", placeholder="請輸入任職公司"),
-            Field("title", placeholder="請輸入職稱"),
-            Field("address", placeholder="請輸入聯絡地址"),
-            Field("telephone", placeholder="請輸入辦公室電話"),
-            Field("bank_account", placeholder="請輸入銀行(郵局)帳號"),
+            Field("company", placeholder="請輸入任職公司", css_class="center-field"),
+            Field("title", placeholder="請輸入職稱", css_class="center-field"),
+            Field("address", placeholder="請輸入聯絡地址", css_class="center-field"),
+            Field("telephone", placeholder="請輸入辦公室電話", css_class="center-field"),
+            Field("bank_account", placeholder="請輸入銀行(郵局)帳號", css_class="center-field"),
         )
         self.helper.add_input(Submit("submit", "保存", css_class="btn-secondary"))
 
@@ -201,9 +211,9 @@ class StudentInfoCreateForm(forms.ModelForm):
         super(StudentInfoCreateForm, self).__init__(*args, **kwargs)
         self.helper = BaseFormHelper()
         self.helper.layout = Layout(
-            Field("student_id", placeholder="請輸入學號"),
-            Field("school_system", placeholder="請輸入學制"),
-            Field("grade", placeholder="請輸入年級"),
+            Field("student_id", placeholder="請輸入學號", css_class="center-field"),
+            Field("school_system", placeholder="請輸入學制", css_class="center-field"),
+            Field("grade", placeholder="請輸入年級", css_class="center-field"),
         )
         self.helper.add_input(Submit("submit", "保存", css_class="btn-secondary"))
 
@@ -233,12 +243,12 @@ class TeacherInfoCreateForm(forms.ModelForm):
         self.helper = BaseFormHelper()
         self.helper.form_id = "teacher-register-form"
         self.helper.layout = Layout(
-            Field("school", placeholder="請輸入任職學校"),
-            Field("department", placeholder="請輸入系所"),
-            Field("title", placeholder="請輸入職稱"),
-            Field("telephone", placeholder="請輸入辦公室電話"),
-            Field("address", placeholder="請輸入聯絡地址"),
-            Field("bank_account", placeholder="請輸入銀行(郵局)帳號"),
+            Field("school", placeholder="請輸入任職學校", css_class="center-field"),
+            Field("department", placeholder="請輸入系所", css_class="center-field"),
+            Field("title", placeholder="請輸入職稱", css_class="center-field"),
+            Field("telephone", placeholder="請輸入辦公室電話", css_class="center-field"),
+            Field("address", placeholder="請輸入聯絡地址", css_class="center-field"),
+            Field("bank_account", placeholder="請輸入銀行(郵局)帳號", css_class="center-field"),
         )
         self.helper.add_input(Submit("submit", "保存", css_class="btn-secondary"))
 
@@ -258,7 +268,7 @@ class AssistantInfoCreateForm(forms.ModelForm):
         self.helper = BaseFormHelper()
         self.helper.form_id = "assistant-register-form"
         self.helper.layout = Layout(
-            Field("telephone", placeholder="請輸入辦公室電話"),
+            Field("telephone", placeholder="請輸入辦公室電話", css_class="center-field"),
         )
         self.helper.add_input(Submit("submit", "保存", css_class="btn-secondary"))
 
@@ -280,8 +290,8 @@ class ProfessorInfoCreateForm(forms.ModelForm):
         self.helper = BaseFormHelper()
         self.helper.form_id = "professor-register-form"
         self.helper.layout = Layout(
-            Field("title", placeholder="請輸入職級"),
-            Field("telephone", placeholder="請輸入辦公室電話"),
+            Field("title", placeholder="請輸入職級", css_class="center-field"),
+            Field("telephone", placeholder="請輸入辦公室電話", css_class="center-field"),
         )
         self.helper.add_input(Submit("submit", "保存", css_class="btn-secondary"))
 

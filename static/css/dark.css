@@ -82,11 +82,25 @@ a {
 }
 
 #hint_id_password1 {
-  margin-left: -35px;
+  margin-left: 27%;
 }
 
 #hint_id_school_system {
   margin-left: -35px;
+}
+
+.center-field {
+  margin: auto;
+  display: block;
+  width: 80%;
+}
+
+#edit-attendance-form .select {
+  text-align-last: center;
+  text-align: center;
+  -ms-text-align-last: center;
+  -moz-text-align-last: center;
+  width: 40%;
 }
 
 /* alert */
@@ -295,13 +309,4 @@ a {
 
 .tooltips:hover .tooltiptext {
   visibility: visible;
-}
-
-/* select */
-#edit-attendance-form .select {
-  text-align-last: center;
-  text-align: center;
-  -ms-text-align-last: center;
-  -moz-text-align-last: center;
-  width: 40%;
 }

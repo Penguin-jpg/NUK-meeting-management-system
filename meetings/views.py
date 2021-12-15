@@ -8,13 +8,12 @@ from .forms import (
     MeetingCreateForm,
     MeetingEditForm,
     AttendanceFormSet,
-    BaseFormSetHelper,
+    BaseFormHelper,
 )
 from .utils import Calendar
 from datetime import datetime, timedelta
 import calendar
 from crispy_forms.layout import Layout, Field, Submit
-from crispy_forms.bootstrap import UneditableField
 
 # 取得日期
 def get_date(request_day):
@@ -158,12 +157,13 @@ def edit_attendance_view(request, id):
         return redirect("meeting-not-found")
 
     formset = AttendanceFormSet(request.POST or None, instance=meeting)
-    helper = BaseFormSetHelper()
+    helper = BaseFormHelper()
     helper.form_id = "edit-attendance-form"
     helper.layout = Layout(
         Field("participant"),
         Field("attend"),
     )
+    helper.add_input(Submit("submit", "保存", css_class="btn-secondary"))
 
     if formset.is_valid():
         formset.save()

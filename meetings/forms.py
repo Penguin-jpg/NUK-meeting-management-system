@@ -12,15 +12,6 @@ class CustomModelMultipleChoiceField(forms.ModelMultipleChoiceField):
         return member.last_name + member.first_name
 
 
-class BaseFormSetHelper(BaseFormHelper):
-    def __init__(self, *args, **kwargs):
-        super(BaseFormSetHelper, self).__init__(*args, **kwargs)
-        self.form_class = "form-vertical"
-        self.label_class = "col-sm-12 col-md-12 col-lg-12"
-        self.field_class = "col-sm-12 col-md-12 col-lg-12"
-        self.add_input(Submit("submit", "保存", css_class="btn-secondary"))
-
-
 # 建立會議的表單
 class MeetingCreateForm(forms.ModelForm):
     name = forms.CharField(label="會議名稱", max_length=100, required=True)
@@ -63,14 +54,14 @@ class MeetingCreateForm(forms.ModelForm):
         self.helper.form_id = "meeting-create-form"
         # 共通欄位
         self.helper.layout = Layout(
-            Field("name"),
-            Field("type"),
-            Field("date"),
-            Field("location"),
-            Field("chairman"),
-            Field("minutes_taker"),
-            InlineCheckboxes("participants"),
-            Field("speech"),
+            Field("name", css_class="center-field"),
+            Field("type", css_class="center-field"),
+            Field("date", css_class="center-field"),
+            Field("location", css_class="center-field"),
+            Field("chairman", css_class="center-field"),
+            Field("minutes_taker", css_class="center-field"),
+            InlineCheckboxes("participants", css_class="center-field"),
+            Field("speech", css_class="center-field"),
         )
         self.helper.add_input(Submit("submit", "建立", css_class="btn-secondary"))
 
@@ -127,14 +118,14 @@ class MeetingEditForm(forms.ModelForm):
         self.helper.form_id = "edit-meeting-form"
         # 共通欄位
         self.helper.layout = Layout(
-            Field("name"),
-            Field("type"),
-            Field("date"),
-            Field("location"),
-            Field("chairman"),
-            Field("minutes_taker"),
-            InlineCheckboxes("participants"),
-            Field("speech"),
+            Field("name", css_class="center-field"),
+            Field("type", css_class="center-field"),
+            Field("date", css_class="center-field"),
+            Field("location", css_class="center-field"),
+            Field("chairman", css_class="center-field"),
+            Field("minutes_taker", css_class="center-field"),
+            InlineCheckboxes("participants", css_class="center-field"),
+            Field("speech", css_class="center-field"),
         )
         self.helper.add_input(Submit("submit", "保存", css_class="btn-secondary"))
 

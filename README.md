@@ -69,6 +69,9 @@
 - 2021/12/14
     1. 修正formset無法儲存的問題(field的required沒有改成False)
     2. 新增會議尚未開始時的頁面
+- 2021/12/15
+    1. 將表單的field置中並調整col
+    2. 將help-text都轉成tooltips(待完成)
 
 ### Model
 1. 會議
