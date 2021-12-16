@@ -11,6 +11,20 @@ from phonenumber_field.modelfields import PhoneNumberField
 SEX = ((0, "女性"), (1, "男性"), (2, "其他"))
 IDENTITY = ((0, "業界專家"), (1, "學生代表"), (2, "校外老師"), (3, "系助理"), (4, "系上老師"))
 
+# 用來找出數字對應的字串
+SEX_MAP = {
+    0: "女性",
+    1: "男性",
+    2: "其他",
+}
+IDENTITY_MAP = {
+    0: "業界專家",
+    1: "學生代表",
+    2: "校外老師",
+    3: "系助理",
+    4: "系上老師",
+}
+
 
 class ParticipantManager(UserManager):
     def _create_user(self, username, email, password, **extra_fields):
@@ -69,25 +83,11 @@ class Participant(AbstractUser):
 
     # 取得身分
     def get_identity(self):
-        if self.identity == 0:
-            return "業界專家"
-        elif self.identity == 1:
-            return "學生代表"
-        elif self.identity == 2:
-            return "校外老師"
-        elif self.identity == 3:
-            return "系助理"
-        else:
-            return "系上老師"
+        return IDENTITY_MAP[self.identity]
 
     # 取得性別
     def get_sex(self):
-        if self.sex == 0:
-            return "女性"
-        elif self.sex == 1:
-            return "男性"
-        else:
-            return "其他"
+        return SEX_MAP[self.sex]
 
     # 取得個人資料
     def get_info(self):

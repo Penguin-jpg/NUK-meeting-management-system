@@ -6,6 +6,8 @@ from crispy_forms.helper import Layout
 from crispy_forms.layout import Submit, Field
 from crispy_forms.bootstrap import InlineCheckboxes
 
+TYPE = ((0, "系務會議"), (1, "系教評會"), (2, "系課程委員會"), (3, "招生暨學生事務委員會"), (4, "系發展委員會"))
+
 
 class CustomModelMultipleChoiceField(forms.ModelMultipleChoiceField):
     def label_from_instance(self, member):
@@ -15,7 +17,7 @@ class CustomModelMultipleChoiceField(forms.ModelMultipleChoiceField):
 # 建立會議的表單
 class MeetingCreateForm(forms.ModelForm):
     name = forms.CharField(label="會議名稱", max_length=100, required=True)
-    type = forms.CharField(label="種類", max_length=20, required=True)
+    type = forms.ChoiceField(label="種類", choices=TYPE, required=True)
     date = forms.DateTimeField(
         label="時間",
         widget=forms.DateInput(
@@ -79,7 +81,7 @@ class MeetingCreateForm(forms.ModelForm):
 # 編輯會議的表單
 class MeetingEditForm(forms.ModelForm):
     name = forms.CharField(label="會議名稱", max_length=100, required=False)
-    type = forms.CharField(label="種類", max_length=20, required=False)
+    type = forms.ChoiceField(label="種類", choices=TYPE, required=False)
     date = forms.DateTimeField(
         label="時間",
         widget=forms.DateInput(

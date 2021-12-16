@@ -5,10 +5,12 @@ from django.conf import settings
 from accounts.models import Participant
 import datetime
 
+TYPE = ((0, "系務會議"), (1, "系教評會"), (2, "系課程委員會"), (3, "招生暨學生事務委員會"), (4, "系發展委員會"))
+
 # 會議模型
 class Meeting(models.Model):
     name = models.CharField(max_length=100, unique=True, verbose_name="會議名稱")
-    type = models.CharField(max_length=20, verbose_name="會議種類")
+    type = models.IntegerField(choices=TYPE, default=0, verbose_name="會議種類")
     date = models.DateTimeField(verbose_name="開會日期")
     location = models.CharField(max_length=100, verbose_name="會議地點")
     chairman = models.CharField(max_length=20, verbose_name="主席")  # 可能會改成relation field

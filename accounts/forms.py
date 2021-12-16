@@ -42,12 +42,14 @@ class SignUpForm(UserCreationForm):
         max_length=200,
         required=True,
         widget=forms.PasswordInput(attrs={"class": "form-control", "type": "password"}),
-        # help_text="""<ul style="list-style-type:none; text-align:left">
-        #         <li><span class="help-text">- 密碼不能和使用者名稱過度相似</span></li>
-        #         <li><span class="help-text">- 密碼長度至少要 8 個字元</span></li>
-        #         <li><span class="help-text">- 不能使用極為常見的密碼</span></li>
-        #         <li><span class="help-text">- 密碼不能只包含數字</span><li>
-        #     </ul>""",
+        # help_text="""
+        #     <ul style="list-style-type:none; text-align:left">
+        #     <li><span class="help-text">- 密碼不能和使用者名稱過度相似</span></li>
+        #     <li><span class="help-text">- 密碼長度至少要 8 個字元</span></li>
+        #     <li><span class="help-text">- 不能使用極為常見的密碼</span></li>
+        #     <li><span class="help-text">- 密碼不能只包含數字</span><li>
+        #     </ul>
+        #     """,
     )
     password2 = forms.CharField(
         label="確認密碼",
@@ -82,12 +84,14 @@ class SignUpForm(UserCreationForm):
         self.helper.layout = Layout(
             Field("username", placeholder="請輸入使用者名稱", css_class="center-field"),
             Field("email", placeholder="請輸入電子信箱", css_class="center-field"),
-            Div(
-                Field("password1", placeholder="請輸入密碼", css_class="center-field"),
-                HTML(
-                    "<span class='tooltiptext'><ul><li>test</li><li>test2</li></ul></span>"
-                ),
-                css_class="tooltips",
+            Field("password1", placeholder="請輸入密碼", css_class="center-field"),
+            HTML(
+                """
+                <li class="help-text"><span>密碼不能和使用者名稱過度相似</span></li>
+                <li class="help-text"><span>密碼長度至少要 8 個字元</span></li>
+                <li class="help-text"><span>不能使用極為常見的密碼</span></li>
+                <li class="help-text"><span>密碼不能只包含數字</span></li>
+            """
             ),
             Field("password2", placeholder="請再次輸入密碼", css_class="center-field"),
             Field("last_name", placeholder="請輸入姓氏", css_class="center-field"),
@@ -194,7 +198,6 @@ class StudentInfoCreateForm(forms.ModelForm):
     school_system = forms.CharField(
         label="學制",
         max_length=10,
-        help_text="""<ul style="list-style-type:none; text-align:left"><li><span class="help-text">例如：大學部、研究所</span></li></ul>""",
         required=True,
     )
     grade = forms.CharField(label="年級", max_length=10, required=True)
@@ -213,6 +216,9 @@ class StudentInfoCreateForm(forms.ModelForm):
         self.helper.layout = Layout(
             Field("student_id", placeholder="請輸入學號", css_class="center-field"),
             Field("school_system", placeholder="請輸入學制", css_class="center-field"),
+            HTML(
+                '<li class="help-text"><span class="help-text">例如：大學部、研究所</span></li>'
+            ),
             Field("grade", placeholder="請輸入年級", css_class="center-field"),
         )
         self.helper.add_input(Submit("submit", "保存", css_class="btn-secondary"))

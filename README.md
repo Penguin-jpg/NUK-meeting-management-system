@@ -71,7 +71,9 @@
     2. 新增會議尚未開始時的頁面
 - 2021/12/15
     1. 將表單的field置中並調整col
-    2. 將help-text都轉成tooltips(待完成)
+- 2021/12/17
+    1. 將會議種類改成IntegerField(可以用選的)
+    2. 調整help-text的顯示方式
 
 ### Model
 1. 會議

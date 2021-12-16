@@ -78,7 +78,10 @@ a {
 }
 
 .help-text {
-  font-size: 20px;
+  display: block;
+  margin-top: -10px;
+  margin-bottom: 10px;
+  font-size: 15px;
 }
 
 #hint_id_password1 {

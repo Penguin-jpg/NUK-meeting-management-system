@@ -10,7 +10,6 @@ from .views import (
     edit_info_view,
     UserListView,
 )
-from .forms import LoginForm
 
 urlpatterns = [
     path("select/", user_choose_identity_view, name="select-identity"),
