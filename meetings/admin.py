@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Meeting, Attendance
+from .models import *
 
 # 人員出席紀錄
 class AttendanceInline(admin.TabularInline):
@@ -31,3 +31,6 @@ class AttendanceAdmin(admin.ModelAdmin):
 
 admin.site.register(Meeting, MeetingAdmin)
 admin.site.register(Attendance, AttendanceAdmin)
+admin.site.register(ExtemporeMotion)
+admin.site.register(Announcement)
+admin.site.register(Discussion)

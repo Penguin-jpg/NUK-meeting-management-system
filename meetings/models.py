@@ -7,6 +7,15 @@ import datetime
 
 TYPE = ((0, "系務會議"), (1, "系教評會"), (2, "系課程委員會"), (3, "招生暨學生事務委員會"), (4, "系發展委員會"))
 
+# 用來找出數字對應的字串
+TYPE_MAP = {
+    0: "系務會議",
+    1: "系教評會",
+    2: "系課程委員會",
+    3: "招生暨學生事務委員會",
+    4: "系發展委員會",
+}
+
 # 會議模型
 class Meeting(models.Model):
     name = models.CharField(max_length=100, unique=True, verbose_name="會議名稱")
@@ -38,6 +47,9 @@ class Meeting(models.Model):
         # 需要用timezone aware的時間進行比較
         return timezone.now() > self.date
 
+    def get_type(self):
+        return TYPE_MAP[self.type]
+
     # 取得url給日曆用
     @property
     def get_url(self):
@@ -58,27 +70,31 @@ class Meeting(models.Model):
 
 # 出席紀錄
 class Attendance(models.Model):
-    meeting = models.ForeignKey(Meeting, on_delete=models.DO_NOTHING, verbose_name="會議")
+    meeting = models.ForeignKey(
+        Meeting, null=True, on_delete=models.SET_NULL, verbose_name="會議"
+    )
     participant = models.ForeignKey(
         Participant, on_delete=models.DO_NOTHING, verbose_name="與會人員"
     )
     attend = models.BooleanField(default=False, verbose_name="出席")
 
+
 # 臨時動議
 class ExtemporeMotion(models.Model):
-    meeting  = models.ForeignKey(Meeting, on_delete=models.DO_NOTHING, verbose_name="會議")
+    meeting = models.ForeignKey(Meeting, on_delete=models.DO_NOTHING, verbose_name="會議")
     proposer = models.CharField(max_length=100, verbose_name="提案人")
-    content  = models.CharField(max_length=500, verbose_name="內容")
+    content = models.CharField(max_length=500, verbose_name="內容")
+
 
 # 報告事項
 class Announcement(models.Model):
     meeting = models.ForeignKey(Meeting, on_delete=models.DO_NOTHING, verbose_name="會議")
     content = models.CharField(max_length=500, verbose_name="內容")
 
+
 # 討論事項
 class Discussion(models.Model):
-     meeting     = models.ForeignKey(Meeting, on_delete=models.DO_NOTHING, verbose_name="會議")
-     topic       = models.CharField(max_length=25, verbose_name="案由")
-     description = models.CharField(max_length=500, verbose_name="說明")
-     resolution  = models.CharField(max_length=150, verbose_name="決議")
-    
+    meeting = models.ForeignKey(Meeting, on_delete=models.DO_NOTHING, verbose_name="會議")
+    topic = models.CharField(max_length=25, verbose_name="案由")
+    description = models.CharField(max_length=500, verbose_name="說明")
+    resolution = models.CharField(max_length=150, verbose_name="決議")

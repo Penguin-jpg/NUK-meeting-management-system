@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}編輯報告事項{% endblock %}
+{% block title %} 編輯報告事項 {% endblock %}
 
 {% load crispy_forms_tags %}
 
@@ -10,5 +10,5 @@
 <br>
 <br>
 {% csrf_token %}
-{% crispy form %}
+{% crispy formset helper %}
 {% endblock %}

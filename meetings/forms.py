@@ -1,7 +1,4 @@
 from django import forms
-from django.core.files.base import ContentFile
-from django.db.models.expressions import F
-from django.db.models.query import QuerySet
 from .models import *
 from accounts.models import Participant
 from accounts.forms import BaseFormHelper
@@ -135,6 +132,18 @@ class MeetingEditForm(forms.ModelForm):
         )
         self.helper.add_input(Submit("submit", "保存", css_class="btn-secondary"))
 
+    def save(self, commit=True):
+        meeting = super().save(commit=commit)
+        participants = self.cleaned_data["participants"]
+
+        for participant in participants:
+            # 如果找不到該與會人員的出席紀錄就新增
+            if not Attendance.objects.filter(meeting=meeting, participant=participant):
+                Attendance.objects.create(meeting=meeting, participant=participant)
+        if commit:
+            meeting.save()
+        return meeting
+
 
 # 編輯出席紀錄的表單
 class AttendanceEditForm(forms.ModelForm):
@@ -159,19 +168,17 @@ AttendanceFormSet = forms.inlineformset_factory(
     Meeting, Attendance, form=AttendanceEditForm, extra=0
 )
 
-# 建立臨時動議的表單 
+# 建立臨時動議的表單
 class ExtemporeMotionCreateForm(forms.ModelForm):
-    meeting  = forms.ModelChoiceField(queryset=Meeting.objects.all(), label="會議名稱", disabled=True, required=False)
+    meeting = forms.ModelChoiceField(
+        queryset=Meeting.objects.all(), label="會議名稱", disabled=True, required=False
+    )
     proposer = forms.CharField(label="提案人", max_length=20, required=True)
-    content  = forms.CharField(label="內容", max_length=500, required=True)
+    content = forms.CharField(label="內容", max_length=500, required=True)
 
     class Meta:
         model = ExtemporeMotion
-        fields = [
-            "meeting",
-            "proposer",
-            "content"
-        ]
+        fields = ["meeting", "proposer", "content"]
 
     def __init__(self, *args, **kwargs):
         super(ExtemporeMotionCreateForm, self).__init__(*args, **kwargs)
@@ -181,40 +188,39 @@ class ExtemporeMotionCreateForm(forms.ModelForm):
         self.helper.layout = Layout(
             Field("meeting", css_class="center-field"),
             Field("proposer", css_class="center-field"),
-            Field("content", css_class="center-field")
+            Field("content", css_class="center-field"),
         )
         self.helper.add_input(Submit("submit", "建立", css_class="btn-secondary"))
 
-# 編輯臨時動議的表單 
+
+# 編輯臨時動議的表單
 class ExtemporeMotionEditForm(forms.ModelForm):
-    meeting  = forms.ModelChoiceField(queryset=Meeting.objects.all(), label="會議名稱", disabled=True, required=False)
+    meeting = forms.ModelChoiceField(
+        queryset=Meeting.objects.all(), label="會議名稱", disabled=True, required=False
+    )
     proposer = forms.CharField(label="提案人", max_length=20, required=True)
-    content  = forms.CharField(label='內容', max_length=500, required=True)
+    content = forms.CharField(label="內容", max_length=500, required=True)
 
     class Meta:
         model = ExtemporeMotion
-        fields = [
-            "meeting",
-            "proposer",
-            "content"
-        ]
+        fields = ["meeting", "proposer", "content"]
+
 
 # 將 ExtemporeMotionEditForm 轉換成 inlineFormset
 ExtemporeMotionFormSet = forms.inlineformset_factory(
     Meeting, ExtemporeMotion, form=ExtemporeMotionEditForm, extra=0
 )
 
-# 建立報告事項的表單 
+# 建立報告事項的表單
 class AnnouncementCreateForm(forms.ModelForm):
-    meeting = forms.ModelChoiceField(queryset = Meeting.objects.all(), label="會議名稱", disabled=True, required=False)
-    content = forms.CharField(label='內容', max_length=500, required=True)
+    meeting = forms.ModelChoiceField(
+        queryset=Meeting.objects.all(), label="會議名稱", disabled=True, required=False
+    )
+    content = forms.CharField(label="內容", max_length=500, required=True)
 
     class Meta:
         model = Announcement
-        fields = [
-            "meeting",
-            "content"
-        ]
+        fields = ["meeting", "content"]
 
     def __init__(self, *args, **kwargs):
         super(AnnouncementCreateForm, self).__init__(*args, **kwargs)
@@ -223,42 +229,40 @@ class AnnouncementCreateForm(forms.ModelForm):
         # 共通欄位
         self.helper.layout = Layout(
             Field("meeting", css_class="center-field"),
-            Field("content", css_class="center-field")
+            Field("content", css_class="center-field"),
         )
         self.helper.add_input(Submit("submit", "建立", css_class="btn-secondary"))
 
-# 編輯報告事項的表單 
+
+# 編輯報告事項的表單
 class AnnouncementEditForm(forms.ModelForm):
-    meeting = forms.ModelChoiceField(queryset=Meeting.objects.all(), label="會議名稱", disabled=True, required=False)
-    content = forms.CharField(label='內容', max_length=500, required=True)
+    meeting = forms.ModelChoiceField(
+        queryset=Meeting.objects.all(), label="會議名稱", disabled=True, required=False
+    )
+    content = forms.CharField(label="內容", max_length=500, required=True)
 
     class Meta:
         model = Announcement
-        fields = [
-            "meeting",
-            "content"
-        ]
+        fields = ["meeting", "content"]
+
 
 # 將 AnnouncementEditForm 轉換成 inlineFormset
 AnnouncementFormSet = forms.inlineformset_factory(
     Meeting, Announcement, form=AnnouncementEditForm, extra=0
 )
 
-# 建立討論事項的表單 
+# 建立討論事項的表單
 class DiscussionCreateForm(forms.ModelForm):
-    meeting     = forms.ModelChoiceField(queryset=Meeting.objects.all() , label="會議名稱", disabled=True, required=False)
-    topic       = forms.CharField(label="案由", max_length=25, required=True)
-    description = forms.CharField(label='說明', max_length=500, required=True)
-    resolution  = forms.CharField(label='決議', max_length=150, required=True)
+    meeting = forms.ModelChoiceField(
+        queryset=Meeting.objects.all(), label="會議名稱", disabled=True, required=False
+    )
+    topic = forms.CharField(label="案由", max_length=25, required=True)
+    description = forms.CharField(label="說明", max_length=500, required=True)
+    resolution = forms.CharField(label="決議", max_length=150, required=True)
 
     class Meta:
         model = Discussion
-        fields = [
-            "meeting",
-            "topic",
-            "description",
-            "resolution"
-        ]
+        fields = ["meeting", "topic", "description", "resolution"]
 
     def __init__(self, *args, **kwargs):
         super(DiscussionCreateForm, self).__init__(*args, **kwargs)
@@ -269,25 +273,24 @@ class DiscussionCreateForm(forms.ModelForm):
             Field("meeting", css_class="center-field"),
             Field("topic", css_class="center-field"),
             Field("description", css_class="center-field"),
-            Field("resolution", css_class="center-field")
+            Field("resolution", css_class="center-field"),
         )
         self.helper.add_input(Submit("submit", "建立", css_class="btn-secondary"))
 
+
 # 編輯討論事項的表單
 class DiscussionEditForm(forms.ModelForm):
-    meeting     = forms.ModelChoiceField(queryset=Meeting.objects.all(), label="會議名稱", disabled=True, required=False)
-    topic       = forms.CharField(label='案由', max_length=25, required=True)
-    description = forms.CharField(label='說明', max_length=500, required=True)
-    resolution  = forms.CharField(label='決議', max_length=150, required=True)
+    meeting = forms.ModelChoiceField(
+        queryset=Meeting.objects.all(), label="會議名稱", disabled=True, required=False
+    )
+    topic = forms.CharField(label="案由", max_length=25, required=True)
+    description = forms.CharField(label="說明", max_length=500, required=True)
+    resolution = forms.CharField(label="決議", max_length=150, required=True)
 
     class Meta:
         model = Discussion
-        fields = [
-            "meeting",
-            "topic",
-            "description",
-            "resolution"
-        ]
+        fields = ["meeting", "topic", "description", "resolution"]
+
 
 # 將 DiscussionEditForm 轉換成 inlineFormset
 DiscussionFormSet = forms.inlineformset_factory(
