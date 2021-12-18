@@ -83,4 +83,108 @@
         {% endif %}
     </div>
 </div>
+
+<br>
+<h1>報告事項 <a class="btn btn-info" href="{% url 'announcement-create' meeting.id %}">新增</a> </h1>
+<br>
+<br>
+
+{% for announcement in announcements %}
+<div class="row">
+    <div class="col-md-6">
+        <span class="info-text">內容</span>
+    </div>
+    <div class="col-md-6">
+        <p class="info-text">{{ announcement.content }}</p>
+    </div>
+</div>
+{% endfor %}
+
+<div class="row">
+    <div class="col-md-6">
+        <a class="btn btn-info" href="{% url 'edit-announcement' meeting.id %}">編輯</a>
+    </div>
+    <div class="col-md-6">
+        <a class="btn btn-info" >刪除</a>
+    </div>
+</div>
+
+<br>
+<br>
+<h1>討論事項 <a class="btn btn-info" href="{% url 'discussion-create' meeting.id %}">新增</a> </h1>
+<br>
+<br>
+
+{% for discussion in discussions %}
+<div class="row">
+    <div class="col-md-6">
+        <span class="info-text">案由</span>
+    </div>
+    <div class="col-md-6">
+        <p class="info-text">{{ discussion.topic }}</p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <span class="info-text">說明</span>
+    </div>
+    <div class="col-md-6">
+        <p class="info-text">{{ discussion.description }}</p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <span class="info-text">決議</span>
+    </div>
+    <div class="col-md-6">
+        <p class="info-text">{{ discussion.resolution }}</p>
+    </div>
+</div>
+{% endfor %}
+
+<div class="row">
+    <div class="col-md-6">
+        <a class="btn btn-info" href="{% url 'edit-discussion' meeting.id %}">編輯</a>
+    </div>
+    <div class="col-md-6">
+        <a class="btn btn-info" >刪除</a>
+    </div>
+</div>
+
+<br>
+<br>
+<h1>臨時動議 <a class="btn btn-info" href="{% url 'extemporeMotion-create' meeting.id %}">新增</a> </h1>
+<br>
+<br>
+
+{% for extempore_motion in extempore_motions %}
+<div class="row">
+    <div class="col-md-6">
+        <span class="info-text">提案人</span>
+    </div>
+    <div class="col-md-6">
+        <p class="info-text">{{ extempore_motion.proposer }}</p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <span class="info-text">內容</span>
+    </div>
+    <div class="col-md-6">
+        <p class="info-text">{{ extempore_motion.content }}</p>
+    </div>
+</div>
+{% endfor %}
+
+<div class="row">
+    <div class="col-md-6">
+        <a class="btn btn-info" href="{% url 'edit-extemporeMotion' meeting.id %}">編輯</a>
+    </div>
+    <div class="col-md-6">
+        <a class="btn btn-info" >刪除</a>
+    </div>
+</div>
 {% endblock %}

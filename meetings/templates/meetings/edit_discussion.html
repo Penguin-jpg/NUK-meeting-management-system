@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block title %}編輯討論事項{% endblock %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+<br>
+<h1>編輯討論事項</h1>
+<br>
+<br>
+{% csrf_token %}
+{% crispy form %}
+{% endblock %}
