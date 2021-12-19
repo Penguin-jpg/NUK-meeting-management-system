@@ -70,7 +70,7 @@ def home_view(request):
 
 # 建立會議
 @login_required(login_url="login")
-@permission_required("meetings.add_meeting", raise_exception=True)
+# @permission_required("meetings.add_meeting", raise_exception=True)
 def meeting_create_view(request):
     form = MeetingCreateForm(request.POST or None)
     if form.is_valid():

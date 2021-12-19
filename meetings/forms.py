@@ -3,16 +3,13 @@ from .models import *
 from accounts.models import Participant
 from accounts.forms import BaseFormHelper
 from crispy_forms.helper import Layout
-from crispy_forms.layout import Submit, Field
+from crispy_forms.layout import Submit, Field, Div
 from crispy_forms.bootstrap import InlineCheckboxes
+
+# InlineCheckboxes.template = "meetings/mycheckboxselectmultiple.html"
 
 
 TYPE = ((0, "系務會議"), (1, "系教評會"), (2, "系課程委員會"), (3, "招生暨學生事務委員會"), (4, "系發展委員會"))
-
-
-class CustomModelMultipleChoiceField(forms.ModelMultipleChoiceField):
-    def label_from_instance(self, member):
-        return member.last_name + member.first_name
 
 
 # 建立會議的表單
@@ -29,12 +26,13 @@ class MeetingCreateForm(forms.ModelForm):
     location = forms.CharField(label="地點", max_length=100, required=True)
     chairman = forms.CharField(label="主席", max_length=20, required=True)
     minutes_taker = forms.CharField(label="記錄人員", max_length=20, required=True)
-    participants = CustomModelMultipleChoiceField(
+    participants = forms.ModelMultipleChoiceField(
         label="與會人員",
         queryset=Participant.objects.all(),
-        widget=forms.CheckboxSelectMultiple,
+        widget=forms.CheckboxSelectMultiple(),
+        required=True,
     )
-    speech = forms.CharField(label="主席致詞", max_length=500, required=False)
+    speech = forms.CharField(label="主席致詞", max_length=500, initial="略", required=False)
 
     class Meta:
         model = Meeting
@@ -63,7 +61,7 @@ class MeetingCreateForm(forms.ModelForm):
             Field("location", css_class="center-field"),
             Field("chairman", css_class="center-field"),
             Field("minutes_taker", css_class="center-field"),
-            InlineCheckboxes("participants", css_class="center-field"),
+            InlineCheckboxes("participants", css_class="checkboxes-field"),
             Field("speech", css_class="center-field"),
         )
         self.helper.add_input(Submit("submit", "建立", css_class="btn-secondary"))
@@ -93,7 +91,7 @@ class MeetingEditForm(forms.ModelForm):
     location = forms.CharField(label="地點", max_length=100, required=False)
     chairman = forms.CharField(label="主席", max_length=20, required=False)
     minutes_taker = forms.CharField(label="記錄人員", max_length=20, required=False)
-    participants = CustomModelMultipleChoiceField(
+    participants = forms.ModelMultipleChoiceField(
         label="與會人員",
         queryset=Participant.objects.all(),
         widget=forms.CheckboxSelectMultiple,
@@ -127,7 +125,7 @@ class MeetingEditForm(forms.ModelForm):
             Field("location", css_class="center-field"),
             Field("chairman", css_class="center-field"),
             Field("minutes_taker", css_class="center-field"),
-            InlineCheckboxes("participants", css_class="center-field"),
+            InlineCheckboxes("participants"),
             Field("speech", css_class="center-field"),
         )
         self.helper.add_input(Submit("submit", "保存", css_class="btn-secondary"))

@@ -53,6 +53,11 @@ a {
   border-color: #555;
 }
 
+.checkboxes-field {
+  max-height: 300px;
+  overflow-y: scroll;
+}
+
 /* navbar */
 .dropdown:hover .dropdown-menu {
   display: block;
