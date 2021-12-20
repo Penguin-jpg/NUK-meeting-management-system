@@ -81,20 +81,20 @@ class Attendance(models.Model):
 
 # 臨時動議
 class ExtemporeMotion(models.Model):
-    meeting = models.ForeignKey(Meeting, on_delete=models.DO_NOTHING, verbose_name="會議")
+    meeting = models.ForeignKey(Meeting, null=True, on_delete=models.SET_NULL, verbose_name="會議")
     proposer = models.CharField(max_length=100, verbose_name="提案人")
     content = models.CharField(max_length=500, verbose_name="內容")
 
 
 # 報告事項
 class Announcement(models.Model):
-    meeting = models.ForeignKey(Meeting, on_delete=models.DO_NOTHING, verbose_name="會議")
+    meeting = models.ForeignKey(Meeting, null=True, on_delete=models.SET_NULL, verbose_name="會議")
     content = models.CharField(max_length=500, verbose_name="內容")
 
 
 # 討論事項
 class Discussion(models.Model):
-    meeting = models.ForeignKey(Meeting, on_delete=models.DO_NOTHING, verbose_name="會議")
+    meeting = models.ForeignKey(Meeting, null=True, on_delete=models.SET_NULL, verbose_name="會議")
     topic = models.CharField(max_length=25, verbose_name="案由")
     description = models.CharField(max_length=500, verbose_name="說明")
     resolution = models.CharField(max_length=150, verbose_name="決議")

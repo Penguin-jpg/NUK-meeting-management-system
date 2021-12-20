@@ -9,7 +9,16 @@
 <h1>建立新報告事項</h1>
 <br>
 <br>
-<p style="font-size: 18px">帶有<span style="color: red">*</span>的欄位為必填欄位</p>
-{% csrf_token %}
-{% crispy form %}
+<form action="{% url 'announcement-create' meeting.id %}" method="POST">
+    {% csrf_token %}
+    {% crispy formset helper %}
+    <div class="row">
+        <div class="form-actions col-md-6">
+            <input type="submit" name="submit" value="更新" class="btn btn-primary" id="submit-save">
+        </div>
+        <div class="col-md-6">
+            <a class="btn btn-info" href="{% url 'discussion-create' meeting.id %}">繼續</a>
+        </div>
+    </div>
+</form>
 {% endblock %}

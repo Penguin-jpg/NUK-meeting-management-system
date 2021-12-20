@@ -75,7 +75,7 @@ def meeting_create_view(request):
     form = MeetingCreateForm(request.POST or None)
     if form.is_valid():
         meeting = form.save()
-        return redirect("meeting-detail", meeting.id)
+        return redirect("announcement-create", meeting.id)
     else:
         form = MeetingCreateForm()
 
@@ -231,23 +231,51 @@ def meeting_not_begin_view(request):
     return render(request, "meetings/meeting_not_begin.html", {})
 
 
+#--------------------------------------------------------------------------------------
+# # 建立臨時動議
+# @login_required(login_url="login")
+# # @permission_required("meetings.add_meeting", raise_exception=True)
+# def extemporeMotion_create_view(request, id):
+#     try:
+#         meeting = Meeting.objects.get(id=id)
+#     except Meeting.DoesNotExist:
+#         return redirect("meeting-not-found")
+#     form = ExtemporeMotionCreateForm(request.POST or None, initial={"meeting": meeting})
+#     if form.is_valid():
+#         extempore_motion = form.save()
+#         return redirect("meeting-detail", id)
+#     else:
+#         form = ExtemporeMotionCreateForm(initial={"meeting": meeting})
+
+#     context = {"form": form}
+
+#     return render(request, "meetings/extempore_motion_create.html", context)
+#---------------------------------------------------------------------------------------
+
+
 # 建立臨時動議
 @login_required(login_url="login")
-# @permission_required("meetings.add_meeting", raise_exception=True)
+# @permission_required("meetings.change_meeting", raise_exception=True)
 def extemporeMotion_create_view(request, id):
     try:
         meeting = Meeting.objects.get(id=id)
-    except Discussion.DoesNotExist:
-        return redirect("discussion-not-found")
-    form = ExtemporeMotionCreateForm(request.POST or None, initial={"meeting": meeting})
-    if form.is_valid():
-        extempore_motion = form.save()
-        return redirect("meeting-detail", id)
+    except Meeting.DoesNotExist:
+        return redirect("meeting-not-found")
+
+    formset = ExtemporeMotionFormSet(request.POST or None, instance=meeting)
+    helper = BaseFormHelper()
+    helper.form_id = "edit-extemporemotion-form"
+    helper.form_tag = False
+    helper.layout = Layout(Field("meeting"), Field("proposer"), Field("content"), Field("DELETE"))
+    #helper.add_input(Submit("submit", "保存", css_class="btn-secondary")) # 拿去前端
+
+    if formset.is_valid():
+        formset.save()
+        return redirect("extemporeMotion-create", id)
     else:
-        form = ExtemporeMotionCreateForm(initial={"meeting": meeting})
+        formset = ExtemporeMotionFormSet(instance=meeting)
 
-    context = {"form": form}
-
+    context = {"formset": formset, "helper": helper, "meeting":meeting}
     return render(request, "meetings/extempore_motion_create.html", context)
 
 
@@ -257,13 +285,13 @@ def extemporeMotion_create_view(request, id):
 def edit_extempore_motion_view(request, id):
     try:
         meeting = Meeting.objects.get(id=id)
-    except ExtemporeMotion.DoesNotExist:
-        return redirect("discussion-not-found")
+    except Meeting.DoesNotExist:
+        return redirect("meeting-not-found")
 
     formset = ExtemporeMotionFormSet(request.POST or None, instance=meeting)
     helper = BaseFormHelper()
     helper.form_id = "edit-extemporemotion-form"
-    helper.layout = Layout(Field("meeting"), Field("proposer"), Field("content"))
+    helper.layout = Layout(Field("meeting"), Field("proposer"), Field("content"), Field("DELETE"))
     helper.add_input(Submit("submit", "保存", css_class="btn-secondary"))
 
     if formset.is_valid():
@@ -277,23 +305,73 @@ def edit_extempore_motion_view(request, id):
     return render(request, "meetings/edit_extempore_motion.html", context)
 
 
+#---------------------------------------------------------------------------------------
+# # 從建立會議來的建立報告事項
+# @login_required(login_url="login")
+# # @permission_required("meetings.add_meeting", raise_exception=True)
+# def meeting_announcement_create_view(request, id):
+#     try:
+#         meeting = Meeting.objects.get(id=id)
+#     except Meeting.DoesNotExist:
+#         return redirect("meeting-not-found")
+#     form = AnnouncementCreateForm(request.POST or None, initial={"meeting": meeting})
+#     if form.is_valid(): 
+#         announcement = form.save()
+#         return redirect("announcement-discussion-create", id) 
+#     else:
+#         form = AnnouncementCreateForm(initial={"meeting": meeting})
+
+#     context = {"form": form}
+
+#     return render(request, "meetings/announcement_create.html", context)
+#---------------------------------------------------------------------------------------
+
+
+#---------------------------------------------------------------------------------------
+# 從新增按鈕來的建立報告事項
+# @login_required(login_url="login")
+# # @permission_required("meetings.add_meeting", raise_exception=True)
+# def announcement_create_view(request, id):
+#     try:
+#         meeting = Meeting.objects.get(id=id)
+#     except Meeting.DoesNotExist:
+#         return redirect("meeting-not-found")
+#     form = AnnouncementCreateForm(request.POST or None, initial={"meeting": meeting})
+#     if form.is_valid(): 
+#         announcement = form.save()
+#         return redirect("meeting-detail", id) 
+#     else:
+#         form = AnnouncementCreateForm(initial={"meeting": meeting})
+
+#     context = {"form": form}
+
+#     return render(request, "meetings/announcement_create.html", context)
+#---------------------------------------------------------------------------------------
+
+
 # 建立報告事項
 @login_required(login_url="login")
-# @permission_required("meetings.add_meeting", raise_exception=True)
+# @permission_required("meetings.change_meeting", raise_exception=True)
 def announcement_create_view(request, id):
     try:
         meeting = Meeting.objects.get(id=id)
-    except Discussion.DoesNotExist:
-        return redirect("discussion-not-found")
-    form = AnnouncementCreateForm(request.POST or None, initial={"meeting": meeting})
-    if form.is_valid():
-        announcement = form.save()
-        return redirect("meeting-detail", id)
+    except Meeting.DoesNotExist:
+        return redirect("meeting-not-found")
+
+    formset = AnnouncementFormSet(request.POST or None, instance=meeting)
+    helper = BaseFormHelper()
+    helper.form_id = "edit-announcement-form"
+    helper.form_tag = False
+    helper.layout = Layout(Field("meeting"), Field("content"), Field("DELETE"))
+    #helper.add_input(Submit("submit", "保存", css_class="btn-secondary")) # 拿去前端
+
+    if formset.is_valid():
+        formset.save()
+        return redirect("announcement-create", id)
     else:
-        form = AnnouncementCreateForm(initial={"meeting": meeting})
+        formset = AnnouncementFormSet(instance=meeting)
 
-    context = {"form": form}
-
+    context = {"formset": formset, "helper": helper, "meeting":meeting}
     return render(request, "meetings/announcement_create.html", context)
 
 
@@ -303,13 +381,13 @@ def announcement_create_view(request, id):
 def edit_announcement_view(request, id):
     try:
         meeting = Meeting.objects.get(id=id)
-    except Announcement.DoesNotExist:
-        return redirect("discussion-not-found")
+    except Meeting.DoesNotExist:
+        return redirect("meeting-not-found")
 
     formset = AnnouncementFormSet(request.POST or None, instance=meeting)
     helper = BaseFormHelper()
     helper.form_id = "edit-announcement-form"
-    helper.layout = Layout(Field("meeting"), Field("content"))
+    helper.layout = Layout(Field("meeting"), Field("content"), Field("DELETE"))
     helper.add_input(Submit("submit", "保存", css_class="btn-secondary"))
 
     if formset.is_valid():
@@ -323,23 +401,79 @@ def edit_announcement_view(request, id):
     return render(request, "meetings/edit_announcement.html", context)
 
 
+#---------------------------------------------------------------------------------------
+# # 從建立報告事項來的建立討論事項
+# @login_required(login_url="login")
+# # @permission_required("meetings.add_meeting", raise_exception=True)
+# def announcement_discussion_create_view(request, id):
+#     try:
+#         meeting = Meeting.objects.get(id=id)
+#     except Meeting.DoesNotExist:
+#         return redirect("meeting-not-found")
+#     form = DiscussionCreateForm(request.POST or None, initial={"meeting": meeting})
+#     if form.is_valid():
+#         discussion = form.save()
+#         return redirect("extemporeMotion-create", id)
+#     else:
+#         form = DiscussionCreateForm(initial={"meeting": meeting})
+
+#     context = {"form": form}
+
+#     return render(request, "meetings/discussion_create.html", context)
+#---------------------------------------------------------------------------------------
+
+
+#---------------------------------------------------------------------------------------
+# 從新增按鈕來的建立討論事項
+# @login_required(login_url="login")
+# # @permission_required("meetings.add_meeting", raise_exception=True)
+# def discussion_create_view(request, id):
+#     try:
+#         meeting = Meeting.objects.get(id=id)
+#     except Meeting.DoesNotExist:
+#         return redirect("meeting-not-found")
+#     form = DiscussionCreateForm(request.POST or None, initial={"meeting": meeting})
+#     if form.is_valid():
+#         discussion = form.save()
+#         return redirect("meeting-detail", id)
+#     else:
+#         form = DiscussionCreateForm(initial={"meeting": meeting})
+
+#     context = {"form": form}
+
+#     return render(request, "meetings/discussion_create.html", context)
+#---------------------------------------------------------------------------------------
+
+
 # 建立討論事項
 @login_required(login_url="login")
-# @permission_required("meetings.add_meeting", raise_exception=True)
+# @permission_required("meetings.change_meeting", raise_exception=True)
 def discussion_create_view(request, id):
     try:
         meeting = Meeting.objects.get(id=id)
-    except Discussion.DoesNotExist:
-        return redirect("discussion-not-found")
-    form = DiscussionCreateForm(request.POST or None, initial={"meeting": meeting})
-    if form.is_valid():
-        discussion = form.save()
-        return redirect("meeting-detail", id)
+    except Meeting.DoesNotExist:
+        return redirect("meeting-not-found")
+
+    formset = DiscussionFormSet(request.POST or None, instance=meeting)
+    helper = BaseFormHelper()
+    helper.form_id = "edit-discussion-form"
+    helper.form_tag = False
+    helper.layout = Layout(
+        Field("meeting"),
+        Field("topic"),
+        Field("description"),
+        Field("resolution"),
+        Field("DELETE")
+    )
+    #helper.add_input(Submit("submit", "保存", css_class="btn-secondary")) # 拿去前端
+
+    if formset.is_valid():
+        formset.save()
+        return redirect("discussion-create", id)
     else:
-        form = DiscussionCreateForm(initial={"meeting": meeting})
+        formset = DiscussionFormSet(instance=meeting)
 
-    context = {"form": form}
-
+    context = {"formset": formset, "helper": helper, "meeting":meeting}
     return render(request, "meetings/discussion_create.html", context)
 
 
@@ -349,8 +483,8 @@ def discussion_create_view(request, id):
 def edit_discussion_view(request, id):
     try:
         meeting = Meeting.objects.get(id=id)
-    except Discussion.DoesNotExist:
-        return redirect("discussion-not-found")
+    except Meeting.DoesNotExist:
+        return redirect("meeting-not-found")
 
     formset = DiscussionFormSet(request.POST or None, instance=meeting)
     helper = BaseFormHelper()
@@ -360,6 +494,7 @@ def edit_discussion_view(request, id):
         Field("topic"),
         Field("description"),
         Field("resolution"),
+        Field("DELETE")
     )
     helper.add_input(Submit("submit", "保存", css_class="btn-secondary"))
 

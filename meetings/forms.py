@@ -206,7 +206,7 @@ class ExtemporeMotionEditForm(forms.ModelForm):
 
 # 將 ExtemporeMotionEditForm 轉換成 inlineFormset
 ExtemporeMotionFormSet = forms.inlineformset_factory(
-    Meeting, ExtemporeMotion, form=ExtemporeMotionEditForm, extra=0
+    Meeting, ExtemporeMotion, form=ExtemporeMotionEditForm, extra=1, can_delete=True, can_delete_extra=False
 )
 
 # 建立報告事項的表單
@@ -246,8 +246,9 @@ class AnnouncementEditForm(forms.ModelForm):
 
 # 將 AnnouncementEditForm 轉換成 inlineFormset
 AnnouncementFormSet = forms.inlineformset_factory(
-    Meeting, Announcement, form=AnnouncementEditForm, extra=0
+    Meeting, Announcement, form=AnnouncementEditForm, extra=1, can_delete=True, can_delete_extra=False
 )
+
 
 # 建立討論事項的表單
 class DiscussionCreateForm(forms.ModelForm):
@@ -292,5 +293,5 @@ class DiscussionEditForm(forms.ModelForm):
 
 # 將 DiscussionEditForm 轉換成 inlineFormset
 DiscussionFormSet = forms.inlineformset_factory(
-    Meeting, Discussion, form=DiscussionEditForm, extra=1
+    Meeting, Discussion, form=DiscussionEditForm, extra=1, can_delete=True, can_delete_extra=False
 )
