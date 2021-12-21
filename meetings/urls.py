@@ -10,7 +10,6 @@ from .views import (
     meeting_participants_view,
     edit_attendance_view,
     meeting_not_begin_view,
-    extemporeMotion_create_view,
     announcement_create_view,
     discussion_create_view,
     meeting_detail_view,
@@ -42,11 +41,6 @@ urlpatterns = [
     ),
     path("<int:id>/edit/attendance/", edit_attendance_view, name="edit-attendance"),
     path("meeting_not_begin/", meeting_not_begin_view, name="meeting-not-begin"),
-    path(
-        "<int:id>/create/extemporeMotion",
-        extemporeMotion_create_view,
-        name="extemporeMotion-create",
-    ),
     path(
         "<int:id>/create/announcement",
         announcement_create_view,
