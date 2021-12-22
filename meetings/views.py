@@ -19,6 +19,7 @@ from datetime import datetime, timedelta
 import calendar
 from crispy_forms.layout import Layout, Field, Submit
 
+
 # 取得日期
 def get_date(request_day):
     if request_day:
@@ -373,7 +374,6 @@ def edit_appendix_view(request, id):
     helper.form_tag = False
     helper.layout = Layout(Field("meeting"), Field("provider"), Field("file"), Field("DELETE"))
     # helper.add_input(Submit("submit", "保存", css_class="btn-secondary"))
-
     if formset.is_valid():
         formset.save()
         return redirect("edit-appendix", id)

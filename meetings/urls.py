@@ -51,5 +51,5 @@ urlpatterns = [
         "<int:id>/create/discussion", discussion_create_view, name="discussion-create"
     ),
     # 附件url
-    path("<int:id>/edit/appendix", edit_appendix_view, name="edit-appendix")
+    path("<int:id>/edit/edit-appendix", edit_appendix_view, name="edit-appendix"),
 ]

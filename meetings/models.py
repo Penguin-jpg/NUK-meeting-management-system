@@ -4,6 +4,9 @@ from django.utils import timezone
 from django.conf import settings
 from accounts.models import Participant
 import datetime
+import os
+from django.dispatch import receiver
+from django.db.models.signals import post_delete, pre_save
 
 TYPE = ((0, "系務會議"), (1, "系教評會"), (2, "系課程委員會"), (3, "招生暨學生事務委員會"), (4, "系發展委員會"))
 
@@ -104,3 +107,26 @@ class Appendix(models.Model):
     meeting = models.ForeignKey(Meeting, null=True, on_delete=models.SET_NULL, verbose_name="會議")
     provider = models.CharField(max_length=100, verbose_name="提供者")
     file = models.FileField(upload_to="files", verbose_name="檔案")
+
+# 刪除資料夾內附件
+@receiver(post_delete, sender=Appendix)
+def post_save_file(sender, instance, *args, **kwargs):
+    try:
+        instance.file.delete(save=False)
+    except:
+        print("There's an error occured while trying to delete file.")
+
+# 更新資料夾內附件
+@receiver(pre_save, sender=Appendix)
+def pre_save_file(sender, instance, *args, **kwargs):
+    try:
+        old_file = instance.__class__.objects.get(id=instance.id).file.path
+        try:
+            new_file = instance.file.path
+        except:
+            new_file = None
+        if new_file != old_file:
+            if os.path.exists(old_file):
+                os.remove(old_file)
+    except:
+        print("There's an error occured while trying to update file.")
