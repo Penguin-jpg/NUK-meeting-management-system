@@ -16,6 +16,7 @@ from .views import (
     edit_extempore_motion_view,
     edit_announcement_view,
     edit_discussion_view,
+    edit_appendix_view,
 )
 
 urlpatterns = [
@@ -49,4 +50,6 @@ urlpatterns = [
     path(
         "<int:id>/create/discussion", discussion_create_view, name="discussion-create"
     ),
+    # 附件url
+    path("<int:id>/edit/appendix", edit_appendix_view, name="edit-appendix")
 ]

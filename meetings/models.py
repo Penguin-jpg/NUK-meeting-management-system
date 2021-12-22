@@ -98,3 +98,9 @@ class Discussion(models.Model):
     topic = models.CharField(max_length=25, verbose_name="案由")
     description = models.CharField(max_length=500, verbose_name="說明")
     resolution = models.CharField(max_length=150, verbose_name="決議")
+
+# 附件
+class Appendix(models.Model):
+    meeting = models.ForeignKey(Meeting, null=True, on_delete=models.SET_NULL, verbose_name="會議")
+    provider = models.CharField(max_length=100, verbose_name="提供者")
+    file = models.FileField(upload_to="files", verbose_name="檔案")

@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.utils.decorators import method_decorator
 from .models import *
 from .forms import (
+    AppendixFormSet,
     MeetingCreateForm,
     MeetingEditForm,
     AttendanceFormSet,
@@ -95,12 +96,14 @@ def meeting_detail_view(request, id):
     announcements = meeting.announcement_set.all()
     discussions = meeting.discussion_set.all()
     extempore_motions = meeting.extemporemotion_set.all()
+    appendices = meeting.appendix_set.all()
 
     context = {
         "meeting": meeting,
         "announcements": announcements,
         "discussions": discussions,
         "extempore_motions": extempore_motions,
+        "appendices": appendices,
     }
 
     return render(request, "meetings/meeting_detail.html", context)
@@ -350,6 +353,32 @@ def edit_discussion_view(request, id):
         return redirect("edit-discussion", id)
     else:
         formset = DiscussionFormSet(instance=meeting)
-
+    
     context = {"formset": formset, "helper": helper, "meeting":meeting}
     return render(request, "meetings/edit_discussion.html", context)
+
+
+# 編輯附件
+@login_required(login_url="login")
+@permission_required("meetings.change_meeting", raise_exception=True)
+def edit_appendix_view(request, id):
+    try:
+        meeting = Meeting.objects.get(id=id)
+    except Meeting.DoesNotExist:
+        return redirect("meeting-not-found")
+    
+    formset = AppendixFormSet(request.POST or None, request.FILES or None, instance=meeting)
+    helper = BaseFormHelper()
+    helper.form_id = "edit-appendix-form"
+    helper.form_tag = False
+    helper.layout = Layout(Field("meeting"), Field("provider"), Field("file"), Field("DELETE"))
+    # helper.add_input(Submit("submit", "保存", css_class="btn-secondary"))
+
+    if formset.is_valid():
+        formset.save()
+        return redirect("edit-appendix", id)
+    else:
+        formset = AppendixFormSet(instance=meeting)
+    
+    context = {"formset": formset, "helper": helper, "meeting":meeting}
+    return render(request, "meetings/edit_appendix.html", context)

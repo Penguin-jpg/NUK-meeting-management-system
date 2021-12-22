@@ -166,30 +166,6 @@ AttendanceFormSet = forms.inlineformset_factory(
     Meeting, Attendance, form=AttendanceEditForm, extra=0
 )
 
-# 建立臨時動議的表單
-class ExtemporeMotionCreateForm(forms.ModelForm):
-    meeting = forms.ModelChoiceField(
-        queryset=Meeting.objects.all(), label="會議名稱", disabled=True, required=False
-    )
-    proposer = forms.CharField(label="提案人", max_length=20, required=True)
-    content = forms.CharField(label="內容", max_length=500, required=True)
-
-    class Meta:
-        model = ExtemporeMotion
-        fields = ["meeting", "proposer", "content"]
-
-    def __init__(self, *args, **kwargs):
-        super(ExtemporeMotionCreateForm, self).__init__(*args, **kwargs)
-        self.helper = BaseFormHelper()
-        self.helper.form_id = "create-extemporeMotion-form"
-        # 共通欄位
-        self.helper.layout = Layout(
-            Field("meeting", css_class="center-field"),
-            Field("proposer", css_class="center-field"),
-            Field("content", css_class="center-field"),
-        )
-        self.helper.add_input(Submit("submit", "建立", css_class="btn-secondary"))
-
 
 # 編輯臨時動議的表單
 class ExtemporeMotionEditForm(forms.ModelForm):
@@ -294,4 +270,22 @@ class DiscussionEditForm(forms.ModelForm):
 # 將 DiscussionEditForm 轉換成 inlineFormset
 DiscussionFormSet = forms.inlineformset_factory(
     Meeting, Discussion, form=DiscussionEditForm, extra=1, can_delete=True, can_delete_extra=False
+)
+
+
+# 編輯附件的表單
+class AppendixEditForm(forms.ModelForm):
+    meeting = forms.ModelChoiceField(
+        queryset=Meeting.objects.all(), label="會議名稱", disabled=True, required=False
+    )
+    provider = forms.CharField(label="提供者", max_length=20, required=True)
+    file = forms.FileField(label="檔案", required=True)
+
+    class Meta:
+        model = Appendix
+        fields = ["meeting", "provider", "file"]
+
+# 將 AppendixEditForm 轉換成 inlineFormset
+AppendixFormSet = forms.inlineformset_factory(
+    Meeting, Appendix, form=AppendixEditForm, extra=1, can_delete=True, can_delete_extra=False
 )
