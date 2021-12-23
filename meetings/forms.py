@@ -3,10 +3,11 @@ from .models import *
 from accounts.models import Participant
 from accounts.forms import BaseFormHelper
 from crispy_forms.helper import Layout
-from crispy_forms.layout import Submit, Field, Div
+from crispy_forms.layout import Submit, Field
 from crispy_forms.bootstrap import InlineCheckboxes
 
-# InlineCheckboxes.template = "meetings/mycheckboxselectmultiple.html"
+# 使用自訂的template，不然field_class會被蓋掉
+InlineCheckboxes.template = "meetings/custom_checkboxselectmultiple_inline.html"
 
 
 TYPE = ((0, "系務會議"), (1, "系教評會"), (2, "系課程委員會"), (3, "招生暨學生事務委員會"), (4, "系發展委員會"))
@@ -24,8 +25,12 @@ class MeetingCreateForm(forms.ModelForm):
         required=True,
     )
     location = forms.CharField(label="地點", max_length=100, required=True)
-    chairman = forms.CharField(label="主席", max_length=20, required=True)
-    minutes_taker = forms.CharField(label="記錄人員", max_length=20, required=True)
+    chairman = forms.ModelChoiceField(
+        queryset=Participant.objects.all(), label="主席", required=True
+    )
+    minutes_taker = forms.ModelChoiceField(
+        queryset=Participant.objects.all(), label="記錄人員", required=True
+    )
     participants = forms.ModelMultipleChoiceField(
         label="與會人員",
         queryset=Participant.objects.all(),
@@ -53,16 +58,17 @@ class MeetingCreateForm(forms.ModelForm):
         self.fields["date"].input_formats = ("%Y-%m-%dT%H:%M",)
         self.helper = BaseFormHelper()
         self.helper.form_id = "meeting-create-form"
+
         # 共通欄位
         self.helper.layout = Layout(
-            Field("name", css_class="center-field"),
+            Field("name", placeholder="請輸入會議名稱", css_class="center-field"),
             Field("type", css_class="center-field"),
             Field("date", css_class="center-field"),
-            Field("location", css_class="center-field"),
+            Field("location", placeholder="請輸入會議地點", css_class="center-field"),
             Field("chairman", css_class="center-field"),
             Field("minutes_taker", css_class="center-field"),
-            InlineCheckboxes("participants", css_class="checkboxes-field"),
-            Field("speech", css_class="center-field"),
+            InlineCheckboxes("participants"),
+            Field("speech", placeholder="請輸入主席致詞", css_class="center-field"),
         )
         self.helper.add_input(Submit("submit", "建立", css_class="btn-secondary"))
 
@@ -89,8 +95,12 @@ class MeetingEditForm(forms.ModelForm):
         required=False,
     )
     location = forms.CharField(label="地點", max_length=100, required=False)
-    chairman = forms.CharField(label="主席", max_length=20, required=False)
-    minutes_taker = forms.CharField(label="記錄人員", max_length=20, required=False)
+    chairman = forms.ModelChoiceField(
+        queryset=Participant.objects.all(), label="主席", required=False
+    )
+    minutes_taker = forms.ModelChoiceField(
+        queryset=Participant.objects.all(), label="記錄人員", required=False
+    )
     participants = forms.ModelMultipleChoiceField(
         label="與會人員",
         queryset=Participant.objects.all(),
@@ -119,14 +129,14 @@ class MeetingEditForm(forms.ModelForm):
         self.helper.form_id = "edit-meeting-form"
         # 共通欄位
         self.helper.layout = Layout(
-            Field("name", css_class="center-field"),
+            Field("name", placeholder="請輸入會議名稱", css_class="center-field"),
             Field("type", css_class="center-field"),
             Field("date", css_class="center-field"),
-            Field("location", css_class="center-field"),
+            Field("location", placeholder="請輸入會議地點", css_class="center-field"),
             Field("chairman", css_class="center-field"),
             Field("minutes_taker", css_class="center-field"),
             InlineCheckboxes("participants"),
-            Field("speech", css_class="center-field"),
+            Field("speech", placeholder="請輸入主席致詞", css_class="center-field"),
         )
         self.helper.add_input(Submit("submit", "保存", css_class="btn-secondary"))
 
@@ -138,6 +148,9 @@ class MeetingEditForm(forms.ModelForm):
             # 如果找不到該與會人員的出席紀錄就新增
             if not Attendance.objects.filter(meeting=meeting, participant=participant):
                 Attendance.objects.create(meeting=meeting, participant=participant)
+
+        # meeting.send_meeting_notification()
+
         if commit:
             meeting.save()
         return meeting
@@ -182,7 +195,12 @@ class ExtemporeMotionEditForm(forms.ModelForm):
 
 # 將 ExtemporeMotionEditForm 轉換成 inlineFormset
 ExtemporeMotionFormSet = forms.inlineformset_factory(
-    Meeting, ExtemporeMotion, form=ExtemporeMotionEditForm, extra=1, can_delete=True, can_delete_extra=False
+    Meeting,
+    ExtemporeMotion,
+    form=ExtemporeMotionEditForm,
+    extra=1,
+    can_delete=True,
+    can_delete_extra=False,
 )
 
 # 建立報告事項的表單
@@ -203,7 +221,7 @@ class AnnouncementCreateForm(forms.ModelForm):
         # 共通欄位
         self.helper.layout = Layout(
             Field("meeting", css_class="center-field"),
-            Field("content", css_class="center-field"),
+            Field("content", placeholder="請輸入事項內容", css_class="center-field"),
         )
         self.helper.add_input(Submit("submit", "建立", css_class="btn-secondary"))
 
@@ -222,7 +240,12 @@ class AnnouncementEditForm(forms.ModelForm):
 
 # 將 AnnouncementEditForm 轉換成 inlineFormset
 AnnouncementFormSet = forms.inlineformset_factory(
-    Meeting, Announcement, form=AnnouncementEditForm, extra=1, can_delete=True, can_delete_extra=False
+    Meeting,
+    Announcement,
+    form=AnnouncementEditForm,
+    extra=1,
+    can_delete=True,
+    can_delete_extra=False,
 )
 
 
@@ -233,7 +256,9 @@ class DiscussionCreateForm(forms.ModelForm):
     )
     topic = forms.CharField(label="案由", max_length=25, required=True)
     description = forms.CharField(label="說明", max_length=500, required=True)
-    resolution = forms.CharField(label="決議", max_length=150, required=True)
+    resolution = forms.CharField(
+        label="決議", initial="無", max_length=150, required=False
+    )
 
     class Meta:
         model = Discussion
@@ -246,9 +271,9 @@ class DiscussionCreateForm(forms.ModelForm):
         # 共通欄位
         self.helper.layout = Layout(
             Field("meeting", css_class="center-field"),
-            Field("topic", css_class="center-field"),
-            Field("description", css_class="center-field"),
-            Field("resolution", css_class="center-field"),
+            Field("topic", placeholder="請輸入事項案由", css_class="center-field"),
+            Field("description", placeholder="請輸入事項說明", css_class="center-field"),
+            Field("resolution", placeholder="請輸入事項決議", css_class="center-field"),
         )
         self.helper.add_input(Submit("submit", "建立", css_class="btn-secondary"))
 
@@ -269,7 +294,12 @@ class DiscussionEditForm(forms.ModelForm):
 
 # 將 DiscussionEditForm 轉換成 inlineFormset
 DiscussionFormSet = forms.inlineformset_factory(
-    Meeting, Discussion, form=DiscussionEditForm, extra=1, can_delete=True, can_delete_extra=False
+    Meeting,
+    Discussion,
+    form=DiscussionEditForm,
+    extra=1,
+    can_delete=True,
+    can_delete_extra=False,
 )
 
 
@@ -285,7 +315,13 @@ class AppendixEditForm(forms.ModelForm):
         model = Appendix
         fields = ["meeting", "provider", "file"]
 
+
 # 將 AppendixEditForm 轉換成 inlineFormset
 AppendixFormSet = forms.inlineformset_factory(
-    Meeting, Appendix, form=AppendixEditForm, extra=1, can_delete=True, can_delete_extra=False
+    Meeting,
+    Appendix,
+    form=AppendixEditForm,
+    extra=1,
+    can_delete=True,
+    can_delete_extra=False,
 )

@@ -42,7 +42,7 @@
             <td>
                 <a href="{% url 'meeting-detail' meeting.id %}">{{ meeting.name|safe }}</a>
             </td>
-            <td>{{ meeting.get_type|safe }}</td>
+            <td>{{ meeting.get_meeting_type|safe }}</td>
             <td>{{ meeting.date }}</td>
             <td>{{ meeting.location|safe }}</td>
             <td>{{ meeting.chairman|safe }}</td>

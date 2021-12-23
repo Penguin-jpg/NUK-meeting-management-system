@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser, UserManager, Group
+from django.contrib.auth.models import AbstractUser, UserManager
 from django.contrib.auth.hashers import make_password
 from django.apps import apps
 from django.dispatch import receiver
@@ -68,6 +68,7 @@ class Participant(AbstractUser):
         permissions = [
             ("request_for_modifying_meeting_minutes", "發出會議紀錄修改請求"),
             ("create_extempore_motion", "新增臨時動議"),
+            ("mail_notification", "寄出會議通知"),
             ("mail_result", "寄出開會結果"),
         ]
 
@@ -193,7 +194,7 @@ class ProfessorInfo(Info):
 
 # 建立使用者後新增簡介
 @receiver(post_save, sender=Participant)
-def create_user_profile(sender, instance, created, **kwargs):
+def post_save_create_user_profile(sender, instance, created, **kwargs):
     if created:
         identity = instance.identity
 
@@ -210,15 +211,3 @@ def create_user_profile(sender, instance, created, **kwargs):
             info = ProfessorInfo(user=instance)
 
         info.save()
-
-
-# # 建立使用者後加入群組(待研究，目前沒成功)
-# @receiver(post_save, sender=Participant)
-# def add_user_to_group(sender, instance, created, **kwargs):
-#     if created:
-#         # if instance.type == 3:
-#         # group = Group.objects.get(name="operators")
-#         # else:
-#         group = Group.objects.get(name="normal_participants")
-#         instance.groups.add(group)
-#         instance.save()

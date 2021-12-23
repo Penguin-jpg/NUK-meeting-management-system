@@ -1,7 +1,8 @@
 {% load crispy_forms_filters %}
 {% load l10n %}
 
-<div {% if field_class %}class="{{ field_class }}" {% endif %}{% if flat_attrs %} {{ flat_attrs|safe }}{% endif %}>
+<div class="checkboxes-field col-sm-12 col-md-9 col-lg-9 {% if field_class %}{{ field_class }}{% endif %}"
+    {% if flat_attrs %} {{ flat_attrs|safe }}{% endif %}>
 
     {% for group, options, index in field|optgroups %}
     {% if group %}<strong>{{ group }}</strong>{% endif %}

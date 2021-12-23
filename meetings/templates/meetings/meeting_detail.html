@@ -20,7 +20,7 @@
         <span class="info-text">種類</span>
     </div>
     <div class="col-md-6">
-        <p class="info-text">{{ meeting.get_type|safe }}</p>
+        <p class="info-text">{{ meeting.get_meeting_type|safe }}</p>
     </div>
 </div>
 <div class="row">
@@ -201,7 +201,9 @@
         <span class="info-text">檔案</span>
     </div>
     <div class="col-md-6">
-        <p class="info-text"><a href="http://127.0.0.1:8000/media/{{ appendix.file }}" download>{{ appendix.file }}</a></p>
+        {% comment %} <p class="info-text"><a href="http://127.0.0.1:8000/media/{{ appendix.file }}"
+                download>{{ appendix.file }}</a></p> {% endcomment %}
+        <p class="info-text"><a href="{{ appendix.file.url }}" download>{{ appendix.get_file_name }}</a></p>
     </div>
 </div>
 {% endfor %}

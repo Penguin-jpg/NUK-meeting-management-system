@@ -66,7 +66,7 @@ def home_view(request):
 
 # 建立會議
 @login_required(login_url="login")
-# @permission_required("meetings.add_meeting", raise_exception=True)
+@permission_required("meetings.add_meeting", raise_exception=True)
 def meeting_create_view(request):
     form = MeetingCreateForm(request.POST or None)
     if form.is_valid():
@@ -94,10 +94,10 @@ def meeting_detail_view(request, id):
         meeting = Meeting.objects.get(id=id)
     except Meeting.DoesNotExist:
         return redirect("meeting-not-found")
-    announcements = meeting.announcement_set.all()
-    discussions = meeting.discussion_set.all()
-    extempore_motions = meeting.extemporemotion_set.all()
-    appendices = meeting.appendix_set.all()
+    announcements = meeting.announcements.all()
+    discussions = meeting.discussions.all()
+    extempore_motions = meeting.extempore_motions.all()
+    appendices = meeting.appendices.all()
 
     context = {
         "meeting": meeting,
@@ -184,7 +184,7 @@ def meeting_participants_view(request, id):
 # 編輯人員出席紀錄
 # https://punchagan.muse-amuse.in/blog/django-modelformset-multiple-saves/
 @login_required(login_url="login")
-@permission_required("meetings.change_meeting", raise_exception=True)
+@permission_required("meetings.change_attendance", raise_exception=True)
 def edit_attendance_view(request, id):
     try:
         meeting = Meeting.objects.get(id=id)
@@ -204,7 +204,6 @@ def edit_attendance_view(request, id):
         formset.save()
         return redirect("meeting-detail", id)
     else:
-        # print(formset.errors)
         formset = AttendanceFormSet(instance=meeting)
 
     context = {"formset": formset, "helper": helper}
@@ -219,7 +218,7 @@ def meeting_not_begin_view(request):
 
 # 編輯臨時動議
 @login_required(login_url="login")
-@permission_required("meetings.change_meeting", raise_exception=True)
+@permission_required("meetings.change_extemporemotion", raise_exception=True)
 def edit_extempore_motion_view(request, id):
     try:
         meeting = Meeting.objects.get(id=id)
@@ -230,8 +229,10 @@ def edit_extempore_motion_view(request, id):
     helper = BaseFormHelper()
     helper.form_id = "edit-extemporemotion-form"
     helper.form_tag = False
-    helper.layout = Layout(Field("meeting"), Field("proposer"), Field("content"), Field("DELETE"))
-    #helper.add_input(Submit("submit", "保存", css_class="btn-secondary"))
+    helper.layout = Layout(
+        Field("meeting"), Field("proposer"), Field("content"), Field("DELETE")
+    )
+    # helper.add_input(Submit("submit", "保存", css_class="btn-secondary"))
 
     if formset.is_valid():
         formset.save()
@@ -239,13 +240,13 @@ def edit_extempore_motion_view(request, id):
     else:
         formset = ExtemporeMotionFormSet(instance=meeting)
 
-    context = {"formset": formset, "helper": helper, "meeting":meeting}
+    context = {"formset": formset, "helper": helper, "meeting": meeting}
     return render(request, "meetings/edit_extempore_motion.html", context)
 
 
 # 建立報告事項
 @login_required(login_url="login")
-@permission_required("meetings.change_meeting", raise_exception=True)
+@permission_required("meetings.add_announcement", raise_exception=True)
 def announcement_create_view(request, id):
     try:
         meeting = Meeting.objects.get(id=id)
@@ -257,7 +258,7 @@ def announcement_create_view(request, id):
     helper.form_id = "create-announcement-form"
     helper.form_tag = False
     helper.layout = Layout(Field("meeting"), Field("content"), Field("DELETE"))
-    #helper.add_input(Submit("submit", "保存", css_class="btn-secondary")) # 拿去前端
+    # helper.add_input(Submit("submit", "保存", css_class="btn-secondary")) # 拿去前端
 
     if formset.is_valid():
         formset.save()
@@ -265,13 +266,13 @@ def announcement_create_view(request, id):
     else:
         formset = AnnouncementFormSet(instance=meeting)
 
-    context = {"formset": formset, "helper": helper, "meeting":meeting}
+    context = {"formset": formset, "helper": helper, "meeting": meeting}
     return render(request, "meetings/announcement_create.html", context)
 
 
 # 編輯報告事項
 @login_required(login_url="login")
-@permission_required("meetings.change_meeting", raise_exception=True)
+@permission_required("meetings.change_announcement", raise_exception=True)
 def edit_announcement_view(request, id):
     try:
         meeting = Meeting.objects.get(id=id)
@@ -283,7 +284,7 @@ def edit_announcement_view(request, id):
     helper.form_id = "edit-announcement-form"
     helper.form_tag = False
     helper.layout = Layout(Field("meeting"), Field("content"), Field("DELETE"))
-    #helper.add_input(Submit("submit", "保存", css_class="btn-secondary"))
+    # helper.add_input(Submit("submit", "保存", css_class="btn-secondary"))
 
     if formset.is_valid():
         formset.save()
@@ -291,13 +292,13 @@ def edit_announcement_view(request, id):
     else:
         formset = AnnouncementFormSet(instance=meeting)
 
-    context = {"formset": formset, "helper": helper, "meeting":meeting}
+    context = {"formset": formset, "helper": helper, "meeting": meeting}
     return render(request, "meetings/edit_announcement.html", context)
 
 
 # 建立討論事項
 @login_required(login_url="login")
-@permission_required("meetings.change_meeting", raise_exception=True)
+@permission_required("meetings.	add_discussion", raise_exception=True)
 def discussion_create_view(request, id):
     try:
         meeting = Meeting.objects.get(id=id)
@@ -313,9 +314,8 @@ def discussion_create_view(request, id):
         Field("topic"),
         Field("description"),
         Field("resolution"),
-        Field("DELETE")
+        Field("DELETE"),
     )
-    #helper.add_input(Submit("submit", "保存", css_class="btn-secondary")) # 拿去前端
 
     if formset.is_valid():
         formset.save()
@@ -323,13 +323,13 @@ def discussion_create_view(request, id):
     else:
         formset = DiscussionFormSet(instance=meeting)
 
-    context = {"formset": formset, "helper": helper, "meeting":meeting}
+    context = {"formset": formset, "helper": helper, "meeting": meeting}
     return render(request, "meetings/discussion_create.html", context)
 
 
 # 編輯討論事項
 @login_required(login_url="login")
-@permission_required("meetings.change_meeting", raise_exception=True)
+@permission_required("meetings.change_discussion", raise_exception=True)
 def edit_discussion_view(request, id):
     try:
         meeting = Meeting.objects.get(id=id)
@@ -345,40 +345,46 @@ def edit_discussion_view(request, id):
         Field("topic"),
         Field("description"),
         Field("resolution"),
-        Field("DELETE")
+        Field("DELETE"),
     )
-    #helper.add_input(Submit("submit", "保存", css_class="btn-secondary"))
 
     if formset.is_valid():
         formset.save()
         return redirect("edit-discussion", id)
     else:
         formset = DiscussionFormSet(instance=meeting)
-    
-    context = {"formset": formset, "helper": helper, "meeting":meeting}
+
+    context = {"formset": formset, "helper": helper, "meeting": meeting}
     return render(request, "meetings/edit_discussion.html", context)
 
 
 # 編輯附件
 @login_required(login_url="login")
-@permission_required("meetings.change_meeting", raise_exception=True)
+@permission_required("meetings.change_appendix", raise_exception=True)
 def edit_appendix_view(request, id):
     try:
         meeting = Meeting.objects.get(id=id)
     except Meeting.DoesNotExist:
         return redirect("meeting-not-found")
-    
-    formset = AppendixFormSet(request.POST or None, request.FILES or None, instance=meeting)
+
+    formset = AppendixFormSet(
+        request.POST or None, request.FILES or None, instance=meeting
+    )
     helper = BaseFormHelper()
     helper.form_id = "edit-appendix-form"
     helper.form_tag = False
-    helper.layout = Layout(Field("meeting"), Field("provider"), Field("file"), Field("DELETE"))
-    # helper.add_input(Submit("submit", "保存", css_class="btn-secondary"))
+    helper.layout = Layout(
+        Field("meeting"),
+        Field("provider"),
+        Field("file"),
+        Field("DELETE"),
+    )
+
     if formset.is_valid():
         formset.save()
         return redirect("edit-appendix", id)
     else:
         formset = AppendixFormSet(instance=meeting)
-    
-    context = {"formset": formset, "helper": helper, "meeting":meeting}
+
+    context = {"formset": formset, "helper": helper, "meeting": meeting}
     return render(request, "meetings/edit_appendix.html", context)

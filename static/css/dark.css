@@ -53,9 +53,14 @@ a {
   border-color: #555;
 }
 
+/* checkboxselectmultiple */
 .checkboxes-field {
-  max-height: 300px;
-  overflow-y: scroll;
+  max-height: 150px;
+  overflow-y: auto;
+}
+
+.checkboxes-field div {
+  min-width: 150px;
 }
 
 /* navbar */
@@ -191,6 +196,15 @@ a {
 
 /* table */
 /* 修改自https://codepen.io/pablorgarcia/pen/qdIsm */
+.table-container {
+  text-align: center;
+  overflow: auto;
+  min-width: 100%;
+  margin: 0 auto;
+  display: table;
+  padding: 0 0 8em 0;
+}
+
 .table-container th h1 {
   font-weight: bold;
   font-size: 1em;
@@ -203,15 +217,6 @@ a {
   -webkit-box-shadow: 0 2px 2px -2px #0e1119;
   -moz-box-shadow: 0 2px 2px -2px #0e1119;
   box-shadow: 0 2px 2px -2px #0e1119;
-}
-
-.table-container {
-  text-align: center;
-  overflow: auto;
-  width: 100%;
-  margin: 0 auto;
-  display: table;
-  padding: 0 0 8em 0;
 }
 
 .table-container td,

@@ -82,7 +82,7 @@ def user_info_view(request, id):
 
 # 編輯使用者個人資料
 @login_required(login_url="login")
-# @permission_required("accounts.change_info", raise_exception=True)
+@permission_required("accounts.change_info", raise_exception=True)
 def edit_info_view(request, id):
     try:
         user = Participant.objects.get(id=id)
@@ -99,4 +99,3 @@ def edit_info_view(request, id):
     context = {"form": form}
 
     return render(request, "accounts/edit_info.html", context)
-

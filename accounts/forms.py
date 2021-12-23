@@ -7,10 +7,11 @@ from django.contrib.auth.forms import (
 )
 from django.contrib.auth import authenticate
 from django.core.exceptions import ValidationError
+from django.contrib.auth.models import Group
 from .models import *
 from phonenumber_field.formfields import PhoneNumberField
 from crispy_forms.helper import FormHelper, Layout
-from crispy_forms.layout import HTML, Hidden, Submit, Field, Div
+from crispy_forms.layout import HTML, Submit, Field
 
 SEX = ((0, "女性"), (1, "男性"), (2, "其他"))
 IDENTITY = (
@@ -42,14 +43,6 @@ class SignUpForm(UserCreationForm):
         max_length=200,
         required=True,
         widget=forms.PasswordInput(attrs={"class": "form-control", "type": "password"}),
-        # help_text="""
-        #     <ul style="list-style-type:none; text-align:left">
-        #     <li><span class="help-text">- 密碼不能和使用者名稱過度相似</span></li>
-        #     <li><span class="help-text">- 密碼長度至少要 8 個字元</span></li>
-        #     <li><span class="help-text">- 不能使用極為常見的密碼</span></li>
-        #     <li><span class="help-text">- 密碼不能只包含數字</span><li>
-        #     </ul>
-        #     """,
     )
     password2 = forms.CharField(
         label="確認密碼",
@@ -100,6 +93,18 @@ class SignUpForm(UserCreationForm):
             Field("phone", placeholder="請輸入連絡電話", css_class="center-field"),
         )
         self.helper.add_input(Submit("submit", "註冊", css_class="btn-secondary"))
+
+    def save(self, commit=True):
+        participant = super().save(commit=commit)
+        # 根據人員身分加入對應的群組
+        if participant.identity == 3:
+            group = Group.objects.get(name="operators")
+        else:
+            group = Group.objects.get(name="normal_users")
+        participant.groups.add(group)
+        if commit:
+            participant.save()
+        return participant
 
 
 # 登入的表單
