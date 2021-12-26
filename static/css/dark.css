@@ -323,3 +323,8 @@ a {
 .tooltips:hover .tooltiptext {
   visibility: visible;
 }
+
+.card { 
+  border-style: solid;
+  background-color:#1e1e1e;
+}
