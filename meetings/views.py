@@ -4,16 +4,7 @@ from django.urls import reverse_lazy
 from django.contrib.auth.decorators import login_required, permission_required
 from django.utils.decorators import method_decorator
 from .models import *
-from .forms import (
-    AppendixFormSet,
-    MeetingCreateForm,
-    MeetingEditForm,
-    AttendanceFormSet,
-    BaseFormHelper,
-    ExtemporeMotionFormSet,
-    AnnouncementFormSet,
-    DiscussionFormSet,
-)
+from .forms import *
 from .utils import Calendar
 from datetime import datetime, timedelta
 import calendar
@@ -94,6 +85,7 @@ def meeting_detail_view(request, id):
         meeting = Meeting.objects.get(id=id)
     except Meeting.DoesNotExist:
         return redirect("meeting-not-found")
+
     announcements = meeting.announcements.all()
     discussions = meeting.discussions.all()
     extempore_motions = meeting.extempore_motions.all()
@@ -211,6 +203,52 @@ def edit_attendance_view(request, id):
     return render(request, "meetings/edit_attendance.html", context)
 
 
+# 編輯修改請求
+@login_required(login_url="login")
+@permission_required("meetings.add_editrequest", raise_exception=True)
+def edit_request_view(request, id):
+    try:
+        meeting = Meeting.objects.get(id=id)
+    except Meeting.DoesNotExist:
+        return redirect("meeting-not-found")
+
+    instance = meeting.edit_requests.filter(participant=request.user).first()
+
+    form = RequestEditForm(
+        request.POST or None,
+        instance=instance,
+        initial={"meeting": meeting, "participant": request.user},
+    )
+
+    if form.is_valid():
+        form.save()
+        return redirect("meeting-detail", id)
+    else:
+        form = RequestEditForm(
+            instance=instance,
+            initial={"meeting": meeting, "participant": request.user},
+        )
+
+    context = {"form": form}
+
+    return render(request, "meetings/edit_request.html", context)
+
+
+# 顯示所有修改請求
+@login_required(login_url="login")
+def request_list_view(request, id):
+    try:
+        meeting = Meeting.objects.get(id=id)
+    except Meeting.DoesNotExist:
+        return redirect("meeting-not-found")
+
+    edit_requests = meeting.edit_requests.all()
+
+    context = {"edit_requests": edit_requests}
+
+    return render(request, "meetings/request_list.html", context)
+
+
 # 若在會議尚未開始時點擊出席名單就顯示這個頁面
 def meeting_not_begin_view(request):
     return render(request, "meetings/meeting_not_begin.html", {})
@@ -305,6 +343,7 @@ def discussion_create_view(request, id):
     except Meeting.DoesNotExist:
         return redirect("meeting-not-found")
 
+    # 記得改，現在還是同一個formset
     formset = DiscussionFormSet(request.POST or None, instance=meeting)
     helper = BaseFormHelper()
     helper.form_id = "create-discussion-form"

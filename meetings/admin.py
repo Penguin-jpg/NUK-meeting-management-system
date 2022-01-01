@@ -7,6 +7,12 @@ class AttendanceInline(admin.TabularInline):
     extra = 1
 
 
+# 修改請求紀錄
+class EditRequestInline(admin.TabularInline):
+    model = EditRequest
+    extra = 1
+
+
 class MeetingAdmin(admin.ModelAdmin):
     list_display = [
         "name",
@@ -19,6 +25,7 @@ class MeetingAdmin(admin.ModelAdmin):
 
     inlines = [
         AttendanceInline,
+        EditRequestInline,
     ]
 
     # 改成橫的顯示

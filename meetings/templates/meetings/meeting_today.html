@@ -1,48 +1,42 @@
 {% extends "base.html" %}
 
-{% block title %} 首頁 {% endblock %}
+{% block title %} 當日會議 {% endblock %}
 
 {% block content%}
 <br>
-<h1>當日會議列表</h1>
+<h1>當日會議</h1>
 <br>
 <br>
-<table class="table-container">
-    <thead>
-        <tr>
-            <th>
-                <h1>會議名稱</h1>
-            </th>
-            <th>
-                <h1>種類</h1>
-            </th>
-            <th>
-                <h1>時間</h1>
-            </th>
-            <th>
-                <h1>地點</h1>
-            </th>
-            <th>
-                <h1>主席</h1>
-            </th>
-            <th>
-                <h1>記錄人員</h1>
-            </th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for meeting in meetings %}
-        <tr>
-            <td>
-                <a href="{% url 'meeting-detail' meeting.id %}">{{ meeting.name|safe }}</a>
-            </td>
-            <td>{{ meeting.get_meeting_type|safe }}</td>
-            <td>{{ meeting.date }}</td>
-            <td>{{ meeting.location|safe }}</td>
-            <td>{{ meeting.chairman |safe}}</td>
-            <td>{{ meeting.minutes_taker|safe }}</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+<div class="table-responsive custom-table-responsive">
+    <table class="table custom-table">
+        <thead>
+            <tr>
+                <th scope="col">會議名稱</th>
+                <th scope="col">時間</th>
+                <th scope="col">地點</th>
+                <th scope="col">主席</th>
+                <th scope="col">記錄人員</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for meeting in meetings %}
+            <tr scope="row">
+                <td>
+                    <a href="{% url 'meeting-detail' meeting.id %}">{{ meeting.name|safe }}</a>
+                    <small class="d-block">{{ meeting.get_meeting_type|safe }}</small>
+                </td>
+                <td>{{ meeting.date }}</td>
+                <td>
+                    {{ meeting.location|safe }}
+                </td>
+                <td><a href="{% url 'user-info' meeting.chairman.id %}">{{ meeting.chairman|safe }}</a></td>
+                <td><a href="{% url 'user-info' meeting.minutes_taker.id %}">{{ meeting.minutes_taker|safe }}</a></td>
+            </tr>
+            <tr class="spacer">
+                <td colspan="100"></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
 {% endblock %}

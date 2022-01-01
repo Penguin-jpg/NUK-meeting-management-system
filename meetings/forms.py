@@ -1,4 +1,5 @@
 from django import forms
+from django.http import request
 from .models import *
 from accounts.models import Participant
 from accounts.forms import BaseFormHelper
@@ -37,7 +38,13 @@ class MeetingCreateForm(forms.ModelForm):
         widget=forms.CheckboxSelectMultiple(),
         required=True,
     )
-    speech = forms.CharField(label="主席致詞", max_length=500, initial="略", required=False)
+    speech = forms.CharField(
+        label="主席致詞",
+        max_length=500,
+        initial="略",
+        widget=forms.Textarea(attrs={"rows": 5}),
+        required=False,
+    )
 
     class Meta:
         model = Meeting
@@ -80,6 +87,7 @@ class MeetingCreateForm(forms.ModelForm):
             Attendance.objects.create(meeting=meeting, participant=participant)
         if commit:
             meeting.save()
+            meeting.send_meeting_notification()
         return meeting
 
 
@@ -107,7 +115,12 @@ class MeetingEditForm(forms.ModelForm):
         widget=forms.CheckboxSelectMultiple,
         required=False,
     )
-    speech = forms.CharField(label="主席致詞", max_length=500, required=False)
+    speech = forms.CharField(
+        label="主席致詞",
+        max_length=500,
+        widget=forms.Textarea(attrs={"rows": 5}),
+        required=False,
+    )
 
     class Meta:
         model = Meeting
@@ -149,10 +162,9 @@ class MeetingEditForm(forms.ModelForm):
             if not Attendance.objects.filter(meeting=meeting, participant=participant):
                 Attendance.objects.create(meeting=meeting, participant=participant)
 
-        # meeting.send_meeting_notification()
-
         if commit:
             meeting.save()
+            meeting.send_meeting_notification()
         return meeting
 
 
@@ -179,6 +191,46 @@ AttendanceFormSet = forms.inlineformset_factory(
     Meeting, Attendance, form=AttendanceEditForm, extra=0
 )
 
+# 編輯修改請求的表單
+class RequestEditForm(forms.ModelForm):
+    meeting = forms.ModelChoiceField(
+        Meeting.objects.all(),
+        label="會議",
+        disabled=True,
+        required=True,
+    )
+    participant = forms.ModelChoiceField(
+        Participant.objects.all(),
+        label="與會人員",
+        disabled=True,
+        required=True,
+    )
+    content = forms.CharField(
+        label="內容",
+        max_length=500,
+        widget=forms.Textarea(attrs={"rows": 5}),
+        required=True,
+    )
+
+    class Meta:
+        model = EditRequest
+        fields = [
+            "meeting",
+            "participant",
+            "content",
+        ]
+
+    def __init__(self, *args, **kwargs):
+        super(RequestEditForm, self).__init__(*args, **kwargs)
+        self.helper = BaseFormHelper()
+        self.helper.form_id = "edit-request-form"
+        # 共通欄位
+        self.helper.layout = Layout(
+            Field("participant"),
+            Field("content", css_class="center-field"),
+        )
+        self.helper.add_input(Submit("submit", "保存", css_class="btn-secondary"))
+
 
 # 編輯臨時動議的表單
 class ExtemporeMotionEditForm(forms.ModelForm):
@@ -203,33 +255,11 @@ ExtemporeMotionFormSet = forms.inlineformset_factory(
     can_delete_extra=False,
 )
 
-# 建立報告事項的表單
-class AnnouncementCreateForm(forms.ModelForm):
-    meeting = forms.ModelChoiceField(
-        queryset=Meeting.objects.all(), label="會議名稱", disabled=True, required=False
-    )
-    content = forms.CharField(label="內容", max_length=500, required=True)
-
-    class Meta:
-        model = Announcement
-        fields = ["meeting", "content"]
-
-    def __init__(self, *args, **kwargs):
-        super(AnnouncementCreateForm, self).__init__(*args, **kwargs)
-        self.helper = BaseFormHelper()
-        self.helper.form_id = "create-announcement-form"
-        # 共通欄位
-        self.helper.layout = Layout(
-            Field("meeting", css_class="center-field"),
-            Field("content", placeholder="請輸入事項內容", css_class="center-field"),
-        )
-        self.helper.add_input(Submit("submit", "建立", css_class="btn-secondary"))
-
 
 # 編輯報告事項的表單
 class AnnouncementEditForm(forms.ModelForm):
     meeting = forms.ModelChoiceField(
-        queryset=Meeting.objects.all(), label="會議名稱", disabled=True, required=False
+        queryset=Meeting.objects.all(), label="會議名稱", disabled=True, required=True
     )
     content = forms.CharField(label="內容", max_length=500, required=True)
 
@@ -249,43 +279,16 @@ AnnouncementFormSet = forms.inlineformset_factory(
 )
 
 
-# 建立討論事項的表單
-class DiscussionCreateForm(forms.ModelForm):
+# 編輯討論事項的表單
+class DiscussionEditForm(forms.ModelForm):
     meeting = forms.ModelChoiceField(
-        queryset=Meeting.objects.all(), label="會議名稱", disabled=True, required=False
+        queryset=Meeting.objects.all(), label="會議名稱", disabled=True, required=True
     )
     topic = forms.CharField(label="案由", max_length=25, required=True)
     description = forms.CharField(label="說明", max_length=500, required=True)
     resolution = forms.CharField(
         label="決議", initial="無", max_length=150, required=False
     )
-
-    class Meta:
-        model = Discussion
-        fields = ["meeting", "topic", "description", "resolution"]
-
-    def __init__(self, *args, **kwargs):
-        super(DiscussionCreateForm, self).__init__(*args, **kwargs)
-        self.helper = BaseFormHelper()
-        self.helper.form_id = "create-discussion-form"
-        # 共通欄位
-        self.helper.layout = Layout(
-            Field("meeting", css_class="center-field"),
-            Field("topic", placeholder="請輸入事項案由", css_class="center-field"),
-            Field("description", placeholder="請輸入事項說明", css_class="center-field"),
-            Field("resolution", placeholder="請輸入事項決議", css_class="center-field"),
-        )
-        self.helper.add_input(Submit("submit", "建立", css_class="btn-secondary"))
-
-
-# 編輯討論事項的表單
-class DiscussionEditForm(forms.ModelForm):
-    meeting = forms.ModelChoiceField(
-        queryset=Meeting.objects.all(), label="會議名稱", disabled=True, required=False
-    )
-    topic = forms.CharField(label="案由", max_length=25, required=True)
-    description = forms.CharField(label="說明", max_length=500, required=True)
-    resolution = forms.CharField(label="決議", max_length=150, required=True)
 
     class Meta:
         model = Discussion

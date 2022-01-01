@@ -1,4 +1,3 @@
-from datetime import datetime
 from calendar import HTMLCalendar
 from .models import Meeting
 
@@ -28,7 +27,7 @@ class Calendar(HTMLCalendar):
     # 將week格式化成tr
     def formatweek(self, theweek, meetings):
         week = ""
-        for day, weekday in theweek:
+        for day, _ in theweek:
             week += self.formatday(day, meetings)
         return f"<tr>{week}</tr>"
 
@@ -36,6 +35,11 @@ class Calendar(HTMLCalendar):
     # 由month,year來找出會議
     def formatmonth(self, withyear=True):
         meetings = Meeting.objects.filter(date__year=self.year, date__month=self.month)
+
+        print(self.year, self.month)
+
+        for meeting in meetings:
+            print(meeting.date)
 
         cal = f'<table border="0" cellpadding="0" cellspacing="0" class="calendar">\n'
         cal += f"{self.formatmonthname(self.year, self.month, withyear=withyear)}\n"

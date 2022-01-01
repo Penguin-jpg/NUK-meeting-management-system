@@ -99,3 +99,18 @@ def edit_info_view(request, id):
     context = {"form": form}
 
     return render(request, "accounts/edit_info.html", context)
+
+
+# 觀看參加過的會議紀錄
+def meeting_record_view(request, id):
+    try:
+        user = Participant.objects.get(id=id)
+    except Participant.DoesNotExist:
+        return redirect("user-not-found")
+
+    # 參加過的會議
+    meetings = user.meetings.all()
+
+    context = {"meetings": meetings}
+
+    return render(request, "accounts/meeting_record.html", context)

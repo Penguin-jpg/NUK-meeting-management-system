@@ -10,6 +10,12 @@ class MeetingRecordInline(admin.TabularInline):
     extra = 1
 
 
+# 提出的修改請求
+class RequestRecordInline(admin.TabularInline):
+    model = Meeting.edit_request.through
+    extra = 1
+
+
 class ParticipantAdmin(UserAdmin):
     model = Participant
     form = ParticipantChangeForm
@@ -54,6 +60,7 @@ class ParticipantAdmin(UserAdmin):
 
     inlines = [
         MeetingRecordInline,
+        RequestRecordInline,
     ]
 
 

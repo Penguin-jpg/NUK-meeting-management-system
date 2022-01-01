@@ -45,12 +45,20 @@ class Meeting(models.Model):
     participants = models.ManyToManyField(
         Participant, related_name="meetings", verbose_name="與會人員"
     )
-    speech = models.CharField(max_length=500, default="略", verbose_name="主席致詞")
+    speech = models.TextField(max_length=500, default="略", verbose_name="主席致詞")
     attendance_record = models.ManyToManyField(
         Participant,
         through="Attendance",
         through_fields=("meeting", "participant"),
         verbose_name="出席紀錄",
+        related_name="attendance",
+    )
+    edit_request = models.ManyToManyField(
+        Participant,
+        through="EditRequest",
+        through_fields=("meeting", "participant"),
+        verbose_name="修改請求",
+        related_name="edit_requests",
     )
 
     def __str__(self):
@@ -74,7 +82,7 @@ class Meeting(models.Model):
             f"您好，您參加的{self.get_meeting_type()}將在 {formatted_date} 於{self.location}舉行",  # 內容
             settings.EMAIL_HOST_USER,  # 寄信人
             [participant.email for participant in self.participants.all()],  # 　收信人
-            fail_silently=False,  # 之後改True
+            fail_silently=True,  # 之後改True
         )
         print("sent!")
         # message = get_template("meetings/email_template.html").render(
@@ -93,8 +101,9 @@ class Meeting(models.Model):
     @property
     def get_url(self):
         date = self.date
-        offset = datetime.timedelta(hours=8)  # UTC和台北時間差8小時
-        date = date + offset  # 加上時差轉成台北時間
+        # 如果要啟動時區，則需加上下面兩行
+        # offset = datetime.timedelta(hours=8)  # UTC和台北時間差8小時
+        # date = date + offset  # 加上時差轉成台北時間
 
         url = reverse(
             "meeting-day",
@@ -118,11 +127,31 @@ class Attendance(models.Model):
     )
     participant = models.ForeignKey(
         Participant,
-        on_delete=models.DO_NOTHING,
+        null=True,
+        on_delete=models.SET_NULL,
         verbose_name="與會人員",
         related_name="attendance_records",
     )
     attend = models.BooleanField(default=False, verbose_name="出席")
+
+
+# 修改請求
+class EditRequest(models.Model):
+    meeting = models.ForeignKey(
+        Meeting,
+        null=True,
+        on_delete=models.SET_NULL,
+        verbose_name="會議",
+        related_name="edit_requests",
+    )
+    participant = models.ForeignKey(
+        Participant,
+        null=True,
+        on_delete=models.SET_NULL,
+        verbose_name="與會人員",
+        related_name="requests",
+    )
+    content = models.TextField(blank=False, verbose_name="內容")
 
 
 # 臨時動議
@@ -182,9 +211,9 @@ class Appendix(models.Model):
 
 
 # 建立或更新會議後寄出會議通知
-@receiver(post_save, sender=Meeting)
-def post_save_send_meeting_notification(sender, instance, created, **kwargs):
-    instance.send_meeting_notification()
+# @receiver(post_save, sender=Meeting)
+# def post_save_send_meeting_notification(sender, instance, created, **kwargs):
+#     instance.send_meeting_notification()
 
 
 # 刪除資料夾內附件

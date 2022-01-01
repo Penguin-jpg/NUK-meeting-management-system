@@ -2,35 +2,33 @@
 
 {% block title %} 當日與會人員 {% endblock %}
 
-{% block content%}
+{% block content %}
 <br>
 <h1>當日與會人員</h1>
 <br>
 <br>
-<table class="table-container">
-    <thead>
-        <tr>
-            <th>
-                <h1>姓名</h1>
-            </th>
-            <th>
-                <h1>電子信箱</h1>
-            </th>
-            <th>
-                <h1>身分</h1>
-            </th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for participant in participants %}
-        <tr>
-            <td>
-                <a href="{% url 'user-info' participant.id %}">{{ participant.get_full_name }}</a>
-            </td>
-            <td>{{ participant.email|safe }}</td>
-            <td>{{ participant.get_identity|safe }}</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+<div class="table-responsive custom-table-responsive">
+    <table class="table custom-table">
+        <thead>
+            <tr>
+                <th scope="col">姓名</th>
+                <th scope="col">電子信箱</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for participant in participants %}
+            <tr scope="row">
+                <td>
+                    <a href="{% url 'user-info' participant.id %}">{{ participant.get_full_name|safe }}</a>
+                    <small class="d-block">{{ participant.get_identity|safe }}</small>
+                </td>
+                <td>{{ participant.email|safe }}</td>
+            </tr>
+            <tr class="spacer">
+                <td colspan="100"></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
 {% endblock %}

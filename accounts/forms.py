@@ -22,7 +22,7 @@ IDENTITY = (
     (4, "系上老師"),
 )
 
-
+# 基本的FormHelper
 class BaseFormHelper(FormHelper):
     def __init__(self, *args, **kwargs):
         super(BaseFormHelper, self).__init__(*args, **kwargs)
@@ -42,7 +42,9 @@ class SignUpForm(UserCreationForm):
         label="密碼",
         max_length=200,
         required=True,
-        widget=forms.PasswordInput(attrs={"class": "form-control", "type": "password"}),
+        widget=forms.PasswordInput(
+            attrs={"class": "form-control", "type": "password"},
+        ),
     )
     password2 = forms.CharField(
         label="確認密碼",

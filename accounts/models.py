@@ -66,9 +66,6 @@ class Participant(AbstractUser):
 
     class Meta:
         permissions = [
-            ("request_for_modifying_meeting_minutes", "發出會議紀錄修改請求"),
-            ("create_extempore_motion", "新增臨時動議"),
-            ("mail_notification", "寄出會議通知"),
             ("mail_result", "寄出開會結果"),
         ]
 

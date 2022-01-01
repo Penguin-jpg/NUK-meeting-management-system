@@ -4,7 +4,9 @@
 /* 基本設定 */
 /* 基本配色參考：https://userstyles.org/styles/147272/hackmd-dark-theme */
 body {
+  /* 討論一下要用哪個顏色 */
   background-color: #1e1e1e;
+  /* background-color: #1c1e21; */
   /* Noto Sans TC 思源黑體 */
   font-family: "Noto Sans TC", "微軟正黑體", sans-serif;
 }
@@ -47,10 +49,22 @@ a {
   color: #17a2b8;
 }
 
+/* button */
+
 .btn {
   background-color: #6a6a6a;
   color: #eee;
   border-color: #555;
+}
+
+.text-btn {
+  border: none;
+  background-color: #333;
+  float: left;
+}
+
+.text-btn:hover {
+  color: #ddd;
 }
 
 /* checkboxselectmultiple */
@@ -69,12 +83,19 @@ a {
   margin-top: 0; /* remove the gap so it doesn't close*/
 }
 
+.dropdown-menu > a:focus,
+.dropdown-menu > a:hover {
+  background-color: #555555;
+  color: #eee;
+}
+
 .dropdown-menu {
-  background-color: #626262;
+  background-color: #222;
+  border: 1px solid #555;
 }
 
 .dropdown-item {
-  color: white;
+  color: #eee;
   text-align: center;
 }
 
@@ -92,11 +113,12 @@ a {
   margin-top: -10px;
   margin-bottom: 10px;
   font-size: 15px;
+  color: #ddd;
 }
 
-#hint_id_password1 {
+/* #hint_id_password1 {
   margin-left: 27%;
-}
+} */
 
 #hint_id_school_system {
   margin-left: -35px;
@@ -109,6 +131,14 @@ a {
 }
 
 #edit-attendance-form .select {
+  text-align-last: center;
+  text-align: center;
+  -ms-text-align-last: center;
+  -moz-text-align-last: center;
+  width: 40%;
+}
+
+#edit-request-form .select {
   text-align-last: center;
   text-align: center;
   -ms-text-align-last: center;
@@ -154,6 +184,7 @@ a {
 
 .calendar td {
   background-color: #333;
+  /* background-color: #222; */
   width: 200px;
   height: 125px;
   padding: 20px 0px 0px 5px;
@@ -195,77 +226,82 @@ a {
 }
 
 /* table */
-/* 修改自https://codepen.io/pablorgarcia/pen/qdIsm */
-.table-container {
-  text-align: center;
-  overflow: auto;
-  min-width: 100%;
-  margin: 0 auto;
-  display: table;
-  padding: 0 0 8em 0;
+/* 修改自https://colorlib.com/wp/template/css-table-16/ */
+.custom-table {
+  min-width: 900px;
 }
-
-.table-container th h1 {
-  font-weight: bold;
-  font-size: 1em;
-  text-align: center;
+.custom-table thead tr,
+.custom-table thead th {
+  background-color: #222;
+  border-top: none;
+  border-bottom: none !important;
+  color: #ddd;
 }
-
-.table-container td {
-  font-weight: normal;
-  font-size: 1em;
-  -webkit-box-shadow: 0 2px 2px -2px #0e1119;
-  -moz-box-shadow: 0 2px 2px -2px #0e1119;
-  box-shadow: 0 2px 2px -2px #0e1119;
+.custom-table tbody th,
+.custom-table tbody td {
+  color: #ddd;
+  font-weight: 400;
+  padding-bottom: 20px;
+  padding-top: 20px;
+  font-weight: 300;
 }
-
-.table-container td,
-.table-container th {
-  padding-bottom: 2%;
-  padding-top: 2%;
-  padding-left: 2%;
+.custom-table tbody th small,
+.custom-table tbody td small {
+  font-size: 15px;
+  color: #b3b3b3;
+  font-weight: 400;
 }
-
-/* Background-color of the odd rows */
-.table-container tr:nth-child(odd) {
-  background-color: #323c50;
+.custom-table tbody tr:not(.spacer) {
+  border-radius: 7px;
+  overflow: hidden;
+  -webkit-transition: 0.3s all ease;
+  -o-transition: 0.3s all ease;
+  transition: 0.3s all ease;
 }
-
-/* Background-color of the even rows */
-.table-container tr:nth-child(even) {
-  background-color: #2c3446;
+.custom-table tbody tr:not(.spacer):hover {
+  -webkit-box-shadow: 0 2px 10px -5px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 10px -5px rgba(0, 0, 0, 0.1);
 }
-
-.table-container th {
-  background-color: #1f2739;
+.custom-table tbody tr th,
+.custom-table tbody tr td {
+  background: #25252b;
+  border: none;
+  -webkit-transition: 0.3s all ease;
+  -o-transition: 0.3s all ease;
+  transition: 0.3s all ease;
 }
-
-.table-container td:first-child {
-  color: #fb667a;
+.custom-table tbody tr th a,
+.custom-table tbody tr td a {
+  color: #ddd;
 }
-
-.table-container tr:hover {
-  background-color: #464a52;
-  -webkit-box-shadow: 0 6px 6px -6px #0e1119;
-  -moz-box-shadow: 0 6px 6px -6px #0e1119;
-  box-shadow: 0 6px 6px -6px #0e1119;
+.custom-table tbody tr th:first-child,
+.custom-table tbody tr td:first-child {
+  border-top-left-radius: 0px;
+  border-bottom-left-radius: 0px;
 }
-
-.table-container td:hover {
-  background-color: #fff842;
-  color: #403e10;
-  font-weight: bold;
-
-  box-shadow: #7f7c21 -1px 1px, #7f7c21 -2px 2px, #7f7c21 -3px 3px,
-    #7f7c21 -4px 4px, #7f7c21 -5px 5px, #7f7c21 -6px 6px;
-  /* 加了之後就不會顯示box-shadow，不知道為啥 */
-  /* transform: translate3d(6px, -6px, 0); */
-
-  transition-delay: 0s;
-  transition-duration: 0.4s;
-  transition-property: all;
-  transition-timing-function: line;
-  text-align: left;
+.custom-table tbody tr th:last-child,
+.custom-table tbody tr td:last-child {
+  border-top-right-radius: 0px;
+  border-bottom-right-radius: 0px;
+}
+.custom-table tbody tr.spacer td {
+  padding: 0 !important;
+  height: 3px;
+  border-radius: 0 !important;
+  background: transparent !important;
+}
+.custom-table tbody tr.active th,
+.custom-table tbody tr.active td,
+.custom-table tbody tr:hover th,
+.custom-table tbody tr:hover td {
+  color: #ddd;
+  background: #2e2e36;
+}
+.custom-table tbody tr.active th a,
+.custom-table tbody tr.active td a,
+.custom-table tbody tr:hover th a,
+.custom-table tbody tr:hover td a {
+  color: #ddd;
 }
 
 /* Three image containers (use 25% for four, and 50% for two, etc) */
@@ -298,7 +334,8 @@ a {
   top: 100%;
   left: 50%;
   margin-left: -60px; /* Use half of the width (120/2 = 60), to center the tooltip */
-  background-color: #626262;
+  /* background-color: #626262; */
+  background-color: #737373;
   color: white;
   text-align: center;
   border-radius: 6px;
@@ -324,7 +361,64 @@ a {
   visibility: visible;
 }
 
-.card { 
-  border-style: solid;
-  background-color:#1e1e1e;
+/* accordion and card */
+/* 修改自https://codepen.io/kbsnr02/pen/LYNMyzP */
+.accordion {
+  margin: 40px 0;
+}
+.accordion .item {
+  border: none;
+  margin-bottom: 50px;
+  background: none;
+}
+.t-p {
+  color: #ddd;
+  padding: 40px 30px 0px 30px;
+}
+.accordion .item .item-header h2 button.btn.btn-link {
+  background: #333435;
+  color: #ddd;
+  border-radius: 0px;
+  font-family: "Poppins";
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 2.5;
+  text-decoration: none;
+}
+.accordion .item .item-header {
+  border-bottom: none;
+  background: transparent;
+  padding: 0px;
+  margin: 2px;
+}
+
+.accordion .item .item-header h2 button {
+  color: #ddd;
+  font-size: 20px;
+  padding: 15px;
+  display: block;
+  width: 100%;
+  text-align: left;
+}
+
+.accordion .item .item-header h2 i {
+  float: right;
+  font-size: 30px;
+  color: #eca300;
+  background-color: #333435;
+  width: 60px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 5px;
+}
+
+button.btn.btn-link.collapsed i {
+  transform: rotate(0deg);
+}
+
+button.btn.btn-link i {
+  transform: rotate(180deg);
+  transition: 0.5s;
 }

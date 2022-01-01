@@ -3,6 +3,7 @@
 {% block title %} 會議資料 {% endblock %}
 
 {% block content%}
+<!-- 會議 -->
 <br>
 <h1>會議資料</h1>
 <br>
@@ -60,15 +61,7 @@
         <span class="info-text">與會人員</span>
     </div>
     <div class="col-md-6">
-        <p class="info-text"><a href="{% url 'meeting-participants' meeting.id %}">人員名單</a></p>
-    </div>
-</div>
-<div class="row">
-    <div class="col-md-6">
-        <span class="info-text">主席致詞</span>
-    </div>
-    <div class="col-md-6">
-        <p class="info-text">{{ meeting.speech }}</p>
+        <p class="info-text"><a href="{% url 'meeting-participants' meeting.id %}">點此觀看名單</a></p>
     </div>
 </div>
 <div class="row">
@@ -83,174 +76,208 @@
         {% endif %}
     </div>
 </div>
-<a class="btn btn-info" style="margin-bottom:10px" href="{% url 'meeting-delete' meeting.id %}">刪除會議</a>
+<div class="row">
+    <div class="col-md-6">
+        <span class="info-text">修改請求</span>
+    </div>
+    <div class="col-md-6">
+        <p class="info-text"><a href="{% url 'request-list' meeting.id %}">點此觀看</a></p>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <span class="info-text">主席致詞</span>
+    </div>
+    <div class="col-md-6">
+        <p class="info-text">{{ meeting.speech|safe }}</p>
+    </div>
+</div>
 
+<!-- 報告事項 -->
 <br>
 <h1>報告事項</h1>
 <br>
 <br>
 
-<div class="row">
-    <div class="col-md-12">
-        <a class="btn btn-primary" data-toggle="collapse" href="#collapse_announcement" role="button" aria-expanded="false" aria-controls="collapse_announcement">摺疊</a>
+<div class="accordion" id="announcement-accordion">
+    <!-- 有東西才顯示 -->
+    {% if announcements %}
+    {% for announcement in announcements %}
+    <div class="item">
+        <div class="item-header" id="accnouncement-heading{{ forloop.counter }}">
+            <h2 class="mb-0">
+                <button class="btn btn-link" type="button" data-toggle="collapse"
+                    data-target="#accnouncement-collapse{{ forloop.counter }}" aria-expanded="true"
+                    aria-controls="accnouncement-collapse{{ forloop.counter }}">
+                    報告事項 {{ forloop.counter }}
+                    <i class="fa fa-angle-down"></i>
+                </button>
+            </h2>
+        </div>
+        <div id="accnouncement-collapse{{ forloop.counter }}" class="collapse"
+            aria-labelledby="accnouncement-heading{{ forloop.counter }}" data-parent="#announcement-accordion">
+            <div class="t-p">
+                <p class="info-text">{{ announcement.content }}</p>
+            </div>
+        </div>
     </div>
+    {% endfor %}
+    {% else %}
+    <div class="row">
+        <div class="col-md-12">
+            <span class="info-text">目前沒有報告事項</span>
+        </div>
+    </div>
+    {% endif %}
 </div>
 
-<div class="collapse" id="collapse_announcement">
-<div class="card card-body">
-{% for announcement in announcements %}
-<div class="row">
-    <div class="col-md-6">
-        <span class="info-text">內容</span>
-    </div>
-    <div class="col-md-6">
-        <p class="info-text">{{ announcement.content }}</p>
-    </div>
-</div>
-{% endfor %}
-</div>
-</div>
-
-<div class="row">
-    <div class="col-md-12">
-        <a class="btn btn-info" href="{% url 'edit-announcement' meeting.id %}">編輯</a>
-    </div>
-</div>
-
+<!-- 挑論事項 -->
 <br>
 <br>
 <h1>討論事項</h1>
 <br>
 <br>
-
-<div class="row">
-    <div class="col-md-12">
-        <a class="btn btn-primary" data-toggle="collapse" href="#collapse_disscussion" role="button" aria-expanded="false" aria-controls="collapse_disscussion">摺疊</a>
+<div class="accordion" id="discussion-accordion">
+    <!-- 一定會有討論事項，所以不檢查 -->
+    {% for discussion in discussions %}
+    <div class="item">
+        <div class="item-header" id="discussion-heading{{ forloop.counter }}">
+            <h2 class="mb-0">
+                <button class="btn btn-link" type="button" data-toggle="collapse"
+                    data-target="#discussion-collapse{{ forloop.counter }}" aria-expanded="true"
+                    aria-controls="discussion-collapse{{ forloop.counter }}">
+                    討論事項 {{ forloop.counter }}
+                    <i class="fa fa-angle-down"></i>
+                </button>
+            </h2>
+        </div>
+        <div id="discussion-collapse{{ forloop.counter }}" class="collapse"
+            aria-labelledby="discussion-heading{{ forloop.counter }}" data-parent="#discussion-accordion">
+            <div class="t-p">
+                <div class="col-md-12">
+                    <span class="info-text">案由</span>
+                </div>
+                <div class="col-md-12">
+                    <p class="info-text">{{ discussion.topic }}</p>
+                </div>
+            </div>
+            <div class="t-p">
+                <div class="col-md-12">
+                    <span class="info-text">說明</span>
+                </div>
+                <div class="col-md-12">
+                    <p class="info-text">{{ discussion.description }}</p>
+                </div>
+            </div>
+            <div class="t-p">
+                <div class="col-md-12">
+                    <span class="info-text">決議</span>
+                </div>
+                <div class="col-md-12">
+                    <p class="info-text">{{ discussion.resolution }}</p>
+                </div>
+            </div>
+        </div>
     </div>
+    {% endfor %}
 </div>
 
-<div class="collapse" id="collapse_disscussion">
-<div class="card card-body">
-{% for discussion in discussions %}
-<div class="row">
-    <div class="col-md-6">
-        <span class="info-text">案由</span>
-    </div>
-    <div class="col-md-6">
-        <p class="info-text">{{ discussion.topic }}</p>
-    </div>
-</div>
-
-<div class="row">
-    <div class="col-md-6">
-        <span class="info-text">說明</span>
-    </div>
-    <div class="col-md-6">
-        <p class="info-text">{{ discussion.description }}</p>
-    </div>
-</div>
-
-<div class="row">
-    <div class="col-md-6">
-        <span class="info-text">決議</span>
-    </div>
-    <div class="col-md-6">
-        <p class="info-text">{{ discussion.resolution }}</p>
-    </div>
-</div>
-{% endfor %}
-</div>
-</div>
-
-<div class="row">
-    <div class="col-md-12">
-        <a class="btn btn-info" href="{% url 'edit-discussion' meeting.id %}">編輯</a>
-    </div>
-</div>
-
+<!-- 臨時動議 -->
 <br>
 <br>
 <h1>臨時動議</h1>
 <br>
 <br>
+<div class="accordion" id="extempore-motion-accordion">
+    {% if extempore_motions %}
+    {% for extempore_motion in extempore_motions %}
+    <div class="item">
+        <div class="item-header" id="extempore-motion-heading{{ forloop.counter }}">
+            <h2 class="mb-0">
+                <button class="btn btn-link" type="button" data-toggle="collapse"
+                    data-target="#extempore-motion-collapse{{ forloop.counter }}" aria-expanded="true"
+                    aria-controls="extempore-motion-collapse{{ forloop.counter }}">
+                    臨時動議 {{ forloop.counter }}
+                    <i class="fa fa-angle-down"></i>
+                </button>
+            </h2>
+        </div>
+        <div id="extempore-motion-collapse{{ forloop.counter }}" class="collapse"
+            aria-labelledby="extempore-motion-heading{{ forloop.counter }}" data-parent="#extempore-motion-accordion">
+            <div class="t-p">
+                <div class="row">
+                    <div class="col-md-6">
+                        <span class="info-text">提案人</span>
+                    </div>
+                    <div class="col-md-6">
+                        <p class="info-text">{{ extempore_motion.proposer }}</p>
+                    </div>
+                </div>
 
-<div class="row">
-    <div class="col-md-12">
-        <a class="btn btn-primary" data-toggle="collapse" href="#collapse_extempore_motion" role="button" aria-expanded="false" aria-controls="collapse_extempore_motion">摺疊</a>
+                <div class="row">
+                    <div class="col-md-6">
+                        <span class="info-text">內容</span>
+                    </div>
+                    <div class="col-md-6">
+                        <p class="info-text">{{ extempore_motion.content }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
+    {% endfor %}
+    {% else %}
+    <span class="info-text">目前沒有臨時動議</span>
+    {% endif %}
 </div>
 
-<div class="collapse" id="collapse_extempore_motion">
-<div class="card card-body">
-{% for extempore_motion in extempore_motions %}
-<div class="row">
-    <div class="col-md-6">
-        <span class="info-text">提案人</span>
-    </div>
-    <div class="col-md-6">
-        <p class="info-text">{{ extempore_motion.proposer }}</p>
-    </div>
-</div>
-
-<div class="row">
-    <div class="col-md-6">
-        <span class="info-text">內容</span>
-    </div>
-    <div class="col-md-6">
-        <p class="info-text">{{ extempore_motion.content }}</p>
-    </div>
-</div>
-{% endfor %}
-</div>
-</div>
-
-<div class="row">
-    <div class="col-md-12">
-        <a class="btn btn-info" href="{% url 'edit-extemporeMotion' meeting.id %}">編輯</a>
-    </div>
-</div>
-
+<!-- 附件 -->
 <br>
 <br>
 <h1>附件</h1>
 <br>
 <br>
+<div class="accordion" id="appendix-accordion">
+    {% if appendices %}
+    {% for appendix in appendices %}
+    <div class="item">
+        <div class="item-header" id="appendix-heading{{ forloop.counter }}">
+            <h2 class="mb-0">
+                <button class="btn btn-link" type="button" data-toggle="collapse"
+                    data-target="#appendix-collapse{{ forloop.counter }}" aria-expanded="true"
+                    aria-controls="appendix-collapse{{ forloop.counter }}">
+                    附件 {{ forloop.counter }}
+                    <i class="fa fa-angle-down"></i>
+                </button>
+            </h2>
+        </div>
+        <div id="appendix-collapse{{ forloop.counter }}" class="collapse"
+            aria-labelledby="appendix-heading{{ forloop.counter }}" data-parent="#appendix-accordion">
+            <div class="t-p">
+                <div class="row">
+                    <div class="col-md-6">
+                        <span class="info-text">提供者</span>
+                    </div>
+                    <div class="col-md-6">
+                        <p class="info-text">{{ appendix.provider }}</p>
+                    </div>
+                </div>
 
-<div class="row">
-    <div class="col-md-12">
-        <a class="btn btn-primary" data-toggle="collapse" href="#collapse_appendix" role="button" aria-expanded="false" aria-controls="collapse_appendix">摺疊</a>
+                <div class="row">
+                    <div class="col-md-6">
+                        <span class="info-text">檔案</span>
+                    </div>
+                    <div class="col-md-6">
+                        <p class="info-text"><a href="{{ appendix.file.url }}" download>{{ appendix.get_file_name }}</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-</div>
-
-<div class="collapse" id="collapse_appendix">
-<div class="card card-body">
-{% for appendix in appendices %}
-<div class="row">
-    <div class="col-md-6">
-        <span class="info-text">提供者</span>
-    </div>
-    <div class="col-md-6">
-        <p class="info-text">{{ appendix.provider }}</p>
-    </div>
-</div>
-
-<div class="row">
-    <div class="col-md-6">
-        <span class="info-text">檔案</span>
-    </div>
-    <div class="col-md-6">
-        {% comment %} <p class="info-text"><a href="http://127.0.0.1:8000/media/{{ appendix.file }}"
-                download>{{ appendix.file }}</a></p> {% endcomment %}
-        <p class="info-text"><a href="{{ appendix.file.url }}" download>{{ appendix.get_file_name }}</a></p>
-    </div>
-</div>
-{% endfor %}
-</div>
-</div>
-
-<div class="row">
-    <div class="col-md-12">
-        <a class="btn btn-info" href="{% url 'edit-appendix' meeting.id %}">編輯</a>
-    </div>
+    {% endfor %}
+    {% else %}
+    <span class="info-text">目前沒有附件</span>
+    {% endif %}
 </div>
 {% endblock %}
