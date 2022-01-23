@@ -2,7 +2,10 @@
 
 {% block title %} 會議資料 {% endblock %}
 
+{% load static %}
+
 {% block content%}
+
 <!-- 會議 -->
 <br>
 <h1>會議資料</h1>
@@ -95,7 +98,8 @@
 
 <!-- 報告事項 -->
 <br>
-<h1>報告事項</h1>
+<h1>報告事項 <a href="{% url 'edit-announcement' meeting.id %}"><img src="{% static 'image/edit_icon_white.png' %}" width="40" height="40" 
+    class="img-fluid" alt="deit"></a></h1>
 <br>
 <br>
 
@@ -134,7 +138,8 @@
 <!-- 挑論事項 -->
 <br>
 <br>
-<h1>討論事項</h1>
+<h1>討論事項 <a href="{% url 'edit-discussion' meeting.id %}"><img src="{% static 'image/edit_icon_white.png' %}" width="40" height="40" 
+    class="img-fluid" alt="deit"></a></h1>
 <br>
 <br>
 <div class="accordion" id="discussion-accordion">
@@ -185,7 +190,8 @@
 <!-- 臨時動議 -->
 <br>
 <br>
-<h1>臨時動議</h1>
+<h1>臨時動議 <a href="{% url 'edit-extemporeMotion' meeting.id %}"><img src="{% static 'image/edit_icon_white.png' %}" width="40" height="40" 
+    class="img-fluid" alt="deit"></a></h1>
 <br>
 <br>
 <div class="accordion" id="extempore-motion-accordion">
@@ -234,7 +240,8 @@
 <!-- 附件 -->
 <br>
 <br>
-<h1>附件</h1>
+<h1>附件 <a href="{% url 'edit-appendix' meeting.id %}"><img src="{% static 'image/edit_icon_white.png' %}" width="40" height="40" 
+    class="img-fluid" alt="edit"></a></h1>
 <br>
 <br>
 <div class="accordion" id="appendix-accordion">

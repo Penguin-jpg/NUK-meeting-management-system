@@ -42,6 +42,7 @@ def user_register_view(request):
         user = Participant.objects.get(username=form.cleaned_data["username"])
         messages.success(request, "註冊成功!")
         # 註冊成功且登入後，將使用者導向到編輯個人資料
+        #return redirect("login", user.id)
         return redirect("edit-info", user.id)
     else:
         form = SignUpForm(initial={"identity": identity})
@@ -82,7 +83,7 @@ def user_info_view(request, id):
 
 # 編輯使用者個人資料
 @login_required(login_url="login")
-@permission_required("accounts.change_info", raise_exception=True)
+#@permission_required("accounts.change_info", raise_exception=True)
 def edit_info_view(request, id):
     try:
         user = Participant.objects.get(id=id)

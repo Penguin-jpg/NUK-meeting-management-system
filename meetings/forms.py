@@ -238,7 +238,7 @@ class ExtemporeMotionEditForm(forms.ModelForm):
         queryset=Meeting.objects.all(), label="會議名稱", disabled=True, required=False
     )
     proposer = forms.CharField(label="提案人", max_length=20, required=True)
-    content = forms.CharField(label="內容", max_length=500, required=True)
+    content = forms.CharField(label="內容", max_length=500, required=True, widget=forms.Textarea(attrs={'rows': 8, 'cols': 40}))
 
     class Meta:
         model = ExtemporeMotion
@@ -261,7 +261,7 @@ class AnnouncementEditForm(forms.ModelForm):
     meeting = forms.ModelChoiceField(
         queryset=Meeting.objects.all(), label="會議名稱", disabled=True, required=True
     )
-    content = forms.CharField(label="內容", max_length=500, required=True)
+    content = forms.CharField(label="內容", max_length=500, required=True, widget=forms.Textarea(attrs={'rows': 8, 'cols': 40}))
 
     class Meta:
         model = Announcement
@@ -285,9 +285,9 @@ class DiscussionEditForm(forms.ModelForm):
         queryset=Meeting.objects.all(), label="會議名稱", disabled=True, required=True
     )
     topic = forms.CharField(label="案由", max_length=25, required=True)
-    description = forms.CharField(label="說明", max_length=500, required=True)
+    description = forms.CharField(label="說明", max_length=500, required=True, widget=forms.Textarea(attrs={'rows': 8, 'cols': 40}))
     resolution = forms.CharField(
-        label="決議", initial="無", max_length=150, required=False
+        label="決議", initial="無", max_length=150, required=False, widget=forms.Textarea(attrs={'rows': 5, 'cols': 40})
     )
 
     class Meta:
