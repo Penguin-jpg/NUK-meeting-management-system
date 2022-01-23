@@ -79,12 +79,12 @@ class Meeting(models.Model):
         # 可能會改用djang-template-mail
         send_mail(
             "高雄大學會議管理系統 - 會議通知",  # 標題
-            f"您好，您參加的{self.get_meeting_type()}將在 {formatted_date} 於{self.location}舉行",  # 內容
+            f"您好，您參加的會議「{self.name}」（{self.get_meeting_type()}）將在 {formatted_date} 於{self.location}舉行",  # 內容
             settings.EMAIL_HOST_USER,  # 寄信人
             [participant.email for participant in self.participants.all()],  # 　收信人
-            fail_silently=True,  # 之後改True
+            fail_silently=True,
         )
-        print("sent!")
+        # print("sent!")
         # message = get_template("meetings/email_template.html").render(
         #     context={"meeting": self, "formatted_date": formatted_date}
         # )
@@ -96,6 +96,25 @@ class Meeting(models.Model):
         # )
         # mail.content_subtype("html")  # 使用html
         # return mail.send()
+
+    # 寄出開會結果
+    def send_meeting_resolution(self):
+        formatted_date = self.date.strftime("%Y/%m/%d %H:%M")  # 格式化日期
+        content = ""
+
+        for i, discussion in enumerate(self.discussions.all()):
+            content += (
+                f"案由{i + 1}：{discussion.topic}\n" + f"決議：{discussion.resolution}\n\n"
+            )
+
+        send_mail(
+            "高雄大學會議管理系統 - 會議結果通知",  # 標題
+            f"您好，您參加的會議「{self.name}」（{self.get_meeting_type()}）的會議結果如下：\n\n"
+            + content,  # 內容
+            settings.EMAIL_HOST_USER,  # 寄信人
+            [participant.email for participant in self.participants.all()],  # 　收信人
+            fail_silently=True,
+        )
 
     # 取得url給日曆用
     @property

@@ -427,3 +427,15 @@ def edit_appendix_view(request, id):
 
     context = {"formset": formset, "helper": helper, "meeting": meeting}
     return render(request, "meetings/edit_appendix.html", context)
+
+
+# 寄出開會通知
+def send_resolution_view(request, id):
+    try:
+        meeting = Meeting.objects.get(id=id)
+    except Meeting.DoesNotExist:
+        return redirect("meeting-not-found")
+
+    meeting.send_meeting_resolution()
+
+    return render(request, "meetings/send_success.html", {})

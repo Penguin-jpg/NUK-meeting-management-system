@@ -1,4 +1,6 @@
--- MySQL dump 10.13  Distrib 8.0.28, for Win64 (x86_64)
+CREATE DATABASE  IF NOT EXISTS `nuk_database` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
+USE `nuk_database`;
+-- MySQL dump 10.13  Distrib 8.0.27, for Win64 (x86_64)
 --
 -- Host: localhost    Database: nuk_database
 -- ------------------------------------------------------
@@ -85,7 +87,7 @@ DROP TABLE IF EXISTS `accounts_info`;
 CREATE TABLE `accounts_info` (
   `id` bigint NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -94,7 +96,7 @@ CREATE TABLE `accounts_info` (
 
 LOCK TABLES `accounts_info` WRITE;
 /*!40000 ALTER TABLE `accounts_info` DISABLE KEYS */;
-INSERT INTO `accounts_info` VALUES (1),(2),(3),(4),(7),(8),(9),(10),(11);
+INSERT INTO `accounts_info` VALUES (1),(2),(3),(4),(7),(8),(9),(10),(11),(12);
 /*!40000 ALTER TABLE `accounts_info` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -123,7 +125,7 @@ CREATE TABLE `accounts_participant` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`),
   UNIQUE KEY `email` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -132,7 +134,7 @@ CREATE TABLE `accounts_participant` (
 
 LOCK TABLES `accounts_participant` WRITE;
 /*!40000 ALTER TABLE `accounts_participant` DISABLE KEYS */;
-INSERT INTO `accounts_participant` VALUES (1,'pbkdf2_sha256$260000$PI1Le2oIwRHA132kDCPARA$QUlaKzIt2tAWuhimvxMaIphLuaSlyemOBc76kic/wiM=','2022-01-23 00:02:55.878679',1,'admin','admin','admin',1,1,'2021-12-31 16:15:56.000000','admin@gmail.com',0,2,''),(2,'pbkdf2_sha256$260000$xqzVzeBiZ0P9XDDMKE1VZt$91NZIE334c8kgIvlUf3Q5z/GjNb9kNCLoLFnRjbLkxM=','2021-12-31 16:26:34.000000',0,'test','1','test',0,1,'2021-12-31 16:25:27.000000','test@gmail.com',1,2,'0912345678'),(3,'pbkdf2_sha256$260000$gcsUtaxzdxXDslRies3WpN$r3jo15e3DDbRjR32/pIQgKkXFbV0Jyyq7V6ELEiICgw=','2022-01-01 07:14:24.777441',0,'test2','2','test',0,1,'2022-01-01 07:14:16.781195','test2@gmail.com',3,2,'0912345678'),(4,'pbkdf2_sha256$260000$BEFhAB5Q8apK9Kg9x9MiXL$LnfAZU/cA5IchOTFo92FN1xCsM94NwMnA80xPHb836g=','2022-01-01 16:06:09.520259',0,'test3','3','test',0,1,'2022-01-01 07:15:16.012007','test3@gmail.com',4,2,'0912345678'),(7,'pbkdf2_sha256$260000$HQ5QnfyUtVla0DiSoXCvjT$L8Dh/CgXvJz7araxj5ZFSiB+AQbAMl6i0OFjr60Ef4k=','2022-01-22 23:18:25.686253',0,'teacher','師','老',0,1,'2022-01-22 23:18:08.213669','teacher@gmail.com',4,2,'09121231123'),(8,'pbkdf2_sha256$260000$rYZFTqurR6xpgLrGEq9EW4$5IKqY1S0wMwX+xzHxVUrDffq5Z45POFvDkiSFbBUGe4=','2022-01-22 23:50:35.719731',0,'a1085515','彥輔','曾',0,1,'2022-01-22 23:50:22.244796','a1085515@mail.nuk.edu.tw',1,2,'09123123123'),(9,'pbkdf2_sha256$260000$9jx2XMyWFlrksvyZ4jGIxs$SmwndBJJp5AqgfHai0ttySNuq0md4ZIZBQT9WYFX2nY=','2022-01-22 23:53:30.596615',0,'a1085502','佾遑','謝',0,1,'2022-01-22 23:53:21.467515','a1085502@mail.nuk.edu.tw',1,2,'09123123123'),(10,'pbkdf2_sha256$260000$BHdSSX9hqUrA7rcimbg11y$RVL514PCfSc266dLqk48wksGr5l7JIFMwr1B+KLyHTA=','2022-01-22 23:54:45.144745',0,'a1085509','勝耀','林',0,1,'2022-01-22 23:54:28.300335','a1085509@mail.nuk.edu.tw',1,2,'09123123123'),(11,'pbkdf2_sha256$260000$FW30wQSUK4udFqGH7Uy57r$6TyS0NfUkqZGwNhq77Uju07GAFm8yneWuTG9PqEkhpc=','2022-01-22 23:55:38.825978',0,'a1085504','修維','吳',0,1,'2022-01-22 23:55:18.276673','a1085504@mail.nuk.edu.tw',1,2,'09123123123');
+INSERT INTO `accounts_participant` VALUES (1,'pbkdf2_sha256$260000$PI1Le2oIwRHA132kDCPARA$QUlaKzIt2tAWuhimvxMaIphLuaSlyemOBc76kic/wiM=','2022-01-23 10:20:39.265325',1,'admin','admin','admin',1,1,'2021-12-31 16:15:56.000000','admin@gmail.com',3,2,''),(2,'pbkdf2_sha256$260000$xqzVzeBiZ0P9XDDMKE1VZt$91NZIE334c8kgIvlUf3Q5z/GjNb9kNCLoLFnRjbLkxM=','2021-12-31 16:26:34.000000',0,'test','1','test',0,1,'2021-12-31 16:25:27.000000','test@gmail.com',1,2,'0912345678'),(3,'pbkdf2_sha256$260000$gcsUtaxzdxXDslRies3WpN$r3jo15e3DDbRjR32/pIQgKkXFbV0Jyyq7V6ELEiICgw=','2022-01-01 07:14:24.777441',0,'test2','2','test',0,1,'2022-01-01 07:14:16.781195','test2@gmail.com',3,2,'0912345678'),(4,'pbkdf2_sha256$260000$BEFhAB5Q8apK9Kg9x9MiXL$LnfAZU/cA5IchOTFo92FN1xCsM94NwMnA80xPHb836g=','2022-01-01 16:06:09.520259',0,'test3','3','test',0,1,'2022-01-01 07:15:16.012007','test3@gmail.com',4,2,'0912345678'),(7,'pbkdf2_sha256$260000$HQ5QnfyUtVla0DiSoXCvjT$L8Dh/CgXvJz7araxj5ZFSiB+AQbAMl6i0OFjr60Ef4k=','2022-01-22 23:18:25.686253',0,'teacher','師','老',0,1,'2022-01-22 23:18:08.213669','teacher@gmail.com',4,2,'09121231123'),(8,'pbkdf2_sha256$260000$rYZFTqurR6xpgLrGEq9EW4$5IKqY1S0wMwX+xzHxVUrDffq5Z45POFvDkiSFbBUGe4=','2022-01-22 23:50:35.719731',0,'a1085515','彥輔','曾',0,1,'2022-01-22 23:50:22.244796','a1085515@mail.nuk.edu.tw',1,2,'09123123123'),(9,'pbkdf2_sha256$260000$9jx2XMyWFlrksvyZ4jGIxs$SmwndBJJp5AqgfHai0ttySNuq0md4ZIZBQT9WYFX2nY=','2022-01-22 23:53:30.596615',0,'a1085502','佾遑','謝',0,1,'2022-01-22 23:53:21.467515','a1085502@mail.nuk.edu.tw',1,2,'09123123123'),(10,'pbkdf2_sha256$260000$BHdSSX9hqUrA7rcimbg11y$RVL514PCfSc266dLqk48wksGr5l7JIFMwr1B+KLyHTA=','2022-01-22 23:54:45.000000',0,'a1085509','聖耀','林',0,1,'2022-01-22 23:54:28.000000','a1085509@mail.nuk.edu.tw',1,2,'09123123123'),(11,'pbkdf2_sha256$260000$FW30wQSUK4udFqGH7Uy57r$6TyS0NfUkqZGwNhq77Uju07GAFm8yneWuTG9PqEkhpc=','2022-01-22 23:55:38.825978',0,'a1085504','修維','吳',0,1,'2022-01-22 23:55:18.276673','a1085504@mail.nuk.edu.tw',1,2,'09123123123'),(12,'pbkdf2_sha256$260000$zo7qTk3MjesNDJLxkBVr3w$W977qnwANF1lQvYdfGhdtuYdf/+BStSnrWhfTKBeUns=','2022-01-23 10:20:13.167505',0,'tofu1234','fu','to',0,1,'2022-01-23 10:20:07.605643','alex7008uk@gmail.com',1,2,'0912345678');
 /*!40000 ALTER TABLE `accounts_participant` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -152,7 +154,7 @@ CREATE TABLE `accounts_participant_groups` (
   KEY `accounts_participant_groups_group_id_de9c439b_fk_auth_group_id` (`group_id`),
   CONSTRAINT `accounts_participant_groups_group_id_de9c439b_fk_auth_group_id` FOREIGN KEY (`group_id`) REFERENCES `auth_group` (`id`),
   CONSTRAINT `accounts_participant_participant_id_3f5b592c_fk_accounts_` FOREIGN KEY (`participant_id`) REFERENCES `accounts_participant` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -161,7 +163,7 @@ CREATE TABLE `accounts_participant_groups` (
 
 LOCK TABLES `accounts_participant_groups` WRITE;
 /*!40000 ALTER TABLE `accounts_participant_groups` DISABLE KEYS */;
-INSERT INTO `accounts_participant_groups` VALUES (2,2,2),(1,3,1),(3,4,2),(6,7,2),(7,8,2),(8,9,2),(9,10,2),(10,11,2);
+INSERT INTO `accounts_participant_groups` VALUES (2,2,2),(1,3,1),(3,4,2),(6,7,2),(7,8,2),(8,9,2),(9,10,2),(10,11,2),(11,12,2);
 /*!40000 ALTER TABLE `accounts_participant_groups` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -248,7 +250,7 @@ CREATE TABLE `accounts_studentinfo` (
 
 LOCK TABLES `accounts_studentinfo` WRITE;
 /*!40000 ALTER TABLE `accounts_studentinfo` DISABLE KEYS */;
-INSERT INTO `accounts_studentinfo` VALUES (2,'','','',2),(8,'a1085515','大學部','三年級',8),(9,'a1085502','大學部','三年級',9),(10,'a1085509','大學部','三年級',10),(11,'a1085504','大學部','三年級',11);
+INSERT INTO `accounts_studentinfo` VALUES (2,'','','',2),(8,'a1085515','大學部','三年級',8),(9,'a1085502','大學部','三年級',9),(10,'a1085509','大學部','三年級',10),(11,'a1085504','大學部','三年級',11),(12,'A1085515','大學部','三年級',12);
 /*!40000 ALTER TABLE `accounts_studentinfo` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -388,7 +390,7 @@ CREATE TABLE `django_admin_log` (
   CONSTRAINT `django_admin_log_content_type_id_c4bce8eb_fk_django_co` FOREIGN KEY (`content_type_id`) REFERENCES `django_content_type` (`id`),
   CONSTRAINT `django_admin_log_user_id_c564eba6_fk_accounts_participant_id` FOREIGN KEY (`user_id`) REFERENCES `accounts_participant` (`id`),
   CONSTRAINT `django_admin_log_chk_1` CHECK ((`action_flag` >= 0))
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -397,7 +399,7 @@ CREATE TABLE `django_admin_log` (
 
 LOCK TABLES `django_admin_log` WRITE;
 /*!40000 ALTER TABLE `django_admin_log` DISABLE KEYS */;
-INSERT INTO `django_admin_log` VALUES (1,'2021-12-31 16:18:30.157982','1','operators',1,'[{\"added\": {}}]',3,1),(2,'2021-12-31 16:19:42.515149','2','normal_participants',1,'[{\"added\": {}}]',3,1),(3,'2021-12-31 16:20:14.521663','1','adminadmin',2,'[{\"changed\": {\"fields\": [\"\\u59d3\\u6c0f\", \"\\u540d\\u7a31\", \"\\u8eab\\u5206\"]}}]',14,1),(4,'2021-12-31 16:26:05.051327','2','normal_users',2,'[{\"changed\": {\"fields\": [\"Name\"]}}]',3,1),(5,'2022-01-01 07:14:53.618412','2','test1',2,'[{\"changed\": {\"fields\": [\"\\u8eab\\u5206\", \"Groups\"]}}]',14,1),(6,'2022-01-22 23:39:13.687444','6','曾彥輔',3,'',14,1),(7,'2022-01-22 23:52:48.924305','5','葦名一心',3,'',14,1);
+INSERT INTO `django_admin_log` VALUES (1,'2021-12-31 16:18:30.157982','1','operators',1,'[{\"added\": {}}]',3,1),(2,'2021-12-31 16:19:42.515149','2','normal_participants',1,'[{\"added\": {}}]',3,1),(3,'2021-12-31 16:20:14.521663','1','adminadmin',2,'[{\"changed\": {\"fields\": [\"\\u59d3\\u6c0f\", \"\\u540d\\u7a31\", \"\\u8eab\\u5206\"]}}]',14,1),(4,'2021-12-31 16:26:05.051327','2','normal_users',2,'[{\"changed\": {\"fields\": [\"Name\"]}}]',3,1),(5,'2022-01-01 07:14:53.618412','2','test1',2,'[{\"changed\": {\"fields\": [\"\\u8eab\\u5206\", \"Groups\"]}}]',14,1),(6,'2022-01-22 23:39:13.687444','6','曾彥輔',3,'',14,1),(7,'2022-01-22 23:52:48.924305','5','葦名一心',3,'',14,1),(8,'2022-01-23 10:07:00.733500','1','adminadmin',2,'[{\"changed\": {\"fields\": [\"\\u8eab\\u5206\"]}}]',14,1),(9,'2022-01-23 10:07:37.762706','1','adminadmin',2,'[{\"changed\": {\"fields\": [\"\\u8eab\\u5206\"]}}]',14,1),(10,'2022-01-23 10:08:15.237027','1','adminadmin',2,'[{\"changed\": {\"fields\": [\"\\u8eab\\u5206\"]}}]',14,1),(11,'2022-01-23 10:11:23.835813','1','adminadmin',2,'[{\"changed\": {\"fields\": [\"\\u8eab\\u5206\"]}}]',14,1),(12,'2022-01-23 10:11:51.871731','1','adminadmin',2,'[{\"changed\": {\"fields\": [\"\\u8eab\\u5206\"]}}]',14,1),(13,'2022-01-23 10:13:02.600598','10','林聖耀',2,'[{\"changed\": {\"fields\": [\"\\u540d\\u7a31\", \"\\u8eab\\u5206\"]}}]',14,1),(14,'2022-01-23 10:24:59.768766','8','測試會議結果',3,'',7,1),(15,'2022-01-23 10:25:54.894628','7','測試寄信',3,'',7,1);
 /*!40000 ALTER TABLE `django_admin_log` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -475,7 +477,7 @@ CREATE TABLE `django_session` (
 
 LOCK TABLES `django_session` WRITE;
 /*!40000 ALTER TABLE `django_session` DISABLE KEYS */;
-INSERT INTO `django_session` VALUES ('akc9hgedt62owl1xwvmf1cna3dv6j8b2','.eJxVjDsOwjAQBe_iGln-x6Gk5wzWrteLA8iR4qRC3B0ipYD2zcx7iQTbWtPWy5ImEmehxel3Q8iP0nZAd2i3Wea5rcuEclfkQbu8zlSel8P9O6jQ67cu7MAEy16BcyaSA01oIgyI0UUib4JH661i8jbnPARgHjXDiE4BkXh_APDuOLU:1nBCSU:NsH64aqvFJLMKMcteYY_ECtKNagwYOUh4fYjqUkLXHU','2022-02-05 17:13:18.051246'),('di019xd7tkj8ij4z5i39w8e63viru5bp','.eJxVjEEOwiAQRe_C2hAHsBSX7j0DmWEGqRpISrsy3l2bdKHb_977LxVxXUpcu8xxYnVWAOrwOxKmh9SN8B3rrenU6jJPpDdF77Tra2N5Xnb376BgL98aDQNJ5pRPOYRAaEew3ooVHzAADOSPnhkcUAaLFsCRASdinODgRvX-AB_9OCY:1nBIjq:57kTzim6C3qUyuP2Q1zJg2P596TyUCodgKSs-VGgw1k','2022-02-05 23:55:38.829005'),('dwybj7qbixzqzp2jbbnt4wm6sbmjj26l','.eJxVjDsOwjAQBe_iGln-x6Gk5wzWrteLA8iR4qRC3B0ipYD2zcx7iQTbWtPWy5ImEmehxel3Q8iP0nZAd2i3Wea5rcuEclfkQbu8zlSel8P9O6jQ67cu7MAEy16BcyaSA01oIgyI0UUib4JH661i8jbnPARgHjXDiE4BkXh_APDuOLU:1nBIqt:31BPOQItivRU3JoNLLxcCKsmBi_UI4mDp-KRRspo4IA','2022-02-06 00:02:55.882881'),('zt8sx1oihcfdt9phnrkkf4nzdcje3jfq','.eJxVjDsOwjAQBe_iGln-x6Gk5wzWrteLA8iR4qRC3B0ipYD2zcx7iQTbWtPWy5ImEmehxel3Q8iP0nZAd2i3Wea5rcuEclfkQbu8zlSel8P9O6jQ67cu7MAEy16BcyaSA01oIgyI0UUib4JH661i8jbnPARgHjXDiE4BkXh_APDuOLU:1n3dVc:4ZrTI8H4FutwB-BP8e8z3hkloPaNtn74FvTk-JHFx64','2022-01-15 20:29:16.221805');
+INSERT INTO `django_session` VALUES ('8h64eghbd1a2zohjwwy9h5dzc7r6jbzm','.eJxVjDsOwjAQBe_iGln-x6Gk5wzWrteLA8iR4qRC3B0ipYD2zcx7iQTbWtPWy5ImEmehxel3Q8iP0nZAd2i3Wea5rcuEclfkQbu8zlSel8P9O6jQ67cu7MAEy16BcyaSA01oIgyI0UUib4JH661i8jbnPARgHjXDiE4BkXh_APDuOLU:1nBSUh:IuWtV5b82sF6jgFqaZOuCyeMK0DVrq_62Hoa8q5Qwlc','2022-02-06 10:20:39.269325'),('akc9hgedt62owl1xwvmf1cna3dv6j8b2','.eJxVjDsOwjAQBe_iGln-x6Gk5wzWrteLA8iR4qRC3B0ipYD2zcx7iQTbWtPWy5ImEmehxel3Q8iP0nZAd2i3Wea5rcuEclfkQbu8zlSel8P9O6jQ67cu7MAEy16BcyaSA01oIgyI0UUib4JH661i8jbnPARgHjXDiE4BkXh_APDuOLU:1nBCSU:NsH64aqvFJLMKMcteYY_ECtKNagwYOUh4fYjqUkLXHU','2022-02-05 17:13:18.051246'),('di019xd7tkj8ij4z5i39w8e63viru5bp','.eJxVjEEOwiAQRe_C2hAHsBSX7j0DmWEGqRpISrsy3l2bdKHb_977LxVxXUpcu8xxYnVWAOrwOxKmh9SN8B3rrenU6jJPpDdF77Tra2N5Xnb376BgL98aDQNJ5pRPOYRAaEew3ooVHzAADOSPnhkcUAaLFsCRASdinODgRvX-AB_9OCY:1nBIjq:57kTzim6C3qUyuP2Q1zJg2P596TyUCodgKSs-VGgw1k','2022-02-05 23:55:38.829005'),('dwybj7qbixzqzp2jbbnt4wm6sbmjj26l','.eJxVjDsOwjAQBe_iGln-x6Gk5wzWrteLA8iR4qRC3B0ipYD2zcx7iQTbWtPWy5ImEmehxel3Q8iP0nZAd2i3Wea5rcuEclfkQbu8zlSel8P9O6jQ67cu7MAEy16BcyaSA01oIgyI0UUib4JH661i8jbnPARgHjXDiE4BkXh_APDuOLU:1nBIqt:31BPOQItivRU3JoNLLxcCKsmBi_UI4mDp-KRRspo4IA','2022-02-06 00:02:55.882881'),('zt8sx1oihcfdt9phnrkkf4nzdcje3jfq','.eJxVjDsOwjAQBe_iGln-x6Gk5wzWrteLA8iR4qRC3B0ipYD2zcx7iQTbWtPWy5ImEmehxel3Q8iP0nZAd2i3Wea5rcuEclfkQbu8zlSel8P9O6jQ67cu7MAEy16BcyaSA01oIgyI0UUib4JH661i8jbnPARgHjXDiE4BkXh_APDuOLU:1n3dVc:4ZrTI8H4FutwB-BP8e8z3hkloPaNtn74FvTk-JHFx64','2022-01-15 20:29:16.221805');
 /*!40000 ALTER TABLE `django_session` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -581,7 +583,7 @@ CREATE TABLE `meetings_announcement` (
   PRIMARY KEY (`id`),
   KEY `meetings_announcement_meeting_id_8e2c49c7_fk_meetings_meeting_id` (`meeting_id`),
   CONSTRAINT `meetings_announcement_meeting_id_8e2c49c7_fk_meetings_meeting_id` FOREIGN KEY (`meeting_id`) REFERENCES `meetings_meeting` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -590,7 +592,7 @@ CREATE TABLE `meetings_announcement` (
 
 LOCK TABLES `meetings_announcement` WRITE;
 /*!40000 ALTER TABLE `meetings_announcement` DISABLE KEYS */;
-INSERT INTO `meetings_announcement` VALUES (1,'無',1),(2,'測試啦',4),(3,'ㄏ',4),(4,'事項1',5),(5,'沒啥',7),(6,'123',2);
+INSERT INTO `meetings_announcement` VALUES (1,'無',1),(2,'測試啦',4),(3,'ㄏ',4),(4,'事項1',5),(5,'沒啥',NULL),(6,'123',2),(7,'就是ㄍ報告事項',NULL),(8,'測試',9),(9,'123',10),(10,'安安',11),(11,'空',12);
 /*!40000 ALTER TABLE `meetings_announcement` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -638,7 +640,7 @@ CREATE TABLE `meetings_attendance` (
   KEY `meetings_attendance_participant_id_61f55d1b_fk_accounts_` (`participant_id`),
   CONSTRAINT `meetings_attendance_meeting_id_296f48af_fk_meetings_meeting_id` FOREIGN KEY (`meeting_id`) REFERENCES `meetings_meeting` (`id`),
   CONSTRAINT `meetings_attendance_participant_id_61f55d1b_fk_accounts_` FOREIGN KEY (`participant_id`) REFERENCES `accounts_participant` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=57 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -647,7 +649,7 @@ CREATE TABLE `meetings_attendance` (
 
 LOCK TABLES `meetings_attendance` WRITE;
 /*!40000 ALTER TABLE `meetings_attendance` DISABLE KEYS */;
-INSERT INTO `meetings_attendance` VALUES (1,0,1,1),(2,0,2,1),(3,0,2,2),(4,0,3,1),(5,0,3,2),(6,0,3,3),(7,0,3,4),(8,0,4,2),(9,0,4,3),(10,0,5,1),(11,0,5,2),(12,0,5,3),(13,0,5,4),(14,0,6,1),(15,0,6,2),(16,0,6,3),(17,0,7,1),(18,0,7,2),(19,0,7,3),(20,0,7,4),(21,0,7,NULL);
+INSERT INTO `meetings_attendance` VALUES (1,0,1,1),(2,0,2,1),(3,0,2,2),(4,0,3,1),(5,0,3,2),(6,0,3,3),(7,0,3,4),(8,0,4,2),(9,0,4,3),(10,0,5,1),(11,0,5,2),(12,0,5,3),(13,0,5,4),(14,0,6,1),(15,0,6,2),(16,0,6,3),(17,0,NULL,1),(18,0,NULL,2),(19,0,NULL,3),(20,0,NULL,4),(21,0,NULL,NULL),(22,0,NULL,1),(23,0,NULL,7),(24,0,NULL,8),(25,0,NULL,9),(26,0,NULL,11),(27,0,NULL,10),(28,0,9,8),(29,0,9,9),(30,0,9,10),(31,0,9,11),(32,0,9,12),(33,0,10,1),(34,0,10,2),(35,0,10,3),(36,0,10,4),(37,0,10,7),(38,0,10,8),(39,0,10,9),(40,0,10,10),(41,0,10,11),(42,0,10,12),(43,0,11,7),(44,0,11,8),(45,0,11,9),(46,0,11,10),(47,0,11,11),(48,0,11,12),(49,0,12,1),(50,0,12,2),(51,0,12,7),(52,0,12,8),(53,0,12,9),(54,0,12,10),(55,0,12,11),(56,0,12,12);
 /*!40000 ALTER TABLE `meetings_attendance` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -667,7 +669,7 @@ CREATE TABLE `meetings_discussion` (
   PRIMARY KEY (`id`),
   KEY `meetings_discussion_meeting_id_b243ae0a_fk_meetings_meeting_id` (`meeting_id`),
   CONSTRAINT `meetings_discussion_meeting_id_b243ae0a_fk_meetings_meeting_id` FOREIGN KEY (`meeting_id`) REFERENCES `meetings_meeting` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -676,7 +678,7 @@ CREATE TABLE `meetings_discussion` (
 
 LOCK TABLES `meetings_discussion` WRITE;
 /*!40000 ALTER TABLE `meetings_discussion` DISABLE KEYS */;
-INSERT INTO `meetings_discussion` VALUES (1,'123','123','無',1),(2,'腳踏車壞了啦','如題','修',2),(3,'123','123','123',3),(4,'123','123','',4),(5,'456','456','456',4),(6,'就這樣','嗎','無',5),(7,'你說什麼','你懂個屁 呆子','無',5),(8,'測','試','無',6),(9,'不知道','嘻嘻','無',7),(10,'123','123','123',2);
+INSERT INTO `meetings_discussion` VALUES (1,'123','123','無',1),(2,'腳踏車壞了啦','如題','修',2),(3,'123','123','123',3),(4,'123','123','',4),(5,'456','456','456',4),(6,'就這樣','嗎','無',5),(7,'你說什麼','你懂個屁 呆子','無',5),(8,'測','試','無',6),(9,'不知道','嘻嘻','無',NULL),(10,'123','123','123',2),(11,'測試一','測試一的說明','測試一的決議',NULL),(12,'測試二','測試二的說明','測試二的決議',NULL),(13,'測試三','測試三的說明','測試三的決議',NULL),(14,'1','2','3',9),(15,'123','123','123',10),(16,'案由','說明','決議',11),(17,'案由二','說明二','決議二',11),(18,'案由三','說明三','決議三',11),(19,'123','123','123',12);
 /*!40000 ALTER TABLE `meetings_discussion` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -697,7 +699,7 @@ CREATE TABLE `meetings_editrequest` (
   KEY `meetings_editrequest_participant_id_871e6f53_fk_accounts_` (`participant_id`),
   CONSTRAINT `meetings_editrequest_meeting_id_c6895259_fk_meetings_meeting_id` FOREIGN KEY (`meeting_id`) REFERENCES `meetings_meeting` (`id`),
   CONSTRAINT `meetings_editrequest_participant_id_871e6f53_fk_accounts_` FOREIGN KEY (`participant_id`) REFERENCES `accounts_participant` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -706,7 +708,7 @@ CREATE TABLE `meetings_editrequest` (
 
 LOCK TABLES `meetings_editrequest` WRITE;
 /*!40000 ALTER TABLE `meetings_editrequest` DISABLE KEYS */;
-INSERT INTO `meetings_editrequest` VALUES (1,'測試 新補ㄉ',1,1),(2,'哈哈是我啦',1,2),(3,'ㄟ...試試看',2,1),(4,'測一下啦\r\n123\r\n123\r\n123',7,1);
+INSERT INTO `meetings_editrequest` VALUES (1,'測試 新補ㄉ',1,1),(2,'哈哈是我啦',1,2),(3,'ㄟ...試試看',2,1),(4,'測一下啦\r\n123\r\n123\r\n123',NULL,1),(5,'安安',3,1);
 /*!40000 ALTER TABLE `meetings_editrequest` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -760,7 +762,7 @@ CREATE TABLE `meetings_meeting` (
   KEY `meetings_meeting_minutes_taker_id_d4885056` (`minutes_taker_id`),
   CONSTRAINT `meetings_meeting_chairman_id_bed8588d_fk_accounts_participant_id` FOREIGN KEY (`chairman_id`) REFERENCES `accounts_participant` (`id`),
   CONSTRAINT `meetings_meeting_minutes_taker_id_d4885056_fk_accounts_` FOREIGN KEY (`minutes_taker_id`) REFERENCES `accounts_participant` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -769,7 +771,7 @@ CREATE TABLE `meetings_meeting` (
 
 LOCK TABLES `meetings_meeting` WRITE;
 /*!40000 ALTER TABLE `meetings_meeting` DISABLE KEYS */;
-INSERT INTO `meetings_meeting` VALUES (1,'第一場會議',0,'2021-12-31 16:20:00.000000','高雄大學工學院',1,1,'略'),(2,'第二個會議',2,'2022-01-04 22:50:00.000000','高雄大學管理學院',2,1,'大家好'),(3,'測試',2,'2021-12-10 10:30:00.000000','高雄大學工學院',1,4,'略'),(4,'測試2',0,'2021-12-23 06:50:00.000000','高雄大學工學院',2,3,'略'),(5,'測試3',4,'2022-01-01 15:57:00.000000','某個地方',1,3,'略'),(6,'測試4',0,'2022-01-10 07:30:00.000000','法學院',2,3,'略'),(7,'測試寄信',3,'2022-01-15 20:30:00.000000','高雄大學工學院3樓',1,2,'哈囉');
+INSERT INTO `meetings_meeting` VALUES (1,'第一場會議',0,'2021-12-31 16:20:00.000000','高雄大學工學院',1,1,'略'),(2,'第二個會議',2,'2022-01-04 22:50:00.000000','高雄大學管理學院',2,1,'大家好'),(3,'測試',2,'2021-12-10 10:30:00.000000','高雄大學工學院',1,4,'略'),(4,'測試2',0,'2021-12-23 06:50:00.000000','高雄大學工學院',2,3,'略'),(5,'測試3',4,'2022-01-01 15:57:00.000000','某個地方',1,3,'略'),(6,'測試4',0,'2022-01-10 07:30:00.000000','法學院',2,3,'略'),(9,'測',1,'2022-01-13 10:20:00.000000','高雄大學工學院',1,7,'略'),(10,'測試寄信',2,'2022-01-23 10:25:00.000000','高雄大學工學院',1,7,'略'),(11,'測試寄信2',3,'2022-01-26 03:26:00.000000','法學院',8,9,'略'),(12,'測試寄信3',4,'2022-01-05 20:31:00.000000','管院',7,11,'略');
 /*!40000 ALTER TABLE `meetings_meeting` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -789,7 +791,7 @@ CREATE TABLE `meetings_meeting_participants` (
   KEY `meetings_meeting_par_participant_id_5629b5f3_fk_accounts_` (`participant_id`),
   CONSTRAINT `meetings_meeting_par_meeting_id_258b53bf_fk_meetings_` FOREIGN KEY (`meeting_id`) REFERENCES `meetings_meeting` (`id`),
   CONSTRAINT `meetings_meeting_par_participant_id_5629b5f3_fk_accounts_` FOREIGN KEY (`participant_id`) REFERENCES `accounts_participant` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=57 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -798,7 +800,7 @@ CREATE TABLE `meetings_meeting_participants` (
 
 LOCK TABLES `meetings_meeting_participants` WRITE;
 /*!40000 ALTER TABLE `meetings_meeting_participants` DISABLE KEYS */;
-INSERT INTO `meetings_meeting_participants` VALUES (1,1,1),(2,2,1),(3,2,2),(4,3,1),(5,3,2),(6,3,3),(7,3,4),(8,4,2),(9,4,3),(10,5,1),(11,5,2),(12,5,3),(13,5,4),(14,6,1),(15,6,2),(16,6,3),(17,7,1),(18,7,2),(19,7,3),(20,7,4);
+INSERT INTO `meetings_meeting_participants` VALUES (1,1,1),(2,2,1),(3,2,2),(4,3,1),(5,3,2),(6,3,3),(7,3,4),(8,4,2),(9,4,3),(10,5,1),(11,5,2),(12,5,3),(13,5,4),(14,6,1),(15,6,2),(16,6,3),(28,9,8),(29,9,9),(30,9,10),(31,9,11),(32,9,12),(33,10,1),(34,10,2),(35,10,3),(36,10,4),(37,10,7),(38,10,8),(39,10,9),(40,10,10),(41,10,11),(42,10,12),(43,11,7),(44,11,8),(45,11,9),(46,11,10),(47,11,11),(48,11,12),(49,12,1),(50,12,2),(51,12,7),(52,12,8),(53,12,9),(54,12,10),(55,12,11),(56,12,12);
 /*!40000 ALTER TABLE `meetings_meeting_participants` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -811,4 +813,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-01-23  9:13:03
+-- Dump completed on 2022-01-23 10:57:14

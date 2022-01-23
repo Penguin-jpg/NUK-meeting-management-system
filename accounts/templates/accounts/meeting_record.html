@@ -16,6 +16,7 @@
                 <th scope="col">地點</th>
                 <th scope="col">主席</th>
                 <th scope="col">記錄人員</th>
+                <th scope="col">修改請求</th>
             </tr>
         </thead>
         <tbody>
@@ -31,6 +32,9 @@
                 </td>
                 <td><a href="{% url 'user-info' meeting.chairman.id %}">{{ meeting.chairman|safe }}</a></td>
                 <td><a href="{% url 'user-info' meeting.minutes_taker.id %}">{{ meeting.minutes_taker|safe }}</a></td>
+                <td>
+                    <a class="btn btn-info" href="{% url 'edit-request' meeting.id %}">提出</a>
+                </td>
             </tr>
             <tr class="spacer">
                 <td colspan="100"></td>

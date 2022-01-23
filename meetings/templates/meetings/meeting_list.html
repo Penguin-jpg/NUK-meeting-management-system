@@ -17,7 +17,9 @@
                 <th scope="col">主席</th>
                 <th scope="col">記錄人員</th>
                 <th scope="col">編輯</th>
-                <th scope="col">修改請求</th>
+                {% if user.identity == 3 %}
+                <th scope="col">結果</th>
+                {% endif %}
             </tr>
         </thead>
         <tbody>
@@ -36,9 +38,11 @@
                 <td>
                     <a class="btn btn-info" href="{% url 'edit-meeting' meeting.id %}">編輯</a>
                 </td>
+                {% if user.identity == 3 %}
                 <td>
-                    <a class="btn btn-info" href="{% url 'edit-request' meeting.id %}">提出</a>
+                    <a class="btn btn-info" href="{% url 'send-resolution' meeting.id %}">寄出</a>
                 </td>
+                {% endif %}
             </tr>
             <tr class="spacer">
                 <td colspan="100"></td>
