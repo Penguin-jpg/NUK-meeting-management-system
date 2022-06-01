@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+
+{% block title %} 會議資料 {% endblock %}
+
+{% load static %}
+
+{% block content%}
+<h1 class="w3-text-teal">會議資料</h1>
+<br>
+<div class="w3-row">
+    <div class="w3-col s6 w3-left">
+        <p>會議名稱</p>
+    </div>
+    <div class="w3-col s6 w3-left">
+        <p>{{ meeting.name|safe }}</p>
+    </div>
+</div>
+<div class="w3-row">
+    <div class="w3-col s6 w3-left">
+        <p>種類</p>
+    </div>
+    <div class="w3-col s6 w3-left">
+        <p>{{ meeting.get_type_display|safe }}</p>
+    </div>
+</div>
+<div class="w3-row">
+    <div class="w3-col s6 w3-left">
+        <p>時間</p>
+    </div>
+    <div class="w3-col s6 w3-left">
+        <p>{{ meeting.date }}</p>
+    </div>
+</div>
+<div class="w3-row">
+    <div class="w3-col s6 w3-left">
+        <p>地點</p>
+    </div>
+    <div class="w3-col s6 w3-left">
+        <p>{{ meeting.location|safe }}</p>
+    </div>
+</div>
+<div class="w3-row">
+    <div class="w3-col s6 w3-left">
+        <p>主席</p>
+    </div>
+    <div class="w3-col s6 w3-left">
+        <p>{{ meeting.chairman|safe }}</p>
+    </div>
+</div>
+<div class="w3-row">
+    <div class="w3-col s6 w3-left">
+        <p>記錄人員</p>
+    </div>
+    <div class="w3-col s6 w3-left">
+        <p>{{ meeting.minutes_taker|safe }}</p>
+    </div>
+</div>
+<div class="w3-row">
+    <div class="w3-col s6 w3-left">
+        <p>與會人員</p>
+    </div>
+    <div class="w3-col s6 w3-left">
+        <p><a href="{% url 'meeting-participants' meeting.id %}">點此觀看名單</a></p>
+    </div>
+</div>
+{% comment %} <div class="row">
+    <div class="col-md-6">
+        <span class="info-text">出席名單</span>
+    </div>
+    <div class="col-md-6">
+        {% if meeting.meeting_begins %}
+        <p class="info-text"><a href="#">點此觀看名單</a></p>
+        {% else %}
+        <p class="info-text"><a href="#">點此觀看名單</a></p>
+        {% endif %}
+    </div>
+</div> {% endcomment %}
+<div class="w3-row">
+    <div class="w3-col s6 w3-left">
+        <p>修改請求</p>
+    </div>
+    <div class="w3-col s6 w3-left">
+        <p><a href="{% url 'request-list' meeting.id %}">點此觀看</a></p>
+    </div>
+</div>
+<div class="w3-row">
+    <div class="w3-col s6 w3-left">
+        <p>主席致詞</p>
+    </div>
+    <div class="w3-col s6 w3-left">
+        <p>{{ meeting.speech|safe }}</p>
+    </div>
+</div>
+{% endblock %}

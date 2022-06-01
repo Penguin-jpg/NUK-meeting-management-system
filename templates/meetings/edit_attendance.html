@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block title %} 編輯出席紀錄 {% endblock %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+<h1 class="w3-text-teal">編輯出席紀錄</h1>
+<br>
+{% csrf_token %}
+{% crispy formset helper %}
+{% endblock %}

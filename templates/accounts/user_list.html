@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}人員列表{% endblock %}
+
+{% block content %}
+<h1 class="w3-text-teal">人員列表</h1>
+<br>
+<div class="w3-responsive">
+    <table class="w3-table w3-table-all w3-hoverable w3-centered">
+        <tr>
+            <th scope="col">姓名</th>
+            <th scope="col">電子信箱</th>
+        </tr>
+        <tbody>
+            {% for participant in participant_list %}
+            <tr scope="row">
+                <td>
+                    <a href="{% url 'user-profile' participant.id %}">{{ participant.get_full_name|safe }}</a>
+                    <small class="d-block">{{ participant.get_identity_display|safe }}</small>
+                </td>
+                <td>{{ participant.email|safe }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

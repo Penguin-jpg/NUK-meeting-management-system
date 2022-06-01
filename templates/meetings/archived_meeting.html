@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block title %} 封存會議 {% endblock %}
+
+{% block content%}
+<h1 class="w3-text-teal">封存會議</h1>
+<br>
+<div class="w3-responsive">
+    <table class=" w3-table w3-table-all w3-hoverable w3-centered">
+        <thead>
+            <tr>
+                <th scope="col">會議名稱</th>
+                <th scope="col">時間</th>
+                <th scope="col">地點</th>
+                <th scope="col">主席</th>
+                <th scope="col">記錄人員</th>
+                {% if user.identity == 3 %}
+                <th scope="col">刪除</th>
+                <th scope="col">結果</th>
+                {% endif %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for archived_meeting in archived_meetings %}
+            <tr scope="row">
+                <td>
+                    <a href="{% url 'meeting-detail' archived_meeting.id %}">{{ archived_meeting.name|safe }}</a>
+                    <small class="d-block">{{ archived_meeting.get_type_display|safe }}</small>
+                </td>
+                <td>{{ archived_meeting.date }}</td>
+                <td>
+                    {{ archived_meeting.location|safe }}
+                </td>
+                <td><a
+                        href="{% url 'user-profile' archived_meeting.chairman.id %}">{{ archived_meeting.chairman|safe }}</a>
+                </td>
+                <td><a
+                        href="{% url 'user-profile' archived_meeting.minutes_taker.id %}">{{ archived_meeting.minutes_taker|safe }}</a>
+                </td>
+                {% if user.identity == 3 %}
+                <td>
+                    <a class="btn btn-info" href="#">刪除</a>
+                </td>
+                <td>
+                    <a class="btn btn-info" href="#">寄出</a>
+                </td>
+                {% endif %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

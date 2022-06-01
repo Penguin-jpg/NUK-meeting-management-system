@@ -1,6 +1,2 @@
 Django==3.2.8
-django-phonenumber-field[phonenumbers]
 django-crispy-forms==1.13.0
-djangorestframework
-django-filer==2.1.2
-mysqlclient

@@ -1,23 +1,20 @@
 from django import forms
-from django.http import request
 from .models import *
 from accounts.models import Participant
-from accounts.forms import BaseFormHelper
 from crispy_forms.helper import Layout
 from crispy_forms.layout import Submit, Field
 from crispy_forms.bootstrap import InlineCheckboxes
+from utils.choices import MEETING_TYPES
+from utils.base_form_helper import BaseFormHelper
 
 # 使用自訂的template，不然field_class會被蓋掉
-InlineCheckboxes.template = "meetings/custom_checkboxselectmultiple_inline.html"
-
-
-TYPE = ((0, "系務會議"), (1, "系教評會"), (2, "系課程委員會"), (3, "招生暨學生事務委員會"), (4, "系發展委員會"))
+# InlineCheckboxes.template = "meetings/custom_checkboxselectmultiple_inline.html"
 
 
 # 建立會議的表單
 class MeetingCreateForm(forms.ModelForm):
     name = forms.CharField(label="會議名稱", max_length=100, required=True)
-    type = forms.ChoiceField(label="種類", choices=TYPE, required=True)
+    type = forms.ChoiceField(label="種類", choices=MEETING_TYPES, required=True)
     date = forms.DateTimeField(
         label="時間",
         widget=forms.DateInput(
@@ -81,20 +78,26 @@ class MeetingCreateForm(forms.ModelForm):
 
     def save(self, commit=True):
         meeting = super().save(commit=commit)
-        participants = self.cleaned_data["participants"]
-        # 將出席紀錄加入該會議
-        for participant in participants:
+        participants = meeting.participants
+
+        # 將主席和紀錄人員加入與會人員
+        participants.add(meeting.chairman)
+        participants.add(meeting.minutes_taker)
+
+        # 建立出席紀錄
+        for participant in participants.all():
             Attendance.objects.create(meeting=meeting, participant=participant)
+
         if commit:
             meeting.save()
-            meeting.send_meeting_notification()
+            # meeting.send_meeting_notification()
         return meeting
 
 
 # 編輯會議的表單
 class MeetingEditForm(forms.ModelForm):
     name = forms.CharField(label="會議名稱", max_length=100, required=False)
-    type = forms.ChoiceField(label="種類", choices=TYPE, required=False)
+    type = forms.ChoiceField(label="種類", choices=MEETING_TYPES, required=False)
     date = forms.DateTimeField(
         label="時間",
         widget=forms.DateInput(
@@ -155,16 +158,15 @@ class MeetingEditForm(forms.ModelForm):
 
     def save(self, commit=True):
         meeting = super().save(commit=commit)
-        participants = self.cleaned_data["participants"]
+        participants = meeting.participants
 
-        for participant in participants:
-            # 如果找不到該與會人員的出席紀錄就新增
-            if not Attendance.objects.filter(meeting=meeting, participant=participant):
-                Attendance.objects.create(meeting=meeting, participant=participant)
+        # 將主席和紀錄人員加入與會人員
+        participants.add(meeting.chairman)
+        participants.add(meeting.minutes_taker)
 
         if commit:
             meeting.save()
-            meeting.send_meeting_notification()
+            # meeting.send_meeting_notification()
         return meeting
 
 
@@ -185,11 +187,6 @@ class AttendanceEditForm(forms.ModelForm):
             "attend",
         ]
 
-
-# 將AttendatnceEditForm轉換成InlineFormset
-AttendanceFormSet = forms.inlineformset_factory(
-    Meeting, Attendance, form=AttendanceEditForm, extra=0
-)
 
 # 編輯修改請求的表單
 class RequestEditForm(forms.ModelForm):
@@ -232,51 +229,21 @@ class RequestEditForm(forms.ModelForm):
         self.helper.add_input(Submit("submit", "保存", css_class="btn-secondary"))
 
 
-# 編輯臨時動議的表單
-class ExtemporeMotionEditForm(forms.ModelForm):
-    meeting = forms.ModelChoiceField(
-        queryset=Meeting.objects.all(), label="會議名稱", disabled=True, required=False
-    )
-    proposer = forms.CharField(label="提案人", max_length=20, required=True)
-    content = forms.CharField(label="內容", max_length=500, required=True, widget=forms.Textarea(attrs={'rows': 8, 'cols': 40}))
-
-    class Meta:
-        model = ExtemporeMotion
-        fields = ["meeting", "proposer", "content"]
-
-
-# 將 ExtemporeMotionEditForm 轉換成 inlineFormset
-ExtemporeMotionFormSet = forms.inlineformset_factory(
-    Meeting,
-    ExtemporeMotion,
-    form=ExtemporeMotionEditForm,
-    extra=1,
-    can_delete=True,
-    can_delete_extra=False,
-)
-
-
 # 編輯報告事項的表單
 class AnnouncementEditForm(forms.ModelForm):
     meeting = forms.ModelChoiceField(
         queryset=Meeting.objects.all(), label="會議名稱", disabled=True, required=True
     )
-    content = forms.CharField(label="內容", max_length=500, required=True, widget=forms.Textarea(attrs={'rows': 8, 'cols': 40}))
+    content = forms.CharField(
+        label="內容",
+        max_length=500,
+        required=True,
+        widget=forms.Textarea(attrs={"rows": 8, "cols": 40}),
+    )
 
     class Meta:
         model = Announcement
         fields = ["meeting", "content"]
-
-
-# 將 AnnouncementEditForm 轉換成 inlineFormset
-AnnouncementFormSet = forms.inlineformset_factory(
-    Meeting,
-    Announcement,
-    form=AnnouncementEditForm,
-    extra=1,
-    can_delete=True,
-    can_delete_extra=False,
-)
 
 
 # 編輯討論事項的表單
@@ -285,9 +252,18 @@ class DiscussionEditForm(forms.ModelForm):
         queryset=Meeting.objects.all(), label="會議名稱", disabled=True, required=True
     )
     topic = forms.CharField(label="案由", max_length=25, required=True)
-    description = forms.CharField(label="說明", max_length=500, required=True, widget=forms.Textarea(attrs={'rows': 8, 'cols': 40}))
+    description = forms.CharField(
+        label="說明",
+        max_length=500,
+        required=True,
+        widget=forms.Textarea(attrs={"rows": 8, "cols": 40}),
+    )
     resolution = forms.CharField(
-        label="決議", initial="無", max_length=150, required=False, widget=forms.Textarea(attrs={'rows': 5, 'cols': 40})
+        label="決議",
+        initial="無",
+        max_length=150,
+        required=False,
+        widget=forms.Textarea(attrs={"rows": 5, "cols": 40}),
     )
 
     class Meta:
@@ -295,21 +271,10 @@ class DiscussionEditForm(forms.ModelForm):
         fields = ["meeting", "topic", "description", "resolution"]
 
 
-# 將 DiscussionEditForm 轉換成 inlineFormset
-DiscussionFormSet = forms.inlineformset_factory(
-    Meeting,
-    Discussion,
-    form=DiscussionEditForm,
-    extra=1,
-    can_delete=True,
-    can_delete_extra=False,
-)
-
-
 # 編輯附件的表單
 class AppendixEditForm(forms.ModelForm):
     meeting = forms.ModelChoiceField(
-        queryset=Meeting.objects.all(), label="會議名稱", disabled=True, required=False
+        queryset=Meeting.objects.all(), label="會議名稱", disabled=True, required=True
     )
     provider = forms.CharField(label="提供者", max_length=20, required=True)
     file = forms.FileField(label="檔案", required=True)
@@ -317,14 +282,3 @@ class AppendixEditForm(forms.ModelForm):
     class Meta:
         model = Appendix
         fields = ["meeting", "provider", "file"]
-
-
-# 將 AppendixEditForm 轉換成 inlineFormset
-AppendixFormSet = forms.inlineformset_factory(
-    Meeting,
-    Appendix,
-    form=AppendixEditForm,
-    extra=1,
-    can_delete=True,
-    can_delete_extra=False,
-)

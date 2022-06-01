@@ -1,11 +1,14 @@
 ## 高雄大學資訊工程學系會議管理系統
 
-### 組員
+### 資料庫組員
 謝佾遑、吳修維、林聖曜、曾彥輔
+
+### 軟體工程組員
+謝佾遑、林聖曜、陳宜杰、周辰陽、張芷瑞、林宣彤
 
 ### 注意事項
 - 先去看requirements.txt，把裡面的東西裝完
-- 網站內部和EER Model長不一樣(之後再看要不要把EER改成網站的樣子)
+- 網站內部和EER Model長不一樣
 - 當天有要做改動的一定要先講，做之前先git pull把東西抓下來
 
 ### 更新事項
@@ -124,6 +127,11 @@
     1. 修正開會通知信件格式
     2. 新增寄出開會結果的功能
     3. 新增寄出成功的頁面
+- 2022/6/1
+    1. 將軟體工程課程使用的版本引入
+    2. 將部分function-based view改為class-based
+    3. 改寫過度複雜、耗時的query，例如attendance的更新
+    4. css重新改寫，使用w3.css，部分仍然使用bootstrap
 
 
 ### 基本功能
@@ -133,13 +141,6 @@
 4. 會議可以附加附件
 5. 與會人員可以提出臨時動議
 6. 追蹤決議執行結果
-
-### 額外功能
-- [x] 建立或修改會議寄信給與會人員
-- [x] 黑暗模式(也許會當成預設主題)
-- [ ] 網頁顯示目前正在進行的會議
-- [x] 響應式網頁
-- [ ] 已結束的會議會顯示在首頁
 
 ### EER Model
 ![](./EER_Model.png)
@@ -168,3 +169,4 @@
 ### 參考資料
 1. https://sweetrans.pixnet.net/blog/post/289207848-%E3%80%88%E8%AB%87%E6%96%87%E8%AB%96%E8%AD%AF%E3%80%89%E6%9C%83%E8%AD%B0%E7%9A%84%E8%8B%B1%E6%96%87-english-for-meetings-%E8%98%87
 2. https://www.huiwenteo.com/normal/2018/07/24/django-calendar.html
+3. https://stackoverflow.com/questions/32979945/django-send-mail-function-taking-several-minutes

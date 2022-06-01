@@ -1,5 +1,26 @@
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <a class="navbar-brand" href="{% url 'home' %}">SAO</a>
+<div class="w3-bar w3-theme w3-top w3-left-align w3-large">
+    <a class="w3-bar-item w3-button w3-right w3-hide-large w3-hover-white w3-large w3-theme-l1"
+        href="javascript:void(0)" onclick="w3_open()">
+        <i class="fa fa-bars"></i>
+    </a>
+    <a href="{% url 'home' %}" class="w3-bar-item w3-button w3-hover-none w3-hide-small w3-hover-text-white">CMS</a>
+    <a href="#" class="w3-bar-item w3-button">Link 1</a>
+    <a href="#" class="w3-bar-item w3-button">Link 2</a>
+    {% if user.is_authenticated %}
+    <a href="{% url 'logout' %}" class=" w3-bar-item w3-button w3-hide-small w3-hover-white w3-right">登出</a>
+    <a href="{% url 'user-profile' user.id %}"
+        class="w3-bar-item w3-button w3-hide-small w3-hover-white w3-right">{{ user.get_full_name }}</a>
+    {% else %}
+    <a href=" {% url 'login' %}" class="w3-bar-item w3-button w3-hide-small w3-hover-white w3-right"
+        aria-current="page">登入</a>
+    <a href="{% url 'select-identity' %}" class="w3-bar-item w3-button w3-hide-small w3-hover-white w3-right"
+        aria-current="page">註冊</a>
+    {% endif %}
+</div>
+{% comment %} <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <a class="navbar-brand" href="{% url 'home' %}">
+        <h1 class="tm-site-title mb-0">SAO</h1>
+    </a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
         aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -27,8 +48,8 @@
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                     <a class="dropdown-item" href="{% url 'user-list' %}">觀看人員列表</a>
                     {% if user.is_authenticated %}
-                    <a class="dropdown-item" href="{% url 'meeting-record' user.id %}">觀看參加過的會議</a>
-                    <a class="dropdown-item" href="{% url 'meeting-record' user.id %}">提出修改請求</a>
+                    <a class="dropdown-item" href="#">觀看參加過的會議</a>
+                    <a class="dropdown-item" href="#">提出修改請求</a>
                     {% endif %}
                 </div>
             </li>
@@ -43,11 +64,9 @@
                 </a>
                 <div class="dropdown-menu dropdown-menu-lg-right dropdown-menu-md-right"
                     aria-labelledby="navbarDropdown">
-                    <a class="dropdown-item" href="{% url 'user-info' user.id %}">查看個人資料</a>
-                    <a class="dropdown-item" href="{% url 'edit-info' user.id %}"><b>編輯個人資料</b></a>
-                    <a class="dropdown-item" href="{% url 'logout' %}"><b>登出</b></a>
-                    {% comment %} <a class="dropdown-item" href="/user_settings/?theme=dark"><b>黑暗模式</b></a>
-                    <a class="dropdown-item" href="/user_settings/?theme=light"><b>淺色模式</b></a> {% endcomment %}
+                    <a class="dropdown-item" href="{% url 'user-profile' user.id %}">查看個人資料</a>
+                    <a class="dropdown-item" href="{% url 'edit-profile' user.id %}">編輯個人資料</a>
+                    <a class="dropdown-item" href="{% url 'logout' %}">登出</a>
                 </div>
             </li>
             {% else %}
@@ -60,4 +79,4 @@
             {% endif %}
         </ul>
     </div>
-</nav>
+</nav> {% endcomment %}

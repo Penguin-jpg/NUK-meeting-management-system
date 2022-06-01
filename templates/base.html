@@ -11,25 +11,38 @@
             integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l"
             crossorigin="anonymous" />
 
-        <!-- CDN for toggle switch -->
-        <link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/css/bootstrap4-toggle.min.css"
-            rel="stylesheet">
-
         <!-- Font Awesome JS -->
         <script src="https://use.fontawesome.com/b1e44ee2a9.js"></script>
+
+        <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+        <link rel="stylesheet" href="https://www.w3schools.com/lib/w3-theme-black.css">
+        <link rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
         <title>{% block title %} 要用的標題 {% endblock %}</title>
 
         {% load static %}
-        <link rel="stylesheet" href="{% static 'css/dark.css' %}" />
-        {% comment %} <script type="text/javascript" src="{% static 'js/functions.js' %}"></script> {% endcomment %}
+        <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+        {% comment %} <script type="text/javascript" src="{% static 'js/form_functions.js' %}"></script>
+        {% endcomment %}
     </head>
 
     <body>
         <!-- navbar -->
         {% include "navbar.html" %}
+        <!-- sidebar -->
+        {% include 'sidebar.html' %}
 
-        <div class="container" style="text-align: center">{% block content %} 要放的內容 {% endblock %}</div>
+        <!-- Overlay effect when opening sidebar on small screens -->
+        <div class="w3-overlay w3-hide-large" onclick="w3_close()" style="cursor:pointer" title="close side menu"
+            id="myOverlay"></div>
+
+        <!-- Main content: shift it to the right by 250 pixels when the sidebar is visible -->
+        <div class="w3-main" style="margin-left:250px">
+            <div class="w3-padding-64 col-12">
+                {% block content %} 要放的內容 {% endblock %}
+            </div>
+        </div>
 
         <!-- Bootstrap JS -->
         <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"
@@ -41,9 +54,8 @@
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.min.js"
             integrity="sha384-VHvPCCyXqtD5DqJeNxl2dtTyhF78xXNXdkwX1CZeRusQfRKp+tA7hAShOK/B/fQ2" crossorigin="anonymous">
         </script>
-
-        <!-- toggle switch JS -->
-        <script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/js/bootstrap4-toggle.min.js"></script>
+        {% load static %}
+        <script type="text/javascript" src="{% static 'js/w3_functions.js' %}"></script>
     </body>
 
 </html>

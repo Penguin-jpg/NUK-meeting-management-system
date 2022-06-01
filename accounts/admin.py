@@ -1,31 +1,18 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from .models import *
-from .forms import ParticipantChangeForm, SignUpForm
-from meetings.models import Meeting
-
-# 出席過的會議
-class MeetingRecordInline(admin.TabularInline):
-    model = Meeting.attendance_record.through
-    extra = 1
-
-
-# 提出的修改請求
-class RequestRecordInline(admin.TabularInline):
-    model = Meeting.edit_request.through
-    extra = 1
+from .forms import SignUpForm
 
 
 class ParticipantAdmin(UserAdmin):
     model = Participant
-    form = ParticipantChangeForm
     add_form = SignUpForm
 
     list_display = ["username", "last_name", "first_name", "email", "identity"]
 
     fieldsets = (
         (None, {"fields": ("username", "email", "password")}),
-        ("Personal info", {"fields": ("last_name", "first_name", "identity")}),
+        ("Personal Profile", {"fields": ("last_name", "first_name", "identity")}),
         (
             "Permissions",
             {
@@ -43,7 +30,7 @@ class ParticipantAdmin(UserAdmin):
 
     add_fieldsets = (
         (None, {"fields": ("username", "email", "password1", "password2")}),
-        ("Personal info", {"fields": ("last_name", "first_name", "identity")}),
+        ("Personal Profile", {"fields": ("last_name", "first_name", "identity")}),
         (
             "Permissions",
             {
@@ -58,24 +45,19 @@ class ParticipantAdmin(UserAdmin):
         ),
     )
 
-    inlines = [
-        MeetingRecordInline,
-        RequestRecordInline,
-    ]
 
-
-class ExpertInfoAdmin(admin.ModelAdmin):
-    model = ExpertInfo
+class ExpertProfileAdmin(admin.ModelAdmin):
+    model = ExpertProfile
     list_display = ["user", "company", "title", "telephone", "address", "bank_account"]
 
 
-class StudentInfoAdmin(admin.ModelAdmin):
-    model = StudentInfo
+class StudentProfileAdmin(admin.ModelAdmin):
+    model = StudentProfile
     list_display = ["user", "student_id", "school_system", "grade"]
 
 
-class TeacherInfoAdmin(admin.ModelAdmin):
-    model = TeacherInfo
+class TeacherProfileAdmin(admin.ModelAdmin):
+    model = TeacherProfile
     list_display = [
         "user",
         "school",
@@ -87,19 +69,19 @@ class TeacherInfoAdmin(admin.ModelAdmin):
     ]
 
 
-class AssistantInfoAdmin(admin.ModelAdmin):
-    model = AssistantInfo
+class AssistantProfileAdmin(admin.ModelAdmin):
+    model = AssistantProfile
     list_display = ["user", "telephone"]
 
 
-class ProfessorInfoAdmin(admin.ModelAdmin):
-    model = ProfessorInfo
+class ProfessorProfileAdmin(admin.ModelAdmin):
+    model = ProfessorProfile
     list_display = ["user", "title", "telephone"]
 
 
 admin.site.register(Participant, ParticipantAdmin)
-admin.site.register(ExpertInfo, ExpertInfoAdmin)
-admin.site.register(StudentInfo, StudentInfoAdmin)
-admin.site.register(TeacherInfo, TeacherInfoAdmin)
-admin.site.register(AssistantInfo, AssistantInfoAdmin)
-admin.site.register(ProfessorInfo, ProfessorInfoAdmin)
+admin.site.register(ExpertProfile, ExpertProfileAdmin)
+admin.site.register(StudentProfile, StudentProfileAdmin)
+admin.site.register(TeacherProfile, TeacherProfileAdmin)
+admin.site.register(AssistantProfile, AssistantProfileAdmin)
+admin.site.register(ProfessorProfile, ProfessorProfileAdmin)

@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block title %}選擇您的身分{% endblock %}
+
+{% load static %}
+
+{% block content %}
+
+{% csrf_token %}
+<h1 class="w3-text-teal">選擇您的身分</h1>
+<br>
+<div class="w3-row-padding w3-margin-top">
+    <div class="w3-third">
+        <div class="w3-card">
+            <a href="{% url 'register' %}?identity=0"><img src="{% static 'images/expert.png' %}" alt="業界專家"
+                    style="width: 100%"></a>
+            <div class="w3-container w3-center">
+                <h5>業界專家</h5>
+            </div>
+        </div>
+    </div>
+
+    <div class="w3-third">
+        <div class="w3-card">
+            <a href="{% url 'register' %}?identity=1"><img src="{% static 'images/student.png' %}" alt="學生代表"
+                    style="width: 100%"></a>
+            <div class="w3-container w3-center">
+                <h5>學生代表</h5>
+            </div>
+        </div>
+    </div>
+
+    <div class="w3-third">
+        <div class="w3-card">
+            <a href="{% url 'register' %}?identity=2"><img src="{% static 'images/teacher.png' %}" alt="校外老師"
+                    style="width: 100%"></a>
+            <div class="w3-container w3-center">
+                <h5>校外老師</h5>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="w3-row-padding w3-margin-top">
+    <div class="w3-third">
+        <div class="w3-card">
+            <a href="{% url 'register' %}?identity=3"><img src="{% static 'images/assistant.png' %}" alt="系助理"
+                    style="width: 100%"></a>
+            <div class="w3-container w3-center">
+                <h5>系助理</h5>
+            </div>
+        </div>
+    </div>
+
+    <div class="w3-third">
+        <div class="w3-card">
+            <a href="{% url 'register' %}?identity=4"><img src="{% static 'images/professor.png' %}" alt="系上老師"
+                    style="width: 100%"></a>
+            <div class="w3-container w3-center">
+                <h5>系上老師</h5>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,16 +1,12 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from django.views.generic import ListView
+from django.views.generic import ListView, DetailView, UpdateView, DeleteView
 from django.urls import reverse, reverse_lazy
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.views import LoginView, LogoutView
 from django.utils.decorators import method_decorator
 from django.contrib import messages
 from .models import *
-from .forms import (
-    SignUpForm,
-    LoginForm,
-    get_info_create_form,
-)
+from .forms import SignUpForm, LoginForm, get_edit_form
 
 # 選擇使用者身分
 def user_choose_identity_view(request):
@@ -42,8 +38,7 @@ def user_register_view(request):
         user = Participant.objects.get(username=form.cleaned_data["username"])
         messages.success(request, "註冊成功!")
         # 註冊成功且登入後，將使用者導向到編輯個人資料
-        #return redirect("login", user.id)
-        return redirect("edit-info", user.id)
+        return redirect("edit-profile", user.id)
     else:
         form = SignUpForm(initial={"identity": identity})
 
@@ -63,7 +58,7 @@ class UserLogoutView(LogoutView):
     template_name = "registration/logout.html"
 
 
-# 使用者列表(可以更精緻，但暫時算完成)
+# 使用者列表
 @method_decorator(login_required(login_url="login"), name="dispatch")
 class UserListView(ListView):
     model = Participant
@@ -71,39 +66,63 @@ class UserListView(ListView):
 
 
 # 使用者個人資料
-@login_required(login_url="login")
-def user_info_view(request, id):
-    try:
-        user = Participant.objects.get(id=id)
-    except Participant.DoesNotExist:
-        return redirect("user-not-found")
-    context = {"info": user.get_info()}
-    return render(request, "accounts/user_info.html", context)
+@method_decorator(login_required(login_url="login"), name="dispatch")
+class UserDetailView(DetailView):
+    model = Participant
+    template_name = "accounts/user_profile.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update({"profile": context["participant"].get_profile()})
+        return context
+
+
+# def user_profile_view(request, id):
+#     try:
+#         user = Participant.objects.get(id=id)
+#     except Participant.DoesNotExist:
+#         return redirect("user-not-found")
+
+#     context = {"user": user, "profile": user.get_profile()}
+#     return render(request, "accounts/user_profile.html", context)
 
 
 # 編輯使用者個人資料
 @login_required(login_url="login")
-#@permission_required("accounts.change_info", raise_exception=True)
-def edit_info_view(request, id):
+def edit_profile_view(request, id):
     try:
         user = Participant.objects.get(id=id)
     except Participant.DoesNotExist:
         return redirect("user-not-found")
-    form = get_info_create_form(request.POST or None, user)
+    form = get_edit_form(request.POST or None, user)
 
     if form.is_valid():
         form.save()
-        return redirect("user-info", user.id)
+        return redirect("user-profile", user.id)
     else:
-        form = get_info_create_form(request.POST or None, user)
+        form = get_edit_form(request.POST or None, user)
 
     context = {"form": form}
 
-    return render(request, "accounts/edit_info.html", context)
+    return render(request, "accounts/edit_profile.html", context)
+
+
+# 刪除使用者
+@method_decorator(
+    [
+        login_required(login_url="login"),
+        permission_required("accounts.delete_participant", raise_exception=True),
+    ],
+    name="dispatch",
+)
+class UserDeleteView(DeleteView):
+    model = Participant
+    template_name = "accounts/user_delete.html"
+    success_url = reverse_lazy("user-list")
 
 
 # 觀看參加過的會議紀錄
-def meeting_record_view(request, id):
+def meeting_records_view(request, id):
     try:
         user = Participant.objects.get(id=id)
     except Participant.DoesNotExist:
@@ -114,4 +133,4 @@ def meeting_record_view(request, id):
 
     context = {"meetings": meetings}
 
-    return render(request, "accounts/meeting_record.html", context)
+    return render(request, "accounts/meeting_records.html", context)
