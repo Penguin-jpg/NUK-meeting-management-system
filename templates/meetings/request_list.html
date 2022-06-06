@@ -5,7 +5,17 @@
 {% block content%}
 <h1 class="w3-text-teal">修改請求</h1>
 <br>
-<div class="accordion" id="request-accordion">
+{% if edit_requests %}
+{% for edit_request in edit_requests %}
+<div class="w3-twothird w3-card-2 w3-light-grey" style="margin-bottom: 10px">
+    <header class="w3-text-teal w3-container">{{ edit_request.participant.get_full_name }}</header>
+    <p class="w3-container">{{ edit_request.content }}</p>
+</div>
+{% endfor %}
+{% else %}
+<span class="info-text">目前沒有修改請求</span>
+{% endif %}
+{% comment %} <div class="accordion" id="request-accordion">
     {% if edit_requests %}
     {% for edit_request in edit_requests %}
     <div class="item">
@@ -30,5 +40,5 @@
     {% else %}
     <span class="info-text">目前沒有修改請求</span>
     {% endif %}
-</div>
+</div> {% endcomment %}
 {% endblock %}

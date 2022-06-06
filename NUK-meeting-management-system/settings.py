@@ -85,7 +85,6 @@ EMAIL_USE_TLS = True  # 開啟TLS(傳輸層安全性)
 EMAIL_HOST_USER = "mailbotNUK@gmail.com"  # 寄件者電子郵件
 EMAIL_HOST_PASSWORD = "mailbot@123"  # Gmail應用程式的密碼
 
-
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
