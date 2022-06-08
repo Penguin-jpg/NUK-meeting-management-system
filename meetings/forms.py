@@ -282,3 +282,44 @@ class AppendixEditForm(forms.ModelForm):
     class Meta:
         model = Appendix
         fields = ["meeting", "provider", "file"]
+
+
+# 編輯會議建議的表單
+class AdviceEditForm(forms.ModelForm):
+    meeting = forms.ModelChoiceField(
+        Meeting.objects.all(),
+        label="會議",
+        disabled=True,
+        required=True,
+    )
+    participant = forms.ModelChoiceField(
+        Participant.objects.all(),
+        label="與會人員",
+        disabled=True,
+        required=True,
+    )
+    advice = forms.CharField(
+        label="建議",
+        max_length=500,
+        widget=forms.Textarea(attrs={"rows": 5}),
+        required=True,
+    )
+
+    class Meta:
+        model = Advice
+        fields = [
+            "meeting",
+            "participant",
+            "advice",
+        ]
+
+    def __init__(self, *args, **kwargs):
+        super(AdviceEditForm, self).__init__(*args, **kwargs)
+        self.helper = BaseFormHelper()
+        self.helper.form_id = "edit-advice-form"
+        # 共通欄位
+        self.helper.layout = Layout(
+            Field("participant"),
+            Field("advice", css_class="center-field"),
+        )
+        self.helper.add_input(Submit("submit", "保存", css_class="btn-secondary"))

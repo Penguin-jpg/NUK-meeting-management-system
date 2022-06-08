@@ -180,6 +180,23 @@ class Appendix(models.Model):
         return os.path.basename(self.file.name)
 
 
+# 會議建議
+class Advice(models.Model):
+    meeting = models.ForeignKey(
+        Meeting,
+        on_delete=models.CASCADE,
+        verbose_name="會議",
+        related_name="advices",
+    )
+    participant = models.ForeignKey(
+        Participant,
+        on_delete=models.CASCADE,
+        verbose_name="與會人員",
+        related_name="meeting_advices",
+    )
+    advice = models.TextField(blank=False, verbose_name="建議")
+
+
 @receiver(post_save, sender=Meeting)
 def post_save_send_notification(sender, instance, *args, **kwargs):
     instance.send_meeting_notification()

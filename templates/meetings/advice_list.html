@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block title %} 會議建議 {% endblock %}
+
+{% block content%}
+<h1 class="w3-text-teal">會議建議</h1>
+<br>
+{% if advices %}
+{% for advice in advices %}
+<div class="w3-twothird w3-card-2 w3-light-grey" style="margin-bottom: 10px">
+    <header class="w3-text-teal w3-container">{{ advice.participant.get_full_name }}</header>
+    <p class="w3-container">{{ advice.advice }}</p>
+</div>
+{% endfor %}
+{% else %}
+<span class="info-text">目前沒有會議建議</span>
+{% endif %}
+{% endblock %}

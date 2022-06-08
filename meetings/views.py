@@ -187,9 +187,7 @@ def request_list_view(request, id):
     except Meeting.DoesNotExist:
         return redirect("meeting-not-found")
 
-    edit_requests = meeting.edit_requests.all()
-
-    context = {"edit_requests": edit_requests}
+    context = {"edit_requests": meeting.edit_requests.all()}
 
     return render(request, "meetings/request_list.html", context)
 
@@ -219,7 +217,7 @@ def edit_request_view(request, id):
 
     if form.is_valid():
         form.save()
-        return redirect("meeting-detail", id)
+        return redirect("request-list", id)
     else:
         form = RequestEditForm(
             instance=instance,
@@ -321,6 +319,54 @@ def edit_appendix_view(request, id):
 
     context = {"formset": formset, "helper": helper, "meeting": meeting}
     return render(request, "meetings/edit_appendix.html", context)
+
+
+# 顯示所有會議建議
+@login_required(login_url="login")
+def advice_list_view(request, id):
+    try:
+        meeting = Meeting.objects.get(id=id)
+    except Meeting.DoesNotExist:
+        return redirect("meeting-not-found")
+
+    context = {"advices": meeting.advices.all()}
+
+    return render(request, "meetings/advice_list.html", context)
+
+
+# 編輯會議建議
+@login_required(login_url="login")
+def edit_advice_view(request, id):
+    try:
+        meeting = Meeting.objects.get(id=id)
+    except Meeting.DoesNotExist:
+        return redirect("meeting-not-found")
+
+    user = request.user
+
+    try:
+        instance = meeting.advices.get(participant=user)
+    except Advice.DoesNotExist:
+        instance = Advice.objects.create(meeting=meeting, participant=user, advice="")
+
+    form = AdviceEditForm(
+        request.POST or None,
+        instance=instance,
+        initial={"meeting": meeting, "participant": user},
+    )
+
+    if form.is_valid():
+        form.save()
+        return redirect("advice-list", id)
+    else:
+        form = AdviceEditForm(
+            instance=instance,
+            initial={"meeting": meeting, "participant": user},
+        )
+
+    context = {"form": form}
+
+    return render(request, "meetings/edit_advice.html", context)
 
 
 # 寄出開會結果

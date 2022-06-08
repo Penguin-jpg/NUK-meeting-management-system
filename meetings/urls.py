@@ -13,6 +13,8 @@ from .views import (
     edit_announcement_view,
     edit_discussion_view,
     edit_appendix_view,
+    advice_list_view,
+    edit_advice_view,
     send_resolution_view,
 )
 
@@ -37,5 +39,7 @@ urlpatterns = [
     ),
     path("<int:id>/edit-discussions/", edit_discussion_view, name="edit-discussions"),
     path("<int:id>/edit-appendices/", edit_appendix_view, name="edit-appendices"),
+    path("<int:id>/advices/", advice_list_view, name="advice-list"),
+    path("<int:id>/edit-advices/", edit_advice_view, name="edit-advices"),
     path("<int:id>/send-resolution/", send_resolution_view, name="send-resolution"),
 ]
