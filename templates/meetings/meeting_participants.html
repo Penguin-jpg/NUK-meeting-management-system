@@ -3,14 +3,19 @@
 {% block title %} 當日與會人員 {% endblock %}
 
 {% block content %}
-<h1 class="w3-text-teal">當日與會人員</h1>
+<br>
+<h1 class="w3-center" style="color: #444444;">當日與會人員</h1>
 <br>
 <div class="w3-responsive">
     <table class="w3-table w3-table-all w3-hoverable w3-centered">
         <thead>
             <tr>
-                <th scope="col">姓名</th>
-                <th scope="col">電子信箱</th>
+                <th width=15% scope="col">姓名</th>
+                <th width=10% scope="col">性別</th>
+                <th width=10% scope="col">身分</th>
+                <th width=15% scope="col">手機</th>
+                <th width=20% scope="col">電子信箱</th>
+                <th width=10% scope="col">查看</th>
             </tr>
         </thead>
         <tbody>
@@ -18,9 +23,15 @@
             <tr scope="row">
                 <td>
                     <a href="{% url 'user-profile' participant.id %}">{{ participant.get_full_name|safe }}</a>
-                    <small class="d-block">{{ participant.get_identity_display|safe }}</small>
+                    <!-- <small class="d-block">{{ participant.get_identity_display|safe }}</small> -->
                 </td>
-                <td>{{ participant.email|safe }}</td>
+                <td>{{ participant.get_sex_display| safe }}</td>
+                <td>{{ participant.get_identity_display| safe }}</td>
+                <td>{{ participant.phone | safe }}</td>
+                <td>{{ participant.email | safe }}</td>
+                <td>
+                    <a class="btn btn-info" href="{% url 'user-profile' participant.id %}">詳細資料</a>
+                </td>   
             </tr>
             {% endfor %}
         </tbody>

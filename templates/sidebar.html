@@ -1,19 +1,12 @@
-<nav class="w3-sidebar w3-bar-block w3-collapse w3-large w3-theme-l5 w3-animate-left" id="mySidebar">
+<nav class="w3-sidebar w3-collapse w3-large w3-theme-l4 w3-animate-left" id="mySidebar">
     <a href="javascript:void(0)" onclick="w3_close()"
         class="w3-right w3-xlarge w3-padding-large w3-hover-black w3-hide-large" title="Close Menu">
         <i class="fa fa-remove"></i>
     </a>
-    <h4 class="w3-bar-item"><b>Menu</b></h4>
+    <h4 class="w3-bar-item w3-center" style="color:#9bcdeb"><b>會議管理系統</b></h4>
     {% if user.is_authenticated %}
-    <button class="dropdown-btn w3-hover-black">
-        個人資料
-        <i class="fa fa-caret-down"></i>
-    </button>
-    <div class="dropdown-container">
-        <a href="{% url 'user-profile' user.id %}" class="w3-hover-black">查看</a>
-        <a href="{% url 'edit-profile' user.id %}" class="w3-hover-black">編輯</a>
-    </div>
-    {% endif %}
+    <a href="{% url 'user-profile' user.id %}" class="w3-bar-item w3-button w3-hover-black">個人資料</a>
+    {% if user.identity == 3 %}
     <button class="dropdown-btn w3-hover-black">
         人員
         <i class="fa fa-caret-down"></i>
@@ -27,11 +20,14 @@
         <i class="fa fa-caret-down"></i>
     </button>
     <div class="dropdown-container">
-        <a href="{% url 'meeting-list' %}" class="w3-hover-black">會議列表</a>
+        <a href="{% url 'meeting-list' %}" class=" w3-hover-black">會議列表</a>
         <a href="{% url 'meeting-create' %}" class="w3-hover-black">建立會議</a>
         <a href="{% url 'archived-meetings' %}" class="w3-hover-black">封存會議</a>
     </div>
-    <a class="w3-bar-item w3-button w3-hover-black" href="#">Link</a>
-    <a class="w3-bar-item w3-button w3-hover-black" href="#">Link</a>
-    <a class="w3-bar-item w3-button w3-hover-black" href="#">Link</a>
+    <a href="{% url 'all-requests-list' %}" class="w3-bar-item w3-button w3-hover-black">修改請求</a>
+    {% else %}
+    <a href="{% url 'meeting-list' %}" class=" w3-hover-black">會議列表</a>
+    {% endif %}
+    <a href="{% url 'track-resolution' %}" class="w3-bar-item w3-button w3-hover-black">追蹤決議執行情況</a>  
+    {% endif %}
 </nav>

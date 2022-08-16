@@ -5,7 +5,8 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
-<h1 class="w3-text-teal">編輯出席紀錄</h1>
+<br>
+<h1 class="w3-center" style="color: #444444;">編輯出席紀錄</h1>
 <br>
 {% csrf_token %}
 {% crispy formset helper %}

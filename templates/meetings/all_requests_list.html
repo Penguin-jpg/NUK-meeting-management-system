@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block title %} 首頁 {% endblock %}
+
+{% block content %}
+<br>
+<h1 class="w3-center" style="color: #444444;">修改請求列表</h1>
+<!-- w3-text-teal  -->
+<br>
+{% if edit_requests %}
+<div class="w3-responsive">
+    <table class="w3-table-all w3-hoverable w3-centered"> 
+        <thead>
+            <tr class="w3-light-grey" style="font-size: 19px;">
+                <th width=25% cope="col">會議名稱</th>
+                <th width=20% scope="col">修改人員</th>
+                <th width=25% scope="col">內容</th>
+                <th width=10% scope="col">查看</th>
+                <!-- <th width=10% scope="col">編輯</th> -->
+                <th width=10% scope="col">刪除</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for modifies in edit_requests %}
+            <tr style="font-size: 17px;" scope="row">
+                <td>{{ modifies.meeting.name|safe }}</td>
+                <td>{{ modifies.participant.get_full_name |safe}}</td>
+                <td>{{ modifies.content|safe }}</td>
+                <td>
+                  <a class="btn btn-info" href="{% url 'meeting-detail' modifies.meeting.id %}">會議內容</a>
+                </td>
+                <!-- <td>
+                  <a class="btn btn-warning w3-text-white" href="{% url 'edit-requests' modifies.meeting.id %}">編輯請求</a>
+                </td> -->
+                <td>
+                  <a class="btn btn-danger" href="{% url 'request-delete' modifies.id %}">刪除請求</a>
+                </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+    </table>
+</div>
+{% else %}
+<h3 class="w3-center">目前沒有修改請求</h3>
+{% endif %}
+{% endblock %}
+
+<style>
+.conference-table {
+  border: 1px solid black;
+  font-size: large;
+}
+</style>

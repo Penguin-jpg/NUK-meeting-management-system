@@ -5,17 +5,18 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
-<h1 class="w3-text-teal">編輯附件</h1>
+<br>
+<h1 class="w3-center" style="color: #444444;">編輯附件</h1>
 <br>
 <form action="{% url 'edit-appendices' meeting.id %}" method="POST" enctype="multipart/form-data">
     {% csrf_token %}
     {% crispy formset helper %}
     <div class="w3-row">
-        <div class="form-actions w3-col s6 w3-left">
+        <div class="form-actions w3-col s6 w3-center">
             <input type="submit" name="submit" value="更新" class="btn btn-primary" id="submit-save">
         </div>
-        <div class="w3-col s6 w3-left">
-            <a class="btn btn-info" href="{% url 'meeting-detail' meeting.id %}">完成</a>
+        <div class="w3-col s6 w3-center">
+            <a class="btn btn-info" href="{% url 'edit-meeting' meeting.id %}">完成</a>
         </div>
     </div>
 </form>

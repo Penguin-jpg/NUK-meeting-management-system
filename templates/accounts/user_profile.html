@@ -3,32 +3,88 @@
 {% block title %} {{ participant.get_full_name|safe }} | 個人資料 {% endblock %}
 
 {% block content%}
-<h1 class="w3-text-teal">個人資料</h1>
+<style>
+    .wrap{ /*父元素*/
+        width: 60%;
+        display: flex;
+        justify-content: center;
+    }
+    .left{
+        width: 40%;
+
+    }
+    .right{
+        width: 20%;
+    }
+    .height{
+        height: 30%;
+    }
+    
+</style>
+
 <br>
-<div class="w3-row">
-    <div class="w3-col s6 w3-left">
-        <p>姓名</p>
+<h1 class="w3-center" style="color: #444444;">個人資料</h1>
+<br>
+<div >
+    <div class="wrap" style="display: flex; justify-content: center; align-items: center; width: 100%">
+        <div class="left">
+            <h3>基本資料</h3>
+        </div>
+        <div>
+            <a class="btn btn-info" href="{% url 'user-edit' participant.id %}">編輯基本資料</a>
+        </div>
     </div>
-    <div class="w3-col s6 w3-left">
-        <p>{{ participant.get_full_name }}</p>
+
+    <div style="display: flex; justify-content: center; align-items: center; width: 100%" >
+        <table class="w3-half w3-table w3-table-all w3-hoverable">
+            <tbody>
+            <tr style="font-size: 17px;" scope="row">
+                <td>姓名</td>
+                <td>{{ participant.get_full_name }}</td>
+            </tr>
+            <tr style="font-size: 17px;" scope="row">
+                <td>性別</td>
+                <td>{{ participant.get_sex_display }}</td>
+            </tr>
+            <tr style="font-size: 17px;" scope="row">
+                <td>身分</td>
+                <td>{{ participant.get_identity_display }}</td>
+            </tr>
+            <tr style="font-size: 17px;" scope="row">
+                <td>手機</td>
+                <td>{{ participant.phone }}</td>
+            </tr>
+            <tr style="font-size: 17px;" scope="row">
+                <td>電子信箱</td>
+                <td>{{ participant.email }}</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <br>
+    <br>
+
+    <div class="wrap" style="display: flex; justify-content: center; align-items: center; width: 100%">
+        <div class="left">
+            <h3>進階資料</h3>
+        </div>
+        <div>
+            <a class="btn btn-info" href="{% url 'edit-profile' participant.id %}">編輯進階資料</a>
+        </div>
+    </div>
+    <div style="display: flex; justify-content: center; align-items: center; width: 100%" >
+        <table class="w3-half w3-table w3-table-all w3-hoverable">
+            <tbody>
+                {% for name, value in profile.get_fields.items %}
+                <tr style="font-size: 17px;" scope="row">
+                    <td>{{ name|safe }}</td>
+                    <td>{{ value|safe }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
 </div>
-<div class="w3-row">
-    <div class="w3-col s6 w3-left">
-        <p>性別</p>
-    </div>
-    <div class="w3-col s6 w3-left">
-        <p>{{ participant.get_sex_display }}</p>
-    </div>
-</div>
-{% for name, value in profile.get_fields.items %}
-<div class="w3-row">
-    <div class="w3-col s6 w3-left">
-        <p>{{ name|safe }}</p>
-    </div>
-    <div class="w3-col s6 w3-left">
-        <p>{{ value|safe }}</p>
-    </div>
-</div>
-{% endfor %}
+
 {% endblock %}
+

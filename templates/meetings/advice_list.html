@@ -2,17 +2,38 @@
 
 {% block title %} 會議建議 {% endblock %}
 
-{% block content%}
-<h1 class="w3-text-teal">會議建議</h1>
+{% block content%}<br>
+<h1 class="w3-center" style="color: #444444;">會議建議</h1>
 <br>
 {% if advices %}
-{% for advice in advices %}
-<div class="w3-twothird w3-card-2 w3-light-grey" style="margin-bottom: 10px">
+<div>
+    <a class="btn btn-info" href="{% url 'edit-advices' meeting.id %}">編輯會議建議</a>
+</div>
+<br>
+<div class="w3-responsive">
+    <table class="w3-table-all w3-hoverable w3-centered w3-monospace"> 
+        <thead>
+            <tr class="w3-light-grey" style="font-size: 19px;" width="100%">
+                <th width=20% scope="col" class="w3-center">提出人員</th>
+                <th width=80% scope="col" >內容</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for advice in advices %}
+            <tr style="font-size: 17px; font-weight: 600;" scope="row">  
+                <td class="w3-center">{{ advice.participant.get_full_name }}</td>
+                <td>{{ advice.advice }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+    </table>
+</div>
+<!-- <div class="w3-twothird w3-card-2 w3-light-grey" style="margin-bottom: 10px">
+
     <header class="w3-text-teal w3-container">{{ advice.participant.get_full_name }}</header>
     <p class="w3-container">{{ advice.advice }}</p>
-</div>
-{% endfor %}
+</div> -->
 {% else %}
-<span class="info-text">目前沒有會議建議</span>
+<h3 class="w3-center">目前沒有會議建議</h3>
 {% endif %}
 {% endblock %}

@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %} 會議列表 {% endblock %}
+
+{% block content%}
+<br>
+<h1 class="w3-center" style="color: #444444;">決議執行情況</h1>
+<br>
+{% if discussions %}
+<div class="w3-responsive">
+    <table  class="w3-table-all  w3-hoverable w3-centered">
+        <thead>
+            <tr class="w3-light-grey" style="font-size: 19px;" scope="col">
+                <th width="25%">會議名稱</th>
+                <th>案由</th>
+                <th width="25%">決議情形</th>
+                <th width="15%">查看</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for discussion in discussions %}
+            <tr style="font-size: 17px;" >
+                <td>{{ discussion.meeting }}</td>
+                <td>{{ discussion.topic }}</td>
+                <td>{{ discussion.resolution }}</td>
+                <td>
+                    <a class="btn btn-info" href="{% url 'meeting-detail' discussion.meeting.id %}">會議內容</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<br>
+<h3 class="w3-center">目前沒有決議項目</h3>
+{% endif %}
+{% endblock %}
+

@@ -5,64 +5,50 @@
 {% load static %}
 
 {% block content%}
-<h1 class="w3-text-teal">會議資料</h1>
 <br>
-<div class="w3-row">
-    <div class="w3-col s6 w3-left">
-        <p>會議名稱</p>
-    </div>
-    <div class="w3-col s6 w3-left">
-        <p>{{ meeting.name|safe }}</p>
-    </div>
+<h1 style="color: #444444;">會議資料</h1>
+<br>
+<div>
+    <table class="w3-half w3-table-all w3-hoverable">
+        <tbody style="font-size: 17px;">
+            <tr scope="row">
+                <td>會議名稱</td>
+                <td>{{ meeting.name|safe }}</td>
+            </tr>
+            <tr scope="row">
+                <td>種類</td>
+                <td>{{ meeting.get_type_display|safe }}</td>
+            </tr>
+            <tr scope="row">
+                <td>時間</td>
+                <td>{{ meeting.date }}</td>
+            </tr>
+            <tr scope="row">
+                <td>地點</td>
+                <td>{{ meeting.location|safe }}</td>
+            </tr>
+            <tr scope="row">
+                <td>主席</td>
+                <td>{{ meeting.chairman|safe }}</td>
+            </tr>
+            <tr scope="row">
+                <td>記錄人員</td>
+                <td>{{ meeting.minutes_taker|safe }}</td>
+            </tr>
+            <tr scope="row">
+                <td>與會人員</td>
+                <td><a href="{% url 'meeting-participants' meeting.id %}">點此觀看名單</a></td>
+            </tr>
+            <tr scope="row">
+                <td>主席致詞</td>
+                <td>{{ meeting.speech|safe }}</td>
+            </tr>
+        </tbody>
+    </table>
 </div>
-<div class="w3-row">
-    <div class="w3-col s6 w3-left">
-        <p>種類</p>
-    </div>
-    <div class="w3-col s6 w3-left">
-        <p>{{ meeting.get_type_display|safe }}</p>
-    </div>
-</div>
-<div class="w3-row">
-    <div class="w3-col s6 w3-left">
-        <p>時間</p>
-    </div>
-    <div class="w3-col s6 w3-left">
-        <p>{{ meeting.date }}</p>
-    </div>
-</div>
-<div class="w3-row">
-    <div class="w3-col s6 w3-left">
-        <p>地點</p>
-    </div>
-    <div class="w3-col s6 w3-left">
-        <p>{{ meeting.location|safe }}</p>
-    </div>
-</div>
-<div class="w3-row">
-    <div class="w3-col s6 w3-left">
-        <p>主席</p>
-    </div>
-    <div class="w3-col s6 w3-left">
-        <p>{{ meeting.chairman|safe }}</p>
-    </div>
-</div>
-<div class="w3-row">
-    <div class="w3-col s6 w3-left">
-        <p>記錄人員</p>
-    </div>
-    <div class="w3-col s6 w3-left">
-        <p>{{ meeting.minutes_taker|safe }}</p>
-    </div>
-</div>
-<div class="w3-row">
-    <div class="w3-col s6 w3-left">
-        <p>與會人員</p>
-    </div>
-    <div class="w3-col s6 w3-left">
-        <p><a href="{% url 'meeting-participants' meeting.id %}">點此觀看名單</a></p>
-    </div>
-</div>
+
+<div class="w3-row"></div>
+
 {% comment %} <div class="row">
     <div class="col-md-6">
         <span class="info-text">出席名單</span>
@@ -75,20 +61,102 @@
         {% endif %}
     </div>
 </div> {% endcomment %}
-<div class="w3-row">
-    <div class="w3-col s6 w3-left">
-        <p>修改請求</p>
-    </div>
-    <div class="w3-col s6 w3-left">
-        <p><a href="{% url 'request-list' meeting.id %}">點此觀看</a></p>
-    </div>
+<br>
+<br>
+<br>
+
+
+{% if announcements %}
+<h3>報告事項</h3>
+<div>
+    <table class="w3-table-all w3-hoverable">
+        <tbody style="font-size: 17px;">
+            {% for announcement  in announcements %}
+            <tr scope="row">
+                <td width="20%">事項 {{ forloop.counter }}</td>
+                <td>內容：{{ announcement.content }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <br>
+    <div class="w3-row"></div>
 </div>
-<div class="w3-row">
-    <div class="w3-col s6 w3-left">
-        <p>主席致詞</p>
-    </div>
-    <div class="w3-col s6 w3-left">
-        <p>{{ meeting.speech|safe }}</p>
-    </div>
+{% else %}
+<h3>目前沒有報告事項</h3>
+{% endif %}
+<br>
+{% if discussions %}
+<h3>討論事項</h3>
+<div>
+    {% for discussion  in discussions %}
+    <table class="w3-col w3-table-all w3-hoverable">
+        <tbody style="font-size: 17px;">
+            <tr scope="row">
+                <td>提議 {{ forloop.counter }}</td>
+            </tr>
+            <tr scope="row">
+                <td>案由：{{ discussion.topic }}</td>
+            </tr>
+            <tr scope="row">
+                <td>說明：{{ discussion.description }}</td>
+            </tr>
+            <tr scope="row">
+                <td>決議：{{ discussion.resolution }}</td>
+            </tr>
+
+        </tbody>
+    </table>
+    <div class="w3-row"></div>
+    {% endfor %}
 </div>
+{% else %}
+<h3>目前沒有討論事項</h3>
+{% endif %}
+<br>
+<div class="w3-row"></div>
+{% if appendices %}
+<h3>附件</h3>
+<div>
+    <table class="w3-table-all w3-hoverable">
+        <tbody style="font-size: 17px;">
+            {% for appendix  in appendices %}
+            <tr scope="row">
+                <td>提供者：{{ appendix.provider }}</td>
+                <td>檔案：<a href="{{ appendix.file.url }}" download>{{ appendix.get_file_name }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <br>
+    <div class="w3-row"></div>
+</div>
+{% else %}
+<h3>目前沒有附件</h3>
+{% endif %}
+
+<div class="w3-row"></div>
+<br>
+{% if user.identity == 3 %}
+{% if meeting.is_archived %}
+{% else %}
+<div class="w3-half ">
+
+    <a class="w3-left btn btn-danger" href="{% url 'meeting-delete' meeting.id %}">刪除會議</a>
+    &emsp;
+    &emsp;
+    <a class="btn btn-warning w3-text-white" href="{% url 'edit-meeting' meeting.id %}">編輯會議</a>
+    &emsp;
+    &emsp;
+    <a class="btn btn-success" href="{% url 'advice-list' meeting.id %}">查看會議建議</a>
+    <a class="w3-right btn btn-info" href="{% url 'send-resolution' meeting.id %}">寄出開會結果</a>
+</div>
+{% endif %}
+{% else %}
+<div class="w3-center">
+    <a class="btn btn-info" href="{% url 'edit-requests' meeting.id %}">提出修改請求</a>
+    &emsp;
+    <a class="btn btn-success" href="{% url 'edit-advices' meeting.id %}">提出會議建議</a>
+</div>
+{% endif %}
 {% endblock %}

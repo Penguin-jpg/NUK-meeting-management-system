@@ -3,28 +3,29 @@
 {% block title %} 會議列表 {% endblock %}
 
 {% block content%}
-<h1 class="w3-text-teal">會議列表</h1>
+<br>
+<h1 class="w3-center" style="color: #444444;">會議列表</h1>
 <br>
 <div class="w3-responsive">
     <table class="w3-table w3-table-all  w3-hoverable w3-centered">
         <thead>
-            <tr>
-                <th scope="col">會議名稱</th>
-                <th scope="col">時間</th>
-                <th scope="col">地點</th>
-                <th scope="col">主席</th>
-                <th scope="col">記錄人員</th>
+            <tr class="w3-light-grey" style="font-size: 19px;" scope="col">
+                <th>會議名稱</th>
+                <th>時間</th>
+                <th>地點</th>
+                <th>主席</th>
+                <th>記錄人員</th>
+                <th width=10%>查看</th>
                 {% if user.identity == 3 %}
-                <th scope="col">刪除</th>
-                <th scope="col">結果</th>
+                <th width=10%>封存</th>
                 {% endif %}
             </tr>
         </thead>
         <tbody>
             {% for meeting in meeting_list %}
-            <tr scope="row">
+            <tr style="font-size: 17px;" scope="row">
                 <td>
-                    <a href="{% url 'meeting-detail' meeting.id %}">{{ meeting.name|safe }}</a>
+                    {{ meeting.name|safe }}
                     <small class="d-block">{{ meeting.get_type_display|safe }}</small>
                 </td>
                 <td>{{ meeting.date }}</td>
@@ -35,17 +36,27 @@
                 </td>
                 <td><a href="{% url 'user-profile' meeting.minutes_taker.id %}">{{ meeting.minutes_taker|safe }}</a>
                 </td>
+                <td>
+                    <a class="btn btn-info" href="{% url 'meeting-detail' meeting.id %}">會議內容</a>
+                </td>
                 {% if user.identity == 3 %}
                 <td>
-                    <a class="btn btn-danger" href="{% url 'meeting-delete' meeting.id %}">刪除</a>
-                </td>
-                <td>
-                    <a class="btn btn-info" href="{% url 'send-resolution' meeting.id %}">寄出</a>
+                    <a class="btn btn-danger" href="{% url 'archive-meeting' meeting.id %}">封存會議</a>
                 </td>
                 {% endif %}
             </tr>
             {% endfor %}
+
         </tbody>
     </table>
 </div>
 {% endblock %}
+
+<script>
+    $(document).ready(function () {
+        $('table tr').click(function () {
+            window.location = $(this).data('href');
+            return false;
+        });
+    });
+</script>

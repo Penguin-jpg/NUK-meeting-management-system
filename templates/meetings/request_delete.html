@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %} 刪除修改紀錄 {% endblock %}
+
+{% block content %}
+<br>
+<form method="post">
+    {% csrf_token %}
+    <h1 class="w3-center">修改請求</h1><br>
+    <div style="display: flex; justify-content: center; align-items: center; width: 100%">
+        <table class="w3-half w3-col w3-table-all w3-hoverable">
+            <tbody style="font-size: 17px;">
+                <tr scope="row">
+                    <td>會議名稱: {{ editrequest.meeting.name }}</td>
+                </tr>
+                <tr scope="row">
+                    <td>修改人員: {{ editrequest.participant.get_full_name }}</td>
+                </tr>
+                <tr scope="row">
+                    <td>內容： {{ editrequest.content }}</td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="w3-row"></div>
+    </div>
+    <br>
+    <div>
+        <h3 class="w3-center">確定要刪除該修改請求?</h3>
+    </div>
+    <br>
+    <div class="w3-center">
+        <input class="btn btn-danger" type="submit" value="確認" />
+        &emsp;
+        <a href="{% url 'all-requests-list' %}">
+            <div class="btn btn-secondary">取消</div>
+        </a>
+    </div>
+</form>
+{% endblock %}

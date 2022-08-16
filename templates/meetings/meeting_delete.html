@@ -3,9 +3,10 @@
 {% block title %} 刪除會議 {% endblock %}
 
 {% block content %}
+<br>
 <form method="post">
     {% csrf_token %}
-    <h1 class="w3-center">確定要刪除 {{ meeting.name }}?</h1><br>
+    <h1 class="w3-center">確定要刪除 "{{ meeting.name }}" ?</h1><br>
     <div class="w3-center">
         <input class="btn btn-danger" type="submit" value="確認" />
         <a href="{% url 'meeting-detail' meeting.id %}">

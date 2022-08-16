@@ -5,14 +5,30 @@
 {% block content%}
 <h1 class="w3-text-teal">修改請求</h1>
 <br>
-{% if edit_requests %}
-{% for edit_request in edit_requests %}
-<div class="w3-twothird w3-card-2 w3-light-grey" style="margin-bottom: 10px">
-    <header class="w3-text-teal w3-container">{{ edit_request.participant.get_full_name }}</header>
-    <p class="w3-container">{{ edit_request.content }}</p>
+<div class="accordion" id="request-accordion">
+    {% if edit_requests %}
+    {% for edit_request in edit_requests %}
+    <div class="item">
+        <div class="item-header" id="request-heading{{ forloop.counter }}">
+            <h2 class="mb-0">
+                <button class="btn btn-link" type="button" data-toggle="collapse"
+                    data-target="#request-collapse{{ forloop.counter }}" aria-expanded="true"
+                    aria-controls="request-collapse{{ forloop.counter }}">
+                    {{ edit_request.participant.get_full_name }}
+                    <i class="fa fa-angle-down"></i>
+                </button>
+            </h2>
+        </div>
+        <div id="request-collapse{{ forloop.counter }}" class="collapse"
+            aria-labelledby="request-heading{{ forloop.counter }}" data-parent="#request-accordion">
+            <div class="t-p">
+                <p class="info-text">{{ edit_request.content }}</p>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+    {% else %}
+    <span class="info-text">目前沒有修改請求</span>
+    {% endif %}
 </div>
-{% endfor %}
-{% else %}
-<span class="info-text">目前沒有修改請求</span>
-{% endif %}
 {% endblock %}

@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %} 成功封存 {% endblock %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="w3-panel w3-pale-green w3-border">
+    <h3>Success!</h3>
+    <p>
+        成功封存!!
+        <a class="info-text" href="{% url 'meeting-list' %}">點此返回會議列表</a>
+    </p>
+</div>
+{% endblock %}

@@ -8,10 +8,18 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
-<h1 class="w3-text-teal">登入</h1>
 <br>
-{% csrf_token %}
+<br>
+<br>
+<br>
+<h1 class="w3-center" style="color:#1b7a9f">國立高雄大學資訊工程學系</h1>
+<h3 class="w3-center" style="color:#1b7a9f">會議管理系統</h3>
+<br>
+<br>
+{% csrf_token %}  <!--避免跨站請球攻擊-->
 <!-- 重新導向回要去的地方 -->
 <input type="hidden" name="next" value="{{ next_url }}" />
 {% crispy form %}
 {% endblock %}
+
+

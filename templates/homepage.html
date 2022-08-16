@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block title %} 首頁 {% endblock %}
+
+{% block content %}
+<br>
+<h1 class="w3-center" style="color: #444444;">排定的會議</h1>
+<!-- w3-text-teal  -->
+<br>
+<br>
+<div class="w3-responsive"  style="display: flex; justify-content: center; align-items: center; width: 100%" >
+    <table width="50%" class="w3-threequarter w3-table-all w3-hoverable w3-centered w3-monospace"> 
+        <thead>
+            <tr class="w3-light-grey" style="font-size: 20px;">
+                <th width=30% cope="col">會議名稱</th>
+                <th width=20% scope="col">時間</th>
+                <th width=20% scope="col">地點</th>
+                <th width=15% scope="col">主席</th>
+                <th width=15% scope="col">記錄人員</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for meeting in meeting %}
+            <tr style="font-size: 18px;font-weight: 600;" scope="row">
+                <td>{{ meeting.name|safe }}</td>
+                <td>{{ meeting.date }}</td>
+                <td>
+                    {{ meeting.location|safe }}
+                </td>
+                <td>{{ meeting.chairman|safe }}</td>
+                <td>{{ meeting.minutes_taker|safe }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+    </table>
+</div>
+{% endblock %}
+
+<style>
+.conference-table {
+  border: 1px solid black;
+  font-size: large;
+}
+</style>

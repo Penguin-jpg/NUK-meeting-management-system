@@ -5,7 +5,17 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
-<h1 class="w3-text-teal">編輯會議資料</h1>
+<br>
+<h1 class="w3-center" style="color: #444444;">編輯會議資料</h1>
+<br>
+<a class="btn btn-info w3-text-white" style = "overflow-y:flex;" href="{% url 'edit-attendance' meeting.id %}">編輯出席人員記錄</a>
+&emsp;
+<a class="btn btn-info w3-text-white" style = "overflow-y:flex;" href="{% url 'edit-announcements' meeting.id %}">編輯報告事項</a>
+&emsp;
+<a class="btn btn-info" href="{% url 'edit-discussions' meeting.id %}">編輯討論事項</a>
+&emsp;
+<a class="btn btn-info" href="{% url 'edit-appendices' meeting.id %}">編輯附件</a>
+<br>
 <br>
 {% csrf_token %}
 {% crispy form %}

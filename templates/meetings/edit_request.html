@@ -5,7 +5,12 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
-<h1 class="w3-text-teal">編輯修改請求</h1>
+<br>
+{% if user.identity == 3 %}
+<h1 class="w3-center" style="color: #444444;">編輯修改請求</h1>
+{% else %}
+<h1 class="w3-center" style="color: #444444;">提出修改請求</h1>
+{% endif %}
 <br>
 {% csrf_token %}
 {% crispy form %}
