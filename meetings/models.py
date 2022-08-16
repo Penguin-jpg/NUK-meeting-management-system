@@ -1,12 +1,23 @@
+import base64
 from django.db import models
 from django.urls import reverse
 from django.utils import timezone
 from django.dispatch import receiver
 from django.db.models.signals import post_save, pre_save, post_delete
-from django.core.mail import EmailMultiAlternatives
-from django.template.loader import render_to_string
 from django.conf import settings
+from sendgrid import SendGridAPIClient
+from sendgrid.helpers.mail import (
+    Mail,
+    To,
+    Attachment,
+    FileContent,
+    FileName,
+    FileType,
+    Disposition,
+    ContentId,
+)
 import os
+import random
 from accounts.models import Participant
 from utils.choices import MEETING_TYPES
 from utils.email_thread import EmailThread
@@ -31,9 +42,7 @@ class Meeting(models.Model):
         verbose_name="記錄人員",
         related_name="take_minutes_meeting",
     )
-    participants = models.ManyToManyField(
-        Participant, related_name="meetings", verbose_name="與會人員"
-    )
+    participants = models.ManyToManyField(Participant, related_name="meetings", verbose_name="與會人員")
     speech = models.TextField(max_length=500, default="略", verbose_name="主席致詞")
     is_archived = models.BooleanField(default=False, verbose_name="歸檔")
     attendance = models.ManyToManyField(
@@ -55,37 +64,106 @@ class Meeting(models.Model):
         return self.name
 
     def get_absolute_url(self):
-        return reverse("meeting-detail", kwargs={"pk": self.id})
+        return reverse("meeting-detail", kwargs={"id": self.id})
 
     def meeting_begins(self):
         # 需要用timezone aware的時間進行比較
         return timezone.now() > self.date
 
+    def encode_attachment(self, file_path):
+        # 把附件encode才能用sendgrid傳
+        with open(file_path, "rb") as file:
+            data = file.read()
+            file.close()
+        encoded = base64.b64encode(data).decode()
+
+        attachment = Attachment(
+            file_content=FileContent(encoded),
+            file_type=FileType("application/pdf"),
+            file_name=FileName(os.path.basename(file_path)),
+            disposition=Disposition("attachment"),
+            content_id=ContentId(str(random.randint(1, 10000))),
+        )
+        return attachment
+
     # 寄出開會通知
     def send_meeting_notification(self):
-        context = {"participants": self.participants}  # 暫定的而已，可以改
-        EmailThread(
-            self,
-            "高雄大學資訊工程學系會議管理系統 - 會議通知",
-            "emails/notification_template.html",
-            context,
-        ).start()
+        participants = self.participants.all()
+        formatted_date = self.date.strftime("%Y/%m/%d %H:%M")
+        to_emails = [
+            To(
+                email=participant.email,
+                dynamic_template_data={
+                    "name": participant.get_full_name(),
+                    "meeting_name": self.name,
+                    "meeting_date": formatted_date,
+                    "meeting_location": self.location,
+                },
+            )
+            for participant in participants
+        ]
+        message = Mail(
+            from_email=settings.EMAIL_HOST_USER,
+            to_emails=to_emails,
+            subject="高雄大學資訊工程學系會議管理系統 - 會議通知",
+        )
+        message.template_id = "d-a68207684c2c4fdca7f58fe1f4edc3d2"
+
+        sg = SendGridAPIClient(settings.SENDGRID_API_KEY)
+        response = sg.send(message)
+        print(response.status_code)
+        print(response.body)
+        print(response.headers)
 
     # 寄出開會結果
     def send_meeting_resolution(self):
-        context = {"participants": self.participants}
-        EmailThread(
-            self,
-            "高雄大學資訊工程學系會議管理系統 - 會議結果通知",
-            "emails/resolution_template.html",
-            context,
-        )
+        participants = self.participants.all()
+        discussions_data = []
+        announcements_data = []
 
-        # content = ""
-        # for i, discussion in enumerate(self.discussions.all()):
-        #     content += (
-        #         f"案由{i + 1}：{discussion.topic}\n" + f"決議：{discussion.resolution}\n\n"
-        #     )
+        for discussion in self.discussions.all():
+            discussions_data.append(
+                {
+                    "topic": discussion.topic,
+                    "description": discussion.description,
+                    "resolution": discussion.resolution,
+                }
+            )
+        for announcement in self.announcements.all():
+            announcements_data.append({"content": announcement.content})
+
+        attachments = [self.encode_attachment(os.path.join("media", appendix.file.name)) for appendix in self.appendices.all()]
+        formatted_date = self.date.strftime("%Y/%m/%d %H:%M")
+        to_emails = [
+            To(
+                email=participant.email,
+                dynamic_template_data={
+                    "name": participant.get_full_name(),
+                    "meeting_name": self.name,
+                    "meeting_type": self.get_type_display(),
+                    "meeting_date": formatted_date,
+                    "meeting_location": self.location,
+                    "chairman": self.chairman.get_full_name(),
+                    "minutes_taker": self.minutes_taker.get_full_name(),
+                    "announcements": announcements_data,
+                    "discussions": discussions_data,
+                },
+            )
+            for participant in participants
+        ]
+        message = Mail(
+            from_email=settings.EMAIL_HOST_USER,
+            to_emails=to_emails,
+            subject="高雄大學資訊工程學系會議管理系統 - 開會結果通知",
+        )
+        message.template_id = "d-0d294c8542b94b72b8e4c73877fb2b7d"
+        message.attachment = attachments
+
+        sg = SendGridAPIClient(settings.SENDGRID_API_KEY)
+        response = sg.send(message)
+        print(response.status_code)
+        print(response.body)
+        print(response.headers)
 
     # 取得url給日曆用
     @property

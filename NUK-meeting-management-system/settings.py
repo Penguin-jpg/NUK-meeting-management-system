@@ -77,24 +77,25 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "NUK-meeting-management-system.wsgi.application"
 
-# SMTP Configuration
-EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-EMAIL_HOST = socket.gethostbyname("smtp.gmail.com")  # gmail提供的SMTP伺服器
-EMAIL_PORT = 587  # TLS通訊埠號
-EMAIL_USE_TLS = True  # 開啟TLS(傳輸層安全性)
-EMAIL_HOST_USER = "mailbotNUK@gmail.com"  # 寄件者電子郵件
-EMAIL_HOST_PASSWORD = "mailbot@123"  # Gmail應用程式的密碼
-
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "django.db.backends.sqlite3",
+#         "NAME": BASE_DIR / "db.sqlite3",
+#     }
+# }
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "ENGINE": "django.db.backends.mysql",
+        "NAME": "NUK_Meeting_Management_System",
+        "USER": "root",
+        "PASSWORD": "passowrd",
+        "HOST": "localhost",
+        "PORT": "3306",
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators

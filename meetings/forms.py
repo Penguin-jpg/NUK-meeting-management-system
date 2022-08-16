@@ -1,3 +1,4 @@
+from msilib.schema import Font
 from django import forms
 from .models import *
 from accounts.models import Participant
@@ -17,18 +18,12 @@ class MeetingCreateForm(forms.ModelForm):
     type = forms.ChoiceField(label="種類", choices=MEETING_TYPES, required=True)
     date = forms.DateTimeField(
         label="時間",
-        widget=forms.DateInput(
-            attrs={"type": "datetime-local"}, format="%Y-%m-%dT%H:%M"
-        ),
+        widget=forms.DateInput(attrs={"type": "datetime-local"}, format="%Y-%m-%dT%H:%M"),
         required=True,
     )
     location = forms.CharField(label="地點", max_length=100, required=True)
-    chairman = forms.ModelChoiceField(
-        queryset=Participant.objects.all(), label="主席", required=True
-    )
-    minutes_taker = forms.ModelChoiceField(
-        queryset=Participant.objects.all(), label="記錄人員", required=True
-    )
+    chairman = forms.ModelChoiceField(queryset=Participant.objects.all(), label="主席", required=True)
+    minutes_taker = forms.ModelChoiceField(queryset=Participant.objects.all(), label="記錄人員", required=True)
     participants = forms.ModelMultipleChoiceField(
         label="與會人員",
         queryset=Participant.objects.all(),
@@ -96,22 +91,16 @@ class MeetingCreateForm(forms.ModelForm):
 
 # 編輯會議的表單
 class MeetingEditForm(forms.ModelForm):
-    name = forms.CharField(label="會議名稱", max_length=100, required=False)
+    name = forms.CharField(label="會議名稱", max_length=200, required=False)
     type = forms.ChoiceField(label="種類", choices=MEETING_TYPES, required=False)
     date = forms.DateTimeField(
         label="時間",
-        widget=forms.DateInput(
-            attrs={"type": "datetime-local"}, format="%Y-%m-%dT%H:%M"
-        ),
+        widget=forms.DateInput(attrs={"type": "datetime-local"}, format="%Y-%m-%dT%H:%M"),
         required=False,
     )
     location = forms.CharField(label="地點", max_length=100, required=False)
-    chairman = forms.ModelChoiceField(
-        queryset=Participant.objects.all(), label="主席", required=False
-    )
-    minutes_taker = forms.ModelChoiceField(
-        queryset=Participant.objects.all(), label="記錄人員", required=False
-    )
+    chairman = forms.ModelChoiceField(queryset=Participant.objects.all(), label="主席", required=False)
+    minutes_taker = forms.ModelChoiceField(queryset=Participant.objects.all(), label="記錄人員", required=False)
     participants = forms.ModelMultipleChoiceField(
         label="與會人員",
         queryset=Participant.objects.all(),
@@ -231,9 +220,7 @@ class RequestEditForm(forms.ModelForm):
 
 # 編輯報告事項的表單
 class AnnouncementEditForm(forms.ModelForm):
-    meeting = forms.ModelChoiceField(
-        queryset=Meeting.objects.all(), label="會議名稱", disabled=True, required=True
-    )
+    meeting = forms.ModelChoiceField(queryset=Meeting.objects.all(), label="會議名稱", disabled=True, required=True)
     content = forms.CharField(
         label="內容",
         max_length=500,
@@ -248,9 +235,7 @@ class AnnouncementEditForm(forms.ModelForm):
 
 # 編輯討論事項的表單
 class DiscussionEditForm(forms.ModelForm):
-    meeting = forms.ModelChoiceField(
-        queryset=Meeting.objects.all(), label="會議名稱", disabled=True, required=True
-    )
+    meeting = forms.ModelChoiceField(queryset=Meeting.objects.all(), label="會議名稱", disabled=True, required=True)
     topic = forms.CharField(label="案由", max_length=25, required=True)
     description = forms.CharField(
         label="說明",
@@ -273,9 +258,7 @@ class DiscussionEditForm(forms.ModelForm):
 
 # 編輯附件的表單
 class AppendixEditForm(forms.ModelForm):
-    meeting = forms.ModelChoiceField(
-        queryset=Meeting.objects.all(), label="會議名稱", disabled=True, required=True
-    )
+    meeting = forms.ModelChoiceField(queryset=Meeting.objects.all(), label="會議名稱", disabled=True, required=True)
     provider = forms.CharField(label="提供者", max_length=20, required=True)
     file = forms.FileField(label="檔案", required=True)
 

@@ -8,7 +8,15 @@ class AttendanceInline(admin.TabularInline):
 
 
 class MeetingAdmin(admin.ModelAdmin):
-    list_display = ["name", "type", "date", "location", "chairman", "minutes_taker"]
+    list_display = [
+        "name",
+        "type",
+        "date",
+        "location",
+        "chairman",
+        "minutes_taker",
+        "is_archived",
+    ]
 
     inlines = [
         AttendanceInline,
@@ -46,9 +54,14 @@ class AppendixAdmin(admin.ModelAdmin):
     list_display = ["meeting", "provider", "file"]
 
 
+class AdviceAdmin(admin.ModelAdmin):
+    list_display = ["meeting", "participant", "advice"]
+
+
 admin.site.register(Meeting, MeetingAdmin)
 admin.site.register(Attendance, AttendanceAdmin)
 admin.site.register(EditRequest, EditRequestAdmin)
 admin.site.register(Announcement, AnnouncementAdmin)
 admin.site.register(Discussion, DiscussionAdmin)
 admin.site.register(Appendix, AppendixAdmin)
+admin.site.register(Advice, AdviceAdmin)

@@ -22,13 +22,13 @@ class Participant(AbstractUser):
         return self.last_name + self.first_name
 
     def get_absolute_url(self):
-        return reverse("accounts:user-detail", kwargs={"id": self.id})
+        return reverse("user-profile", kwargs={"pk": self.id})
 
     # 取得全名
     def get_full_name(self):
         return self.last_name + self.first_name
 
-    # 取得個人資料
+    # 取得額外資料
     def get_profile(self):
         identity = self.identity
         if identity == 0:
@@ -49,10 +49,7 @@ class Profile(models.Model):
 
     def get_fields(self):
         # 前兩個欄位不需要顯示id, profile ptr
-        return {
-            field.verbose_name: field.value_from_object(self)
-            for field in self._meta.get_fields()[2:]
-        }
+        return {field.verbose_name: field.value_from_object(self) for field in self._meta.get_fields()[2:]}
 
     def get_absolute_url(self):
         return reverse("accounts:user-profile", kwargs={"pk": self.id})

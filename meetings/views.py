@@ -3,7 +3,6 @@ from django.urls import reverse_lazy
 from django.views.generic import (
     CreateView,
     ListView,
-    DetailView,
     UpdateView,
     DeleteView,
 )
@@ -19,6 +18,36 @@ from utils.formsets import (
     DiscussionFormSet,
     AppendixFormSet,
 )
+from datetime import date, timedelta
+
+
+# 排定會議
+
+
+def home_page(request):
+    try:
+        startdate = date.today()
+        enddate = startdate + timedelta(days=365)
+        meeting = Meeting.objects.filter(date__range=[startdate, enddate])
+    except Meeting.DoesNotExist:
+        return redirect("Not-meeting-scheduling")
+
+    return render(request, "homepage.html", locals())
+
+
+# 管理員查看所有會議請求
+
+
+def all_requests_list_view(request):
+    try:
+        edit_requests = EditRequest.objects.all()
+    except Meeting.DoesNotExist:
+        return redirect("not-request")
+
+    context = {"edit_requests": edit_requests}
+
+    return render(request, "meetings/all_requests_list.html", context)
+
 
 # 建立會議
 @method_decorator(
@@ -42,14 +71,27 @@ class MeetingListView(ListView):
     template_name = "meetings/meeting_list.html"
 
     def get_queryset(self):
-        return Meeting.objects.filter(is_archived=False)
+        return Meeting.objects.filter(is_archived=False).order_by("-date")
 
 
 # 會議細節(議程)
-@method_decorator(login_required(login_url="login"), name="dispatch")
-class MeetingDetailView(DetailView):
-    model = Meeting
-    template_name = "meetings/meeting_detail.html"
+@login_required(login_url="login")
+def meeting_detail_view(request, id):
+    try:
+        meeting = Meeting.objects.get(id=id)
+    except Meeting.DoesNotExist:
+        return redirect("meeting-not-found")
+
+    context = {
+        "meeting": meeting,
+        "announcements": meeting.announcements.all(),
+        "discussions": meeting.discussions.all(),
+        # "extempore_motions": meeting.extempore_motions.all(),
+        "appendices": meeting.appendices.all(),
+        "attendances": meeting.meeting_attendance.all(),
+    }
+
+    return render(request, "meetings/meeting_detail.html", context)
 
 
 # 編輯會議資料
@@ -84,9 +126,7 @@ class MeetingUpdateView(UpdateView):
             for old_participant in only_in_old:
                 if index < new_size:
                     # 將不參加的舊人員出席紀錄改為新的人員
-                    old_participant.attendance_records.update(
-                        participant=only_in_new[index]
-                    )
+                    old_participant.attendance_records.update(participant=only_in_new[index])
                     index += 1
                 else:
                     # 多餘的刪掉
@@ -94,9 +134,7 @@ class MeetingUpdateView(UpdateView):
         else:
             for old_participant in only_in_old:
                 if index < old_size:
-                    old_participant.attendance_records.update(
-                        participant=only_in_new[index]
-                    )
+                    old_participant.attendance_records.update(participant=only_in_new[index])
                     index += 1
                 else:
                     break
@@ -123,6 +161,14 @@ class MeetingDeleteView(DeleteView):
     success_url = reverse_lazy("meeting-list")
 
 
+# 刪除修改資料
+@method_decorator(login_required(login_url="login"), name="dispatch")
+class RequestDeleteView(DeleteView):
+    model = EditRequest
+    template_name = "meetings/request_delete.html"
+    success_url = reverse_lazy("all-requests-list")
+
+
 # 顯示某個會議的所有與會人員
 @login_required(login_url="login")
 def meeting_participants_view(request, id):
@@ -138,6 +184,11 @@ def meeting_participants_view(request, id):
     return render(request, "meetings/meeting_participants.html", context)
 
 
+@login_required(login_url="login")
+def meeting_not_found_view(request):
+    return render(request, "meetings/meeting_not_found.html", {})
+
+
 # 顯示歸檔的會議
 @method_decorator(login_required(login_url="login"), name="dispatch")
 class ArchivedMeetingListView(ListView):
@@ -146,6 +197,20 @@ class ArchivedMeetingListView(ListView):
 
     def get_queryset(self):
         return Meeting.objects.filter(is_archived=True)
+
+
+# 封存會議
+@login_required(login_url="login")
+def archive_meeting_view(request, id):
+    try:
+        # 用成queryset來避免發送signal
+        meeting = Meeting.objects.filter(id=id)
+    except Meeting.DoesNotExist:
+        return redirect("meeting-not-found")
+
+    meeting.update(is_archived=True)
+
+    return render(request, "meetings/archive_success.html", {})
 
 
 # 編輯人員出席紀錄
@@ -169,7 +234,7 @@ def edit_attendance_view(request, id):
 
     if formset.is_valid():
         formset.save()
-        return redirect("meeting-detail", id)
+        return redirect("edit-meeting", id)
     else:
         formset = AttendanceFormSet(instance=meeting)
 
@@ -187,7 +252,9 @@ def request_list_view(request, id):
     except Meeting.DoesNotExist:
         return redirect("meeting-not-found")
 
-    context = {"edit_requests": meeting.edit_requests.all()}
+    edit_requests = meeting.edit_requests.all()
+
+    context = {"edit_requests": edit_requests}
 
     return render(request, "meetings/request_list.html", context)
 
@@ -205,9 +272,7 @@ def edit_request_view(request, id):
     try:
         instance = meeting.edit_requests.get(participant=user)
     except EditRequest.DoesNotExist:
-        instance = EditRequest.objects.create(
-            meeting=meeting, participant=user, content=""
-        )
+        instance = EditRequest.objects.create(meeting=meeting, participant=user, content="")
 
     form = RequestEditForm(
         request.POST or None,
@@ -217,7 +282,7 @@ def edit_request_view(request, id):
 
     if form.is_valid():
         form.save()
-        return redirect("request-list", id)
+        return redirect("meeting-detail", id)
     else:
         form = RequestEditForm(
             instance=instance,
@@ -313,9 +378,7 @@ def edit_appendix_view(request, id):
         formset.save()
         return redirect("edit-appendices", id)
     else:
-        formset = AppendixFormSet(
-            instance=meeting, initial=[{"provider": request.user.get_full_name()}]
-        )
+        formset = AppendixFormSet(instance=meeting, initial=[{"provider": request.user.get_full_name()}])
 
     context = {"formset": formset, "helper": helper, "meeting": meeting}
     return render(request, "meetings/edit_appendix.html", context)
@@ -329,7 +392,7 @@ def advice_list_view(request, id):
     except Meeting.DoesNotExist:
         return redirect("meeting-not-found")
 
-    context = {"advices": meeting.advices.all()}
+    context = {"meeting": meeting, "advices": meeting.advices.all()}
 
     return render(request, "meetings/advice_list.html", context)
 
@@ -369,7 +432,21 @@ def edit_advice_view(request, id):
     return render(request, "meetings/edit_advice.html", context)
 
 
+# 寄出開會通知
+def send_notification_view(request, id):
+    try:
+        meeting = Meeting.objects.get(id=id)
+    except Meeting.DoesNotExist:
+        return redirect("meeting-not-found")
+
+    meeting.send_meeting_notification()
+
+    return render(request, "meetings/send_success.html", {})
+
+
 # 寄出開會結果
+
+
 def send_resolution_view(request, id):
     try:
         meeting = Meeting.objects.get(id=id)
@@ -379,3 +456,21 @@ def send_resolution_view(request, id):
     meeting.send_meeting_resolution()
 
     return render(request, "meetings/send_success.html", {})
+
+
+def notification_template_view(request):
+    return render(request, "emails/notification_template.html", {})
+
+
+# 追蹤決議
+def track_resolution_view(request):
+    try:
+        discussions = Discussion.objects.all()
+    except Meeting.DoesNotExist:
+        return redirect("meeting-not-found")
+
+    context = {
+        "discussions": discussions,
+    }
+
+    return render(request, "meetings/track_resolution.html", context)

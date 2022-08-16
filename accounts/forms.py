@@ -1,15 +1,14 @@
 from django import forms
 from django.contrib.auth.forms import (
-    UserChangeForm,
     UserCreationForm,
     UsernameField,
     AuthenticationForm,
 )
-from django.contrib.auth.models import Group
-from crispy_forms.layout import Layout, Field, Submit
+from crispy_forms.layout import Layout, Field, Submit, Div
 from utils.choices import SEX, IDENTITY
 from utils.base_form_helper import BaseFormHelper
 from .models import *
+
 
 # 申請帳號的表單
 class SignUpForm(UserCreationForm):
@@ -31,9 +30,7 @@ class SignUpForm(UserCreationForm):
         widget=forms.PasswordInput(attrs={"class": "form-control", "type": "password"}),
     )
     sex = forms.ChoiceField(label="性別", choices=SEX, required=True, initial=2)
-    identity = forms.ChoiceField(
-        label="身分", choices=IDENTITY, required=True, disabled=True
-    )
+    identity = forms.ChoiceField(label="身分", choices=IDENTITY, required=True, disabled=True)
     email = forms.EmailField(label="電子信箱", required=True)
     phone = forms.CharField(label="連絡電話", max_length=20, required=True)
 
@@ -81,16 +78,44 @@ class SignUpForm(UserCreationForm):
     #     return participant
 
 
+# 基本資料表單
+class UserEditFrom(forms.ModelForm):
+    last_name = forms.CharField(label="姓氏", max_length=30)
+    first_name = forms.CharField(label="名稱", max_length=30)
+    email = forms.EmailField(label="電子信箱")
+    sex = forms.ChoiceField(label="性別", choices=SEX)
+    phone = forms.CharField(label="連絡電話", max_length=10)
+
+    class Meta:
+        model = Participant
+        fields = ["first_name", "last_name", "email", "sex", "phone"]
+
+    def __init__(self, *args, **kwargs):
+        super(UserEditFrom, self).__init__(*args, **kwargs)
+        self.helper = BaseFormHelper()
+        self.helper.form_id = "user-edit-form"
+        self.helper.layout = Layout(
+            Field("last_name", placeholder="請輸入姓氏", css_class="center-field"),
+            Field("first_name", placeholder="請輸入名稱", css_class="center-field"),
+            Field("email", placeholder="請輸入電子信箱", css_class="center-field"),
+            Field("sex", placeholder="請選擇性別", css_class="center-field"),
+            Field("phone", placeholder="請輸入連絡電話", css_class="center-field"),
+        )
+        self.helper.add_input(Submit("submit", "保存", css_class="btn-secondary"))
+
+
 # 登入的表單
 class LoginForm(AuthenticationForm):
     username = UsernameField(
-        label="使用者名稱",
+        # label="使用者名稱",
+        label=" ",
         max_length=150,
         required=True,
         error_messages={"required": "帳號或密碼錯誤"},
     )
     password = forms.CharField(
-        label="密碼",
+        # label="密碼",
+        label=" ",
         max_length=200,
         required=True,
         widget=forms.PasswordInput(attrs={"class": "form-control", "type": "password"}),
@@ -111,11 +136,15 @@ class LoginForm(AuthenticationForm):
             Field(
                 "username",
                 placeholder="請輸入使用者名稱",
-                css_class="center-field",
+                css_class="text-center",  # center-field
             ),
-            Field("password", placeholder="請輸入密碼", css_class="center-field"),
+            Field("password", placeholder="請輸入密碼", css_class="text-center"),
+            Div(
+                Submit("submit", "登入", css_class="btn-secondary"),
+                width="100",
+                style="text-align:center",
+            ),
         )
-        self.helper.add_input(Submit("submit", "登入", css_class="btn-secondary"))
 
 
 # 建立業界專家個人資料
